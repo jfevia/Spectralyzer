@@ -3,7 +3,6 @@
     <PropertyGroup>
         <ProductName>Spectralyzer</ProductName>
         <RootNamespace>$(ProductName).$(MSBuildProjectName)</RootNamespace>
-<!--        <AssemblyName>$(ProductName).$(MSBuildProjectName)</AssemblyName>-->
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <Environment Condition=" '$(Environment)' == '' ">Development</Environment>
     </PropertyGroup>
