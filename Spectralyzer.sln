@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Host", "src\App.Host\Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "src\Core\Core.csproj", "{570C9F84-8FCD-47F7-8FC1-67CAA49FA946}"
 EndProject
+Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "Installer", "src\Installer\Installer.wixproj", "{7D15F5B5-91D0-4F7B-9EBD-2C9AAA5B9111}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{570C9F84-8FCD-47F7-8FC1-67CAA49FA946}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{570C9F84-8FCD-47F7-8FC1-67CAA49FA946}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{570C9F84-8FCD-47F7-8FC1-67CAA49FA946}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D15F5B5-91D0-4F7B-9EBD-2C9AAA5B9111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D15F5B5-91D0-4F7B-9EBD-2C9AAA5B9111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D15F5B5-91D0-4F7B-9EBD-2C9AAA5B9111}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D15F5B5-91D0-4F7B-9EBD-2C9AAA5B9111}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

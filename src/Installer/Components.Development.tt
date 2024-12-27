@@ -1,0 +1,100 @@
+﻿<#@ template language="C#" hostspecific="true" debug="true" #>
+<#@ output extension=".wxs" #>
+<#@ assembly name="System.Xml" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#
+    static string GetRelativePath(string fromPath, string toPath)
+    {
+        var fromUri = new Uri(fromPath);
+        var toUri = new Uri(toPath);
+        var relativeUri = fromUri.MakeRelativeUri(toUri);
+        return Uri.UnescapeDataString(relativeUri.ToString());
+    }
+
+    static IEnumerable<(string RelativePath, IEnumerable<string> Files)> GetFilesByDirectory(string directoryPath)
+    {
+        var directoriesToScan = new Stack<string>();
+        directoriesToScan.Push(directoryPath);
+
+        while (directoriesToScan.Count > 0)
+        {
+            var currentDirectory = directoriesToScan.Pop();
+            if (!Directory.Exists(currentDirectory)) continue;
+            if (currentDirectory.IndexOf("arm64", StringComparison.InvariantCultureIgnoreCase) > -1) continue;
+
+            var relativePath = GetRelativePath(directoryPath, currentDirectory);
+            var files = Directory.GetFiles(currentDirectory);
+            yield return (relativePath, files);
+
+            var subdirectories = Directory.GetDirectories(currentDirectory);
+            foreach (var subdirectory in subdirectories)
+            {
+                directoriesToScan.Push(subdirectory);
+            }
+        }
+    }
+
+    const string relativePath = @"..\..\bin\Debug\";
+    var fileById = new Dictionary<string, string>
+    {
+        ["Spectralyzer.App.Host.exe"] = "AppExecutable"
+    };
+
+    var templatePath = Host.ResolvePath("Components.Development.tt");
+    var directoryName = Path.GetDirectoryName(templatePath);
+    if (directoryName is null)
+    {
+        throw new InvalidOperationException($"Could not find directory for template '{templatePath}'");
+    }
+
+    if (!Directory.Exists(directoryName))
+    {
+        throw new DirectoryNotFoundException($"Could not find directory '{directoryName}'");
+    }
+
+    var relativeDirectory = Path.Combine(directoryName, relativePath);
+    var absoluteDirectory = Path.GetFullPath(relativeDirectory);
+    if (!Directory.Exists(absoluteDirectory))
+    {
+        throw new DirectoryNotFoundException($"Could not find absolute directory '{absoluteDirectory}'");
+    }
+
+    var filesByDirectory = GetFilesByDirectory(absoluteDirectory).ToList();
+#>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Fragment>
+<#
+    foreach (var kvp in filesByDirectory.Where(kvp => !string.IsNullOrEmpty(kvp.RelativePath)))
+    {
+        var name = kvp.RelativePath
+                      .Replace("\\", string.Empty)
+                      .Replace("/", string.Empty)
+                      .Replace(".", string.Empty)
+                      .Replace(":", string.Empty)
+                      .Replace("-", string.Empty);
+#>
+        <ComponentGroup Id="<#= $"{name}ComponentGroup" #>" Directory="<#= $"{name}Folder" #>">
+<#
+        foreach (var file in kvp.Files)
+        {
+            var path = file.Replace(absoluteDirectory, relativePath);
+            var fileName = Path.GetFileName(file);
+            if (!fileById.TryGetValue(fileName, out var fileId))
+            {
+                fileId = $"FileId_{Guid.NewGuid():N}";
+            }
+#>
+            <Component Bitness="always32">
+                <File Id="<#= fileId #>" Name="<#= fileName #>" KeyPath="yes" Source="<#= path #>" />
+            </Component>
+<#
+        }
+#>
+        </ComponentGroup>
+<#
+    }
+#>
+    </Fragment>
+</Wix>

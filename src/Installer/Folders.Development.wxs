@@ -1,0 +1,34 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Fragment>
+        <StandardDirectory Id="LocalAppDataFolder">
+            <Directory Id="INSTALLFOLDER" Name="Spectralyzer">
+                <Directory Id="AppFolder" Name="App">
+                    <Directory Id="AppzhHansFolder" Name="zh-Hans">
+                    </Directory>
+                    <Directory Id="AppsvFolder" Name="sv">
+                    </Directory>
+                    <Directory Id="AppruFolder" Name="ru">
+                    </Directory>
+                    <Directory Id="ApproFolder" Name="ro">
+                    </Directory>
+                    <Directory Id="AppptBRFolder" Name="pt-BR">
+                    </Directory>
+                    <Directory Id="AppjaJPFolder" Name="ja-JP">
+                    </Directory>
+                    <Directory Id="AppitFolder" Name="it">
+                    </Directory>
+                    <Directory Id="ApphuFolder" Name="hu">
+                    </Directory>
+                    <Directory Id="AppfrFolder" Name="fr">
+                    </Directory>
+                    <Directory Id="AppesFolder" Name="es">
+                    </Directory>
+                    <Directory Id="AppdeFolder" Name="de">
+                    </Directory>
+                    <Directory Id="AppcsCZFolder" Name="cs-CZ">
+                    </Directory>
+                </Directory>
+            </Directory>
+        </StandardDirectory>
+    </Fragment>
+</Wix>
