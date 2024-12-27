@@ -5,6 +5,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Spectralyzer.App.Host.ViewModels;
 using Spectralyzer.Core;
 
 namespace Spectralyzer.App.Host;

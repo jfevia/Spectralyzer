@@ -17,11 +17,19 @@
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm"/>
         <PackageReference Include="Extended.Wpf.Toolkit"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="Microsoft.Extensions.Hosting"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Core\Core.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Page Update="Views\MainWindow.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 
 </Project>

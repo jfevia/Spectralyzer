@@ -1,4 +1,4 @@
-﻿<Window x:Class="Spectralyzer.App.Host.MainWindow"
+﻿<Window x:Class="Spectralyzer.App.Host.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,9 +6,10 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:host="clr-namespace:Spectralyzer.App.Host"
+        xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.ViewModels"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance host:MainViewModel}"
-        host:ViewModelLocator.DataContext="{x:Type host:MainViewModel}"
+        d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
+        host:ViewModelLocator.DataContext="{x:Type viewModels:MainViewModel}"
         Title="Spectralyzer" Height="450" Width="800">
     <DockPanel LastChildFill="True">
         <ToolBar DockPanel.Dock="Top" VerticalAlignment="Top" Height="40">
@@ -28,13 +29,13 @@
                         <xcad:LayoutAnchorablePane>
                             <xcad:LayoutAnchorable Title="Sessions">
                                 <Grid>
-                                    <DataGrid HeadersVisibility="Column" ItemsSource="{Binding WebSessions}" SelectedItem="{Binding SelectedWebSession}" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <DataGrid EnableRowVirtualization="True" HeadersVisibility="Column" ItemsSource="{Binding WebSessions}" SelectedItem="{Binding SelectedWebSession}" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Binding="{Binding Index}" Header="#" Width="50" />
-                                            <DataGridTextColumn Binding="{Binding Process}" Header="Process" Width="100" />
-                                            <DataGridTextColumn Binding="{Binding Request.RequestUri.Host}" Header="Host" Width="150" />
-                                            <DataGridTextColumn Binding="{Binding Request.RequestUri.PathAndQuery}" Header="URL" Width="200" />
-                                            <DataGridTextColumn Binding="{Binding Response.HttpStatusCode, FallbackValue={x:Null}}" Header="Result" Width="100" />
+                                            <DataGridTextColumn Binding="{Binding Index, Mode=OneWay}" IsReadOnly="True" Header="#" Width="50" />
+                                            <DataGridTextColumn Binding="{Binding Process, Mode=OneWay}" IsReadOnly="True" Header="Process" Width="100" />
+                                            <DataGridTextColumn Binding="{Binding Request.RequestUri.Host, Mode=OneWay}" IsReadOnly="True" Header="Host" Width="150" />
+                                            <DataGridTextColumn Binding="{Binding Request.RequestUri.PathAndQuery, Mode=OneWay}" IsReadOnly="True" Header="URL" Width="200" />
+                                            <DataGridTextColumn Binding="{Binding Response.HttpStatusCode, Mode=OneWay, FallbackValue={x:Null}}" IsReadOnly="True" Header="Result" Width="100" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>
@@ -51,10 +52,10 @@
                                         <RowDefinition Height="30*" MinHeight="100" />
                                         <RowDefinition Height="70*" MinHeight="100" />
                                     </Grid.RowDefinitions>
-                                    <DataGrid Grid.Row="0" HeadersVisibility="Column" ItemsSource="{Binding SelectedWebSession.Request.Headers, FallbackValue={x:Null}}" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top">
+                                    <DataGrid EnableRowVirtualization="True" Grid.Row="0" HeadersVisibility="Column" ItemsSource="{Binding SelectedWebSession.Request.Headers, FallbackValue={x:Null}}" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Binding="{Binding Key}" Header="Key" Width="150" />
-                                            <DataGridTextColumn Binding="{Binding Values}" Header="Value" Width="250" />
+                                            <DataGridTextColumn Binding="{Binding Key, Mode=OneWay}" IsReadOnly="True" Header="Key" Width="150" />
+                                            <DataGridTextColumn Binding="{Binding Values, Mode=OneWay}" IsReadOnly="True" Header="Value" Width="250" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                     <TextBox Grid.Row="1" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding SelectedWebSession.Request.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}" VerticalContentAlignment="Top" AcceptsReturn="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Bottom" />
@@ -68,10 +69,10 @@
                                         <RowDefinition Height="30*" MinHeight="100" />
                                         <RowDefinition Height="70*" MinHeight="100" />
                                     </Grid.RowDefinitions>
-                                    <DataGrid Grid.Row="0" HeadersVisibility="Column" ItemsSource="{Binding SelectedWebSession.Response.Headers, FallbackValue={x:Null}}" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top">
+                                    <DataGrid EnableRowVirtualization="True" Grid.Row="0" HeadersVisibility="Column" ItemsSource="{Binding SelectedWebSession.Response.Headers, FallbackValue={x:Null}}" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Binding="{Binding Key}" Header="Key" Width="150" />
-                                            <DataGridTextColumn Binding="{Binding Values}" Header="Value" Width="250" />
+                                            <DataGridTextColumn Binding="{Binding Key, Mode=OneWay}" IsReadOnly="True" Header="Key" Width="150" />
+                                            <DataGridTextColumn Binding="{Binding Values, Mode=OneWay}" IsReadOnly="True" Header="Value" Width="250" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                     <TextBox Grid.Row="1" VerticalScrollBarVisibility="Auto" Text="{Binding SelectedWebSession.Response.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}" IsReadOnly="True" VerticalContentAlignment="Top" AcceptsReturn="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Bottom" />

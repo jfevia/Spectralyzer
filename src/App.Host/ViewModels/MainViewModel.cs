@@ -15,7 +15,7 @@ using Spectralyzer.Core;
 using ExceptionEventArgs = Spectralyzer.Core.ExceptionEventArgs;
 using WebRequest = Spectralyzer.Core.WebRequest;
 
-namespace Spectralyzer.App.Host;
+namespace Spectralyzer.App.Host.ViewModels;
 
 public class MainViewModel : ObservableObject
 {

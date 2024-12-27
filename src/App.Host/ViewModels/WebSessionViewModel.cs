@@ -6,7 +6,7 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Spectralyzer.Core;
 
-namespace Spectralyzer.App.Host;
+namespace Spectralyzer.App.Host.ViewModels;
 
 public sealed class WebSessionViewModel : ObservableObject
 {
