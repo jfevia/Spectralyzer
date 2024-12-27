@@ -2,8 +2,12 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-namespace Spectralyzer.App.Host;
+namespace Spectralyzer.Core;
 
-public partial class App
+public sealed class WebProxyServerFactory : IWebProxyServerFactory
 {
+    public IWebProxyServer Create()
+    {
+        return new WebProxyServer();
+    }
 }
