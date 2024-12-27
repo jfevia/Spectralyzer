@@ -19,13 +19,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Mvvm"/>
-        <PackageReference Include="Extended.Wpf.Toolkit"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" />
+        <PackageReference Include="Extended.Wpf.Toolkit" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Core\Core.csproj"/>
+        <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
