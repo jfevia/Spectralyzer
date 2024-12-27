@@ -55,11 +55,6 @@ public sealed class WebProxyServer : IWebProxyServer
 
     private async Task OnAfterResponseAsync(object sender, SessionEventArgs e)
     {
-        if (e.HttpClient.Request.RequestUriString.Contains("RetrieveUserPrivileges"))
-        {
-            Console.WriteLine("Hit!");
-        }
-
         if (e.UserData is not UserData userData)
         {
             return;
