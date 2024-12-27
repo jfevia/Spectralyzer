@@ -52,177 +52,196 @@
         </ToolBar>
         <xcad:DockingManager HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <xcad:LayoutRoot>
-                <xcad:LayoutPanel>
-
-                    <!--  Left Panel  -->
-                    <xcad:LayoutAnchorablePaneGroup DockWidth="40*">
+                <xcad:LayoutPanel Orientation="Vertical">
+                    <xcad:LayoutAnchorablePaneGroup DockHeight="80*" Orientation="Horizontal">
+                        <xcad:LayoutAnchorablePaneGroup DockWidth="40*" Orientation="Vertical">
+                            <xcad:LayoutAnchorablePane>
+                                <xcad:LayoutAnchorable Title="Sessions">
+                                    <Grid>
+                                        <DataGrid HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  AutoGenerateColumns="False"
+                                                  EnableRowVirtualization="True"
+                                                  HeadersVisibility="Column"
+                                                  ItemsSource="{Binding WebSessions}"
+                                                  SelectedItem="{Binding SelectedWebSession}">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Width="50"
+                                                                    Binding="{Binding Index, Mode=OneWay}"
+                                                                    Header="#"
+                                                                    IsReadOnly="True" />
+                                                <DataGridTextColumn Width="100"
+                                                                    Binding="{Binding Process, Mode=OneWay}"
+                                                                    Header="Process"
+                                                                    IsReadOnly="True" />
+                                                <DataGridTextColumn Width="150"
+                                                                    Binding="{Binding Request.RequestUri.Host, Mode=OneWay}"
+                                                                    Header="Host"
+                                                                    IsReadOnly="True" />
+                                                <DataGridTextColumn Width="200"
+                                                                    Binding="{Binding Request.RequestUri.PathAndQuery, Mode=OneWay}"
+                                                                    Header="URL"
+                                                                    IsReadOnly="True" />
+                                                <DataGridTextColumn Width="100"
+                                                                    Binding="{Binding Response.HttpStatusCode, Mode=OneWay, FallbackValue={x:Null}}"
+                                                                    Header="Result"
+                                                                    IsReadOnly="True" />
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Grid>
+                                </xcad:LayoutAnchorable>
+                            </xcad:LayoutAnchorablePane>
+                        </xcad:LayoutAnchorablePaneGroup>
+                        <xcad:LayoutAnchorablePaneGroup DockWidth="60*" Orientation="Vertical">
+                            <xcad:LayoutAnchorablePane>
+                                <xcad:LayoutAnchorable Title="Request">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="50*" MinHeight="100" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="50*" MinHeight="100" />
+                                        </Grid.RowDefinitions>
+                                        <DataGrid Grid.Row="0"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  AutoGenerateColumns="False"
+                                                  DockPanel.Dock="Top"
+                                                  EnableRowVirtualization="True"
+                                                  HeadersVisibility="Column"
+                                                  ItemsSource="{Binding SelectedWebSession.Request.Headers, FallbackValue={x:Null}}">
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Width="150"
+                                                                        Header="Key"
+                                                                        IsReadOnly="True">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBox HorizontalAlignment="Stretch"
+                                                                     BorderThickness="0"
+                                                                     IsReadOnly="True"
+                                                                     Text="{Binding Key, Mode=OneWay}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTemplateColumn Width="250"
+                                                                        Header="Value"
+                                                                        IsReadOnly="True">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ItemsControl ItemsSource="{Binding Values}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox HorizontalAlignment="Stretch"
+                                                                                 BorderThickness="0"
+                                                                                 IsReadOnly="True"
+                                                                                 Text="{Binding ., Mode=OneWay}" />
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                        <GridSplitter Grid.Row="1"
+                                                      Height="5"
+                                                      HorizontalAlignment="Stretch"
+                                                      VerticalAlignment="Center" />
+                                        <TextBox Grid.Row="2"
+                                                 HorizontalAlignment="Stretch"
+                                                 VerticalAlignment="Stretch"
+                                                 VerticalContentAlignment="Top"
+                                                 AcceptsReturn="True"
+                                                 DockPanel.Dock="Bottom"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding SelectedWebSession.Request.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
+                                                 VerticalScrollBarVisibility="Auto" />
+                                    </Grid>
+                                </xcad:LayoutAnchorable>
+                            </xcad:LayoutAnchorablePane>
+                            <xcad:LayoutAnchorablePane>
+                                <xcad:LayoutAnchorable Title="Response">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="50*" MinHeight="100" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="50*" MinHeight="100" />
+                                        </Grid.RowDefinitions>
+                                        <DataGrid Grid.Row="0"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  AutoGenerateColumns="False"
+                                                  DockPanel.Dock="Top"
+                                                  EnableRowVirtualization="True"
+                                                  HeadersVisibility="Column"
+                                                  ItemsSource="{Binding SelectedWebSession.Response.Headers, FallbackValue={x:Null}}">
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Width="150"
+                                                                        Header="Key"
+                                                                        IsReadOnly="True">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBox HorizontalAlignment="Stretch"
+                                                                     BorderThickness="0"
+                                                                     IsReadOnly="True"
+                                                                     Text="{Binding Key, Mode=OneWay}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTemplateColumn Width="250"
+                                                                        Header="Value"
+                                                                        IsReadOnly="True">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ItemsControl ItemsSource="{Binding Values}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox HorizontalAlignment="Stretch"
+                                                                                 BorderThickness="0"
+                                                                                 IsReadOnly="True"
+                                                                                 Text="{Binding ., Mode=OneWay}" />
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                        <GridSplitter Grid.Row="1"
+                                                      Height="5"
+                                                      HorizontalAlignment="Stretch"
+                                                      VerticalAlignment="Center" />
+                                        <TextBox Grid.Row="2"
+                                                 HorizontalAlignment="Stretch"
+                                                 VerticalAlignment="Stretch"
+                                                 VerticalContentAlignment="Top"
+                                                 AcceptsReturn="True"
+                                                 DockPanel.Dock="Bottom"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding SelectedWebSession.Response.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
+                                                 VerticalScrollBarVisibility="Auto" />
+                                    </Grid>
+                                </xcad:LayoutAnchorable>
+                            </xcad:LayoutAnchorablePane>
+                        </xcad:LayoutAnchorablePaneGroup>
+                    </xcad:LayoutAnchorablePaneGroup>
+                    <xcad:LayoutAnchorablePaneGroup DockHeight="20*">
                         <xcad:LayoutAnchorablePane>
-                            <xcad:LayoutAnchorable Title="Sessions">
+                            <xcad:LayoutAnchorable Title="Errors">
                                 <Grid>
                                     <DataGrid HorizontalAlignment="Stretch"
                                               VerticalAlignment="Stretch"
                                               AutoGenerateColumns="False"
                                               EnableRowVirtualization="True"
                                               HeadersVisibility="Column"
-                                              ItemsSource="{Binding WebSessions}"
-                                              SelectedItem="{Binding SelectedWebSession}">
+                                              ItemsSource="{Binding Errors}">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Width="50"
-                                                                Binding="{Binding Index, Mode=OneWay}"
-                                                                Header="#"
-                                                                IsReadOnly="True" />
-                                            <DataGridTextColumn Width="100"
-                                                                Binding="{Binding Process, Mode=OneWay}"
-                                                                Header="Process"
-                                                                IsReadOnly="True" />
-                                            <DataGridTextColumn Width="150"
-                                                                Binding="{Binding Request.RequestUri.Host, Mode=OneWay}"
-                                                                Header="Host"
-                                                                IsReadOnly="True" />
-                                            <DataGridTextColumn Width="200"
-                                                                Binding="{Binding Request.RequestUri.PathAndQuery, Mode=OneWay}"
-                                                                Header="URL"
-                                                                IsReadOnly="True" />
-                                            <DataGridTextColumn Width="100"
-                                                                Binding="{Binding Response.HttpStatusCode, Mode=OneWay, FallbackValue={x:Null}}"
-                                                                Header="Result"
+                                            <DataGridTextColumn Width="*"
+                                                                Binding="{Binding ., Mode=OneWay}"
+                                                                Header="Exception"
                                                                 IsReadOnly="True" />
                                         </DataGrid.Columns>
                                     </DataGrid>
-                                </Grid>
-                            </xcad:LayoutAnchorable>
-                        </xcad:LayoutAnchorablePane>
-                    </xcad:LayoutAnchorablePaneGroup>
-
-                    <!--  Right Panel  -->
-                    <xcad:LayoutAnchorablePaneGroup DockWidth="60*" Orientation="Vertical">
-                        <xcad:LayoutAnchorablePane>
-                            <xcad:LayoutAnchorable Title="Request">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="50*" MinHeight="100" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="50*" MinHeight="100" />
-                                    </Grid.RowDefinitions>
-                                    <DataGrid Grid.Row="0"
-                                              HorizontalAlignment="Stretch"
-                                              VerticalAlignment="Stretch"
-                                              AutoGenerateColumns="False"
-                                              DockPanel.Dock="Top"
-                                              EnableRowVirtualization="True"
-                                              HeadersVisibility="Column"
-                                              ItemsSource="{Binding SelectedWebSession.Request.Headers, FallbackValue={x:Null}}">
-                                        <DataGrid.Columns>
-                                            <DataGridTemplateColumn Width="150"
-                                                                    Header="Key"
-                                                                    IsReadOnly="True">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <TextBox HorizontalAlignment="Stretch"
-                                                                 BorderThickness="0"
-                                                                 IsReadOnly="True"
-                                                                 Text="{Binding Key, Mode=OneWay}" />
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Width="250"
-                                                                    Header="Value"
-                                                                    IsReadOnly="True">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <ItemsControl ItemsSource="{Binding Values}">
-                                                            <ItemsControl.ItemTemplate>
-                                                                <DataTemplate>
-                                                                    <TextBox HorizontalAlignment="Stretch"
-                                                                             BorderThickness="0"
-                                                                             IsReadOnly="True"
-                                                                             Text="{Binding ., Mode=OneWay}" />
-                                                                </DataTemplate>
-                                                            </ItemsControl.ItemTemplate>
-                                                        </ItemsControl>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                    <GridSplitter Grid.Row="1"
-                                                  Height="5"
-                                                  HorizontalAlignment="Stretch"
-                                                  VerticalAlignment="Center" />
-                                    <TextBox Grid.Row="2"
-                                             HorizontalAlignment="Stretch"
-                                             VerticalAlignment="Stretch"
-                                             VerticalContentAlignment="Top"
-                                             AcceptsReturn="True"
-                                             DockPanel.Dock="Bottom"
-                                             IsReadOnly="True"
-                                             Text="{Binding SelectedWebSession.Request.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
-                                             VerticalScrollBarVisibility="Auto" />
-                                </Grid>
-                            </xcad:LayoutAnchorable>
-                        </xcad:LayoutAnchorablePane>
-                        <xcad:LayoutAnchorablePane>
-                            <xcad:LayoutAnchorable Title="Response">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="50*" MinHeight="100" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="50*" MinHeight="100" />
-                                    </Grid.RowDefinitions>
-                                    <DataGrid Grid.Row="0"
-                                              HorizontalAlignment="Stretch"
-                                              VerticalAlignment="Stretch"
-                                              AutoGenerateColumns="False"
-                                              DockPanel.Dock="Top"
-                                              EnableRowVirtualization="True"
-                                              HeadersVisibility="Column"
-                                              ItemsSource="{Binding SelectedWebSession.Response.Headers, FallbackValue={x:Null}}">
-                                        <DataGrid.Columns>
-                                            <DataGridTemplateColumn Width="150"
-                                                                    Header="Key"
-                                                                    IsReadOnly="True">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <TextBox HorizontalAlignment="Stretch"
-                                                                 BorderThickness="0"
-                                                                 IsReadOnly="True"
-                                                                 Text="{Binding Key, Mode=OneWay}" />
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Width="250"
-                                                                    Header="Value"
-                                                                    IsReadOnly="True">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <ItemsControl ItemsSource="{Binding Values}">
-                                                            <ItemsControl.ItemTemplate>
-                                                                <DataTemplate>
-                                                                    <TextBox HorizontalAlignment="Stretch"
-                                                                             BorderThickness="0"
-                                                                             IsReadOnly="True"
-                                                                             Text="{Binding ., Mode=OneWay}" />
-                                                                </DataTemplate>
-                                                            </ItemsControl.ItemTemplate>
-                                                        </ItemsControl>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                    <GridSplitter Grid.Row="1"
-                                                  Height="5"
-                                                  HorizontalAlignment="Stretch"
-                                                  VerticalAlignment="Center" />
-                                    <TextBox Grid.Row="2"
-                                             HorizontalAlignment="Stretch"
-                                             VerticalAlignment="Stretch"
-                                             VerticalContentAlignment="Top"
-                                             AcceptsReturn="True"
-                                             DockPanel.Dock="Bottom"
-                                             IsReadOnly="True"
-                                             Text="{Binding SelectedWebSession.Response.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
-                                             VerticalScrollBarVisibility="Auto" />
                                 </Grid>
                             </xcad:LayoutAnchorable>
                         </xcad:LayoutAnchorablePane>
