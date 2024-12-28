@@ -120,11 +120,9 @@ function Generate-Folders {
 
     # Initialize directory stack
     $directoriesToScan = @($absoluteDirectory)
-    $openDirectories = @()
 
     # Start WiX content
-    $wixContent = "
-<Wix xmlns=""http://wixtoolset.org/schemas/v4/wxs"">
+    $wixContent = "<Wix xmlns=""http://wixtoolset.org/schemas/v4/wxs"">
     <Fragment>
         <StandardDirectory Id=""LocalAppDataFolder"">
             <Directory Id=""ManufacturerFolder"" Name=""Spectralyzer"">
@@ -133,16 +131,6 @@ function Generate-Folders {
     while ($directoriesToScan.Count -gt 0) {
         $currentDirectory = $directoriesToScan | Select-Object -First 1
         $directoriesToScan = $directoriesToScan | Where-Object { $_ -ne $currentDirectory }
-
-        # Handle closing open directories
-        $openDirectory = $openDirectories | Select-Object -First 1
-        while ($openDirectories.Count -gt 0 -and -not ($currentDirectory -like $openDirectory)) {
-            $indentCount = $openDirectories.Count - 1
-            $indent = ("    " * $indentCount)
-            $wixContent += "
-                $indent</Directory>"
-            $openDirectories = $openDirectories | Where-Object { $_ -ne $openDirectory }
-        }
 
         if (-not (Test-Path $currentDirectory -PathType Container)) { continue }
 
@@ -153,19 +141,16 @@ function Generate-Folders {
         $name = $name -replace 'Release', ""
 
         if (-not [string]::IsNullOrEmpty($name)) {
-            $indentCount = $openDirectories.Count
-            $indent = ("    " * $indentCount)
             $wixContent += "
-                $indent<Directory Id=""${name}Folder"" Name=""$directoryName"">"
+                    <Directory Id=""${name}Folder"" Name=""$directoryName"">"
         }
-
-        if ($null -eq $openDirectories) {
-            $openDirectories = @()
-        }
-
-        $openDirectories += $currentDirectory
 
         $subdirectories = Get-ChildItem -Path $currentDirectory -Directory | ForEach-Object { $_.FullName }
+
+        if ($subdirectories.Count -eq 0) {
+            $wixContent += "
+                    </Directory>"
+        }
 
         if ($null -eq $directoriesToScan) {
             $directoriesToScan = @()
@@ -175,6 +160,7 @@ function Generate-Folders {
     }
 
     $wixContent += "
+                    </Directory>
                 </Directory>
             </Directory>
         </StandardDirectory>

@@ -4,12 +4,25 @@
         <OutputPath>..\..\bin\Installer</OutputPath>
     </PropertyGroup>
 
-    <Target Name="GenerateT4" BeforeTargets="ResolveReferences">
+    <Target Name="GenerateInstallerFiles" BeforeTargets="ResolveReferences">
         <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\..\.tools\GenerateInstallerFiles.ps1 -Configuration $(Configuration) -OutputDir ..\..\bin\$(Configuration)" />
     </Target>
 
     <ItemGroup>
         <Files Include="..\..\bin\$(Configuration)\**\*.*" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <EnableDefaultItems>false</EnableDefaultItems>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Components.wxs" />
+        <Compile Include="Folders.wxs" />
+        <Compile Include="Package.wxs" />
+        <Compile Include="Remove.wxs" />
+        <Compile Include="Shortcuts.wxs" />
+        <EmbeddedResource Include="Package.en-us.wxl" />
     </ItemGroup>
 
     <ItemGroup>
