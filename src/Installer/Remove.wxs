@@ -3,7 +3,22 @@
         <DirectoryRef Id="INSTALLFOLDER">
             <Component Id="RemoveComponent" Guid="e377d524-71e2-4a09-a3b2-ef4fc08dc323">
                 <RemoveFile Id="RemoveAllFiles" Name="*" On="uninstall" />
+                <RemoveFolder Id="AppzhHansFolder" On="uninstall" />
+                <RemoveFolder Id="AppsvFolder" On="uninstall" />
+                <RemoveFolder Id="AppruFolder" On="uninstall" />
+                <RemoveFolder Id="ApproFolder" On="uninstall" />
+                <RemoveFolder Id="AppptBRFolder" On="uninstall" />
+                <RemoveFolder Id="AppjaJPFolder" On="uninstall" />
+                <RemoveFolder Id="AppitFolder" On="uninstall" />
+                <RemoveFolder Id="ApphuFolder" On="uninstall" />
+                <RemoveFolder Id="AppfrFolder" On="uninstall" />
+                <RemoveFolder Id="AppesFolder" On="uninstall" />
+                <RemoveFolder Id="AppdeFolder" On="uninstall" />
+                <RemoveFolder Id="AppcsCZFolder" On="uninstall" />
                 <RemoveFolder Id="RemoveINSTALLFOLDER" On="uninstall" />
+                <RemoveRegistryValue Root="HKCU"
+                                     Key="Software\Spectralyzer\Spectralyzer"
+                                     Name="INSTALLFOLDER" />
             </Component>
         </DirectoryRef>
     </Fragment>
