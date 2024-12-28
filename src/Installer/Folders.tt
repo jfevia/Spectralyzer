@@ -52,9 +52,11 @@
         {
             if (openDirectories.Count > 0 && !currentDirectory.StartsWith(openDirectories.Peek()))
             {
+                var indentCount = openDirectories.Count - 2;
+                var indent = string.Concat(Enumerable.Repeat("    ", indentCount));
                 openDirectories.Pop();
 #>
-                    <#= string.Concat(Enumerable.Repeat("    ", openDirectories.Count - 1)) #></Directory>
+                    <#= indent #></Directory>
 <#
             }
         }
@@ -72,8 +74,10 @@
 
         if (!string.IsNullOrEmpty(name))
         {
+            var indentCount = openDirectories.Count - 1;
+            var indent = string.Concat(Enumerable.Repeat("    ", indentCount));
 #>
-                    <#= string.Concat(Enumerable.Repeat("    ", openDirectories.Count - 1)) #><Directory Id="<#= name #>Folder" Name="<#= directoryName #>">
+                    <#= indent #><Directory Id="<#= name #>Folder" Name="<#= directoryName #>">
 <#
         }
 
@@ -89,10 +93,12 @@
     // Close any remaining open directories
     while (openDirectories.Count > 1)
     {
-#>
-                    <#= string.Concat(Enumerable.Repeat("    ", openDirectories.Count - 2)) #></Directory>
-<# 
+        var indentCount = openDirectories.Count - 2;
+        var indent = string.Concat(Enumerable.Repeat("    ", indentCount));
         openDirectories.Pop();
+#>
+                    <#= indent #></Directory>
+<# 
     }
 #>
                 </Directory>
