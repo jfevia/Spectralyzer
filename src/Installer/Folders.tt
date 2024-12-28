@@ -37,7 +37,8 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Fragment>
         <StandardDirectory Id="ProgramFilesFolder">
-            <Directory Id="INSTALLFOLDER" Name="Spectralyzer">
+            <Directory Id="ManufacturerFolder" Name="Spectralyzer">
+                <Directory Id="INSTALLFOLDER" Name="Spectralyzer">
 <#
     var directoriesToScan = new Stack<string>();
     var openDirectories = new Stack<string>();
@@ -53,7 +54,7 @@
             {
                 openDirectories.Pop();
 #>
-                <#= string.Concat(Enumerable.Repeat("    ", openDirectories.Count - 1)) #></Directory>
+                    <#= string.Concat(Enumerable.Repeat("    ", openDirectories.Count - 1)) #></Directory>
 <#
             }
         }
@@ -72,7 +73,7 @@
         if (!string.IsNullOrEmpty(name))
         {
 #>
-                <#= string.Concat(Enumerable.Repeat("    ", openDirectories.Count - 1)) #><Directory Id="<#= name #>Folder" Name="<#= directoryName #>">
+                    <#= string.Concat(Enumerable.Repeat("    ", openDirectories.Count - 1)) #><Directory Id="<#= name #>Folder" Name="<#= directoryName #>">
 <#
         }
 
@@ -89,11 +90,12 @@
     while (openDirectories.Count > 1)
     {
 #>
-                <#= string.Concat(Enumerable.Repeat("    ", openDirectories.Count - 2)) #></Directory>
+                    <#= string.Concat(Enumerable.Repeat("    ", openDirectories.Count - 2)) #></Directory>
 <# 
         openDirectories.Pop();
     }
 #>
+                </Directory>
             </Directory>
         </StandardDirectory>
     </Fragment>

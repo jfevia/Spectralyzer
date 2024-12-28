@@ -80,22 +80,4 @@
         <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Compile Update="Components.Development.wxs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Components.Development.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Folders.Development.wxs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Folders.Development.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Package.Development.wxs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Package.Development.tt</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
 </Project>

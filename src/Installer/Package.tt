@@ -41,6 +41,7 @@
              UpgradeCode="aebb7914-3502-40db-9d67-e06b9ba8570b">
         <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
         <Feature Id="Main">
+            <ComponentGroupRef Id="ShortcutsComponentGroup" />
 <#
     var directoriesToScan = new Stack<string>();
     directoriesToScan.Push(absoluteDirectory);

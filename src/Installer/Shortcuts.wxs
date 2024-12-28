@@ -1,0 +1,26 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Fragment>
+        <StandardDirectory Id="DesktopFolder" />
+        <StandardDirectory Id="StartMenuFolder" />
+        <ComponentGroup Id="ShortcutsComponentGroup" Directory="AppFolder">
+            <Component Bitness="always32">
+                <RegistryValue Root="HKCU"
+                               Key="Software\Spectralyzer\Spectralyzer"
+                               Name="INSTALLFOLDER"
+                               Type="string"
+                               Value="[INSTALLFOLDER]"
+                               KeyPath="yes" />
+                <Shortcut Id="DesktopShortcut"
+                          Directory="DesktopFolder"
+                          Name="Spectralyzer"
+                          Target="[AppExecutable]"
+                          WorkingDirectory="AppFolder" />
+                <Shortcut Id="StartMenuShortcut"
+                          Directory="StartMenuFolder"
+                          Name="Spectralyzer"
+                          Target="[AppExecutable]"
+                          WorkingDirectory="AppFolder" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>
