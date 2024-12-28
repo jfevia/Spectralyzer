@@ -36,7 +36,7 @@
 #>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Fragment>
-        <StandardDirectory Id="ProgramFilesFolder">
+        <StandardDirectory Id="LocalAppDataFolder">
             <Directory Id="ManufacturerFolder" Name="Spectralyzer">
                 <Directory Id="INSTALLFOLDER" Name="Spectralyzer">
 <#

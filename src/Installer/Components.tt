@@ -27,6 +27,12 @@
             var relativePath = GetRelativePath(directoryPath, currentDirectory);
             var files = Directory.GetFiles(currentDirectory);
             yield return (relativePath, files);
+
+            var subdirectories = Directory.GetDirectories(currentDirectory);
+            foreach (var subdirectory in subdirectories)
+            {
+                directoriesToScan.Push(subdirectory);
+            }
         }
     }
 
