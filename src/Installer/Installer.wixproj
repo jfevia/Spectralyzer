@@ -5,93 +5,11 @@
     </PropertyGroup>
 
     <Target Name="GenerateT4" BeforeTargets="ResolveReferences">
-        <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\..\.tools\InstallerT4.ps1 -Configuration $(Configuration)" />
+        <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\..\.tools\GenerateInstallerFiles.ps1 -Configuration $(Configuration) -OutputDir ..\..\bin\$(Configuration)" />
     </Target>
-
-    <ItemGroup Condition=" $(Configuration) == 'Release' ">
-        <Content Include="Components.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Components.wxs</LastGenOutput>
-        </Content>
-        <Content Include="Components.wxs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Components.tt</DependentUpon>
-        </Content>
-        <Content Include="Folders.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Folders.wxs</LastGenOutput>
-        </Content>
-        <Content Include="Folders.wxs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Folders.tt</DependentUpon>
-        </Content>
-        <Content Include="Package.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Package.wxs</LastGenOutput>
-        </Content>
-        <Content Include="Package.wxs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Package.tt</DependentUpon>
-        </Content>
-    </ItemGroup>
-
-    <ItemGroup Condition=" $(Configuration) == 'Debug' ">
-        <Content Include="Components.Development.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Components.Development.wxs</LastGenOutput>
-        </Content>
-        <Content Include="Components.Development.wxs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Components.Development.tt</DependentUpon>
-        </Content>
-        <Content Include="Folders.Development.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Folders.Development.wxs</LastGenOutput>
-        </Content>
-        <Content Include="Folders.Development.wxs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Folders.Development.tt</DependentUpon>
-        </Content>
-        <Content Include="Package.Development.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Package.Development.wxs</LastGenOutput>
-        </Content>
-        <Content Include="Package.Development.wxs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Package.Development.tt</DependentUpon>
-        </Content>
-    </ItemGroup>
 
     <ItemGroup>
         <Files Include="..\..\bin\$(Configuration)\**\*.*" />
-    </ItemGroup>
-
-    <PropertyGroup>
-        <EnableDefaultItems>false</EnableDefaultItems>
-    </PropertyGroup>
-
-    <ItemGroup Condition=" $(Configuration) == 'Release' ">
-        <Compile Include="Components.wxs" />
-        <Compile Include="Folders.wxs" />
-        <Compile Include="Package.wxs" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" $(Configuration) == 'Debug' ">
-        <Compile Include="Components.Development.wxs" />
-        <Compile Include="Folders.Development.wxs" />
-        <Compile Include="Package.Development.wxs" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Include="Remove.wxs" />
-        <Compile Include="Shortcuts.wxs" />
-        <EmbeddedResource Include="Package.en-us.wxl" />
     </ItemGroup>
 
     <ItemGroup>

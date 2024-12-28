@@ -24,10 +24,6 @@ jobs:
       if: ${{ success() }}
       uses: microsoft/setup-msbuild@v1.3.1
 
-    - name: Install T4 dotnet tool
-      if: ${{ success() }}
-      run: dotnet tool install --global dotnet-t4
-
     - name: Restore solution
       if: ${{ success() }}
       run: msbuild Spectralyzer.sln -target:restore -property:Configuration=${{ env.CONFIGURATION }} -property:Environment=${{ env.ENVIRONMENT }}
