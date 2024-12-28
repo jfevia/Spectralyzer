@@ -89,6 +89,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Include="Remove.wxs" />
         <Compile Include="Shortcuts.wxs" />
         <EmbeddedResource Include="Package.en-us.wxl" />
     </ItemGroup>

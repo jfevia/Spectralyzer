@@ -1,0 +1,10 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Component Id="RemoveComponent" Guid="e377d524-71e2-4a09-a3b2-ef4fc08dc323">
+                <RemoveFile Id="RemoveAllFiles" Name="*" On="uninstall" />
+                <RemoveFolder Id="RemoveINSTALLFOLDER" On="uninstall" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+</Wix>

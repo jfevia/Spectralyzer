@@ -81,13 +81,22 @@
         {
             var path = file.Replace(absoluteDirectory, relativePath);
             var fileName = Path.GetFileName(file);
+            var fileGuid = Guid.NewGuid();
             if (!fileById.TryGetValue(fileName, out var fileId))
             {
-                fileId = $"FileId_{Guid.NewGuid():N}";
+                fileId = $"FileId_{fileGuid:N}";
             }
 #>
-            <Component Bitness="always32">
-                <File Id="<#= fileId #>" Name="<#= fileName #>" KeyPath="yes" Source="<#= path #>" />
+            <Component Bitness="always32" Guid="<#= fileGuid #>">
+                <File Id="<#= fileId #>"
+                      Name="<#= fileName #>"
+                      Source="<#= path #>" />
+                <RegistryValue Root="HKCU"
+                               Key="Software\Spectralyzer\Spectralyzer\Components"
+                               Name="<#= fileId #>"
+                               Type="integer"
+                               Value="1"
+                               KeyPath="yes" />
             </Component>
 <#
         }
