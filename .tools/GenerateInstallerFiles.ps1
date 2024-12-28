@@ -192,6 +192,15 @@ function Generate-Removals {
     <Fragment>
         <StandardDirectory Id=""LocalAppDataFolder"">
             <Component Id=""RemoveComponent"" Guid=""e377d524-71e2-4a09-a3b2-ef4fc08dc323"">
+                <RegistryValue Root=""HKCU""
+                               Key=""Software\Spectralyzer\Spectralyzer""
+                               Name=""Removed""
+                               Type=""integer""
+                               Value=""1""
+                               KeyPath=""yes"" />
+                <RemoveRegistryKey Root=""HKCU""
+                                   Key=""Software\Spectralyzer\Spectralyzer""
+                                   Action=""removeOnUninstall"" />
                 <RemoveFile Id=""RemoveAllFiles"" Name=""*"" On=""uninstall"" />
                 <RemoveFolder Id=""RemoveManufacturerFolder"" Directory=""ManufacturerFolder"" On=""uninstall"" />
                 <RemoveFolder Id=""RemoveProductFolder"" Directory=""ProductFolder"" On=""uninstall"" />"
