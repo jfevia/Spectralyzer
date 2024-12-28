@@ -1,24 +1,24 @@
-﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Fragment>
-        <DirectoryRef Id="AppFolder">
+        <StandardDirectory Id="LocalAppDataFolder">
             <Component Id="RemoveComponent" Guid="e377d524-71e2-4a09-a3b2-ef4fc08dc323">
                 <RemoveFile Id="RemoveAllFiles" Name="*" On="uninstall" />
-                <RemoveFolder Id="RemoveAppsvFolder" Directory="AppsvFolder" On="uninstall" />
-                <RemoveFolder Id="RemoveAppruFolder" Directory="AppruFolder" On="uninstall" />
-                <RemoveFolder Id="RemoveApproFolder" Directory="ApproFolder" On="uninstall" />
-                <RemoveFolder Id="RemoveAppptBRFolder" Directory="AppptBRFolder" On="uninstall" />
-                <RemoveFolder Id="RemoveAppjaJPFolder" Directory="AppjaJPFolder" On="uninstall" />
-                <RemoveFolder Id="RemoveAppitFolder" Directory="AppitFolder" On="uninstall" />
-                <RemoveFolder Id="RemoveApphuFolder" Directory="ApphuFolder" On="uninstall" />
-                <RemoveFolder Id="RemoveAppfrFolder" Directory="AppfrFolder" On="uninstall" />
-                <RemoveFolder Id="RemoveAppesFolder" Directory="AppesFolder" On="uninstall" />
-                <RemoveFolder Id="RemoveAppdeFolder" Directory="AppdeFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveManufacturerFolder" Directory="ManufacturerFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveProductFolder" Directory="ProductFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveAppFolder" Directory="AppFolder" On="uninstall" />
                 <RemoveFolder Id="RemoveAppcsCZFolder" Directory="AppcsCZFolder" On="uninstall" />
-                <RemoveFolder Id="RemoveINSTALLFOLDER" On="uninstall" />
-                <RemoveRegistryValue Root="HKCU"
-                                     Key="Software\Spectralyzer\Spectralyzer"
-                                     Name="INSTALLFOLDER" />
+                <RemoveFolder Id="RemoveAppdeFolder" Directory="AppdeFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveAppesFolder" Directory="AppesFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveAppfrFolder" Directory="AppfrFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveApphuFolder" Directory="ApphuFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveAppitFolder" Directory="AppitFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveAppjaJPFolder" Directory="AppjaJPFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveAppptBRFolder" Directory="AppptBRFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveApproFolder" Directory="ApproFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveAppruFolder" Directory="AppruFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveAppsvFolder" Directory="AppsvFolder" On="uninstall" />
+                <RemoveFolder Id="RemoveAppzhHansFolder" Directory="AppzhHansFolder" On="uninstall" />
             </Component>
-        </DirectoryRef>
+        </StandardDirectory>
     </Fragment>
 </Wix>

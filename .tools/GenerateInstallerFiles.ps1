@@ -99,8 +99,7 @@ function Generate-Components {
 
     $wixContent += "
     </Fragment>
-</Wix>
-"
+</Wix>"
 
     # Output to file
     Set-Content -Path $OutputFile -Value $wixContent
@@ -124,13 +123,12 @@ function Generate-Folders {
     $openDirectories = @()
 
     # Start WiX content
-    $wixContent = @"
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    $wixContent = "
+<Wix xmlns=""http://wixtoolset.org/schemas/v4/wxs"">
     <Fragment>
-        <StandardDirectory Id="LocalAppDataFolder">
-            <Directory Id="ManufacturerFolder" Name="Spectralyzer">
-                <Directory Id="INSTALLFOLDER" Name="Spectralyzer">
-"@
+        <StandardDirectory Id=""LocalAppDataFolder"">
+            <Directory Id=""ManufacturerFolder"" Name=""Spectralyzer"">
+                <Directory Id=""ProductFolder"" Name=""Spectralyzer"">"
 
     while ($directoriesToScan.Count -gt 0) {
         $currentDirectory = $directoriesToScan | Select-Object -First 1
@@ -176,13 +174,72 @@ function Generate-Folders {
         $directoriesToScan += @($subdirectories)
     }
 
-    $wixContent += @"
+    $wixContent += "
                 </Directory>
             </Directory>
         </StandardDirectory>
     </Fragment>
-</Wix>
-"@
+</Wix>"
+
+    # Write output to file
+    Set-Content -Path $OutputFile -Value $wixContent
+    Write-Host "File generated: $OutputFile"
+}
+
+function Generate-Removals {
+    param (
+        [string]$OutputDir
+    )
+
+    $absoluteDirectory = Resolve-Path $OutputDir
+    if (-not (Test-Path $absoluteDirectory -PathType Container)) {
+        throw "Could not find absolute directory '$absoluteDirectory'"
+    }
+
+    $OutputFile = "Remove.wxs"
+
+    # Initialize directory stack
+    $directoriesToScan = @($absoluteDirectory)
+
+    # Start WiX content
+    $wixContent = "<Wix xmlns=""http://wixtoolset.org/schemas/v4/wxs"">
+    <Fragment>
+        <StandardDirectory Id=""LocalAppDataFolder"">
+            <Component Id=""RemoveComponent"" Guid=""e377d524-71e2-4a09-a3b2-ef4fc08dc323"">
+                <RemoveFile Id=""RemoveAllFiles"" Name=""*"" On=""uninstall"" />
+                <RemoveFolder Id=""RemoveManufacturerFolder"" Directory=""ManufacturerFolder"" On=""uninstall"" />
+                <RemoveFolder Id=""RemoveProductFolder"" Directory=""ProductFolder"" On=""uninstall"" />"
+
+    while ($directoriesToScan.Count -gt 0) {
+        $currentDirectory = $directoriesToScan | Select-Object -First 1
+        $directoriesToScan = $directoriesToScan | Where-Object { $_ -ne $currentDirectory }
+
+        if (-not (Test-Path $currentDirectory -PathType Container)) { continue }
+
+        $path = Get-RelativePath -FromPath $absoluteDirectory -ToPath $currentDirectory
+        $name = $path -replace '[\\\/\.\:\-]', ""
+        $name = $name -replace 'Debug', ""
+        $name = $name -replace 'Release', ""
+
+        if (-not [string]::IsNullOrEmpty($name)) {
+            $wixContent += "
+                <RemoveFolder Id=""Remove${name}Folder"" Directory=""${name}Folder"" On=""uninstall"" />"
+        }
+
+        $subdirectories = Get-ChildItem -Path $currentDirectory -Directory | ForEach-Object { $_.FullName }
+
+        if ($null -eq $directoriesToScan) {
+            $directoriesToScan = @()
+        }
+
+        $directoriesToScan += @($subdirectories)
+    }
+
+    $wixContent += "
+            </Component>
+        </StandardDirectory>
+    </Fragment>
+</Wix>"
 
     # Write output to file
     Set-Content -Path $OutputFile -Value $wixContent
@@ -209,18 +266,16 @@ function Generate-Package {
     $directoriesToScan = @($absoluteDirectory)
 
     # Start WiX content
-    $wixContent = @"
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-    <Package Name="$ProductName"
-             Manufacturer="$Manufacturer"
-             Version="$Version"
-             Scope="perUser"
-             UpgradeCode="$UpgradeCode">
-        <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
-        <Feature Id="Main">
-            <ComponentRef Id="RemoveComponent" />
-            <ComponentRef Id="ShortcutsComponent" />
-"@
+    $wixContent = "<Wix xmlns=""http://wixtoolset.org/schemas/v4/wxs"">
+    <Package Name=""$ProductName""
+             Manufacturer=""$Manufacturer""
+             Version=""$Version""
+             Scope=""perUser""
+             UpgradeCode=""$UpgradeCode"">
+        <MajorUpgrade DowngradeErrorMessage=""!(loc.DowngradeError)"" />
+        <Feature Id=""Main"">
+            <ComponentRef Id=""RemoveComponent"" />
+            <ComponentRef Id=""ShortcutsComponent"" />"
 
     while ($directoriesToScan.Count -gt 0) {
         $currentDirectory = $directoriesToScan | Select-Object -First 1
@@ -261,4 +316,5 @@ function Generate-Package {
 
 Generate-Components -OutputDir $OutputDir
 Generate-Folders -OutputDir $OutputDir
+Generate-Removals -OutputDir $OutputDir
 Generate-Package -OutputDir $OutputDir
