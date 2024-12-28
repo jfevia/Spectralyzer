@@ -4,17 +4,9 @@
         <OutputPath>..\..\bin\Installer</OutputPath>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" $(Configuration) == 'Release' ">
-        <DefaultItemExcludes>$(DefaultItemExcludes);Components.Development.wxs;Folders.Development.wxs;Package.Development.wxs</DefaultItemExcludes>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" $(Configuration) == 'Debug' ">
-        <DefaultItemExcludes>$(DefaultItemExcludes);Components.wxs;Folders.wxs;Package.wxs</DefaultItemExcludes>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <Files Include="..\..\bin\$(Configuration)\**\*.*" />
-    </ItemGroup>
+    <Target Name="GenerateT4" BeforeTargets="ResolveReferences">
+        <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\..\.tools\InstallerT4.ps1 -Configuration $(Configuration)" />
+    </Target>
 
     <ItemGroup Condition=" $(Configuration) == 'Release' ">
         <Content Include="Components.tt">
@@ -74,6 +66,31 @@
             <DesignTime>True</DesignTime>
             <DependentUpon>Package.Development.tt</DependentUpon>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Files Include="..\..\bin\$(Configuration)\**\*.*" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <EnableDefaultItems>false</EnableDefaultItems>
+    </PropertyGroup>
+
+    <ItemGroup Condition=" $(Configuration) == 'Release' ">
+        <Compile Include="Components.wxs" />
+        <Compile Include="Folders.wxs" />
+        <Compile Include="Package.wxs" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" $(Configuration) == 'Debug' ">
+        <Compile Include="Components.Development.wxs" />
+        <Compile Include="Folders.Development.wxs" />
+        <Compile Include="Package.Development.wxs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="Shortcuts.wxs" />
+        <EmbeddedResource Include="Package.en-us.wxl" />
     </ItemGroup>
 
     <ItemGroup>
