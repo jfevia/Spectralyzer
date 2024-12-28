@@ -1,0 +1,14 @@
+<Project>
+
+    <PropertyGroup>
+        <ProductName>Spectralyzer</ProductName>
+        <RootNamespace>$(ProductName).$(MSBuildProjectName)</RootNamespace>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <Environment Condition=" '$(Environment)' == '' ">Development</Environment>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Environment)' != '' ">
+        <DefineConstants>$(DefineConstants);ENVIRONMENT_$(Environment.ToUpper())</DefineConstants>
+    </PropertyGroup>
+
+</Project>

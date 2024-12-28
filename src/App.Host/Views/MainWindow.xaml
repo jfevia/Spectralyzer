@@ -1,0 +1,253 @@
+﻿<Window x:Class="Spectralyzer.App.Host.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:Spectralyzer.App.Host.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:helpers="clr-namespace:Spectralyzer.App.Host.Helpers"
+        xmlns:host="clr-namespace:Spectralyzer.App.Host"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.ViewModels"
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="Spectralyzer"
+        Width="1600"
+        Height="800"
+        d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
+        host:ViewModelLocator.DataContext="{x:Type viewModels:MainViewModel}"
+        mc:Ignorable="d">
+    <DockPanel LastChildFill="True">
+        <ToolBar Height="40"
+                 VerticalAlignment="Top"
+                 DockPanel.Dock="Top">
+            <Button Width="100"
+                    Margin="5"
+                    helpers:VisibilityHelper.IsCollapsed="{Binding IsCapturingTraffic}"
+                    Command="{Binding StartCaptureCommand}"
+                    Content="Start capture" />
+            <Button Width="100"
+                    Margin="5"
+                    helpers:VisibilityHelper.IsVisible="{Binding IsCapturingTraffic}"
+                    Command="{Binding StopCaptureCommand}"
+                    Content="Stop capture" />
+            <Label Margin="5"
+                   VerticalAlignment="Center"
+                   Content="Port:" />
+            <xctk:IntegerUpDown Width="60"
+                                Margin="5"
+                                IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
+                                Maximum="65535"
+                                Minimum="1"
+                                Value="{Binding Port}" />
+            <CheckBox Margin="5"
+                      VerticalAlignment="Center"
+                      Content="Decrypt HTTPS traffic"
+                      IsChecked="{Binding DecryptSsl}"
+                      IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
+                      Style="{StaticResource {x:Type CheckBox}}" />
+            <Button Width="100"
+                    Margin="5"
+                    Command="{Binding ClearSessionsCommand}"
+                    Content="Clear"
+                    IsEnabled="{Binding HasSessions}" />
+        </ToolBar>
+        <xcad:DockingManager HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <xcad:LayoutRoot>
+                <xcad:LayoutPanel Orientation="Vertical">
+                    <xcad:LayoutAnchorablePaneGroup DockHeight="80*" Orientation="Horizontal">
+                        <xcad:LayoutAnchorablePaneGroup DockWidth="40*" Orientation="Vertical">
+                            <xcad:LayoutAnchorablePane>
+                                <xcad:LayoutAnchorable Title="Sessions">
+                                    <Grid>
+                                        <DataGrid HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  AutoGenerateColumns="False"
+                                                  EnableRowVirtualization="True"
+                                                  HeadersVisibility="Column"
+                                                  ItemsSource="{Binding WebSessions}"
+                                                  SelectedItem="{Binding SelectedWebSession}">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Width="50"
+                                                                    Binding="{Binding Index, Mode=OneWay}"
+                                                                    Header="#"
+                                                                    IsReadOnly="True" />
+                                                <DataGridTextColumn Width="100"
+                                                                    Binding="{Binding Process, Mode=OneWay}"
+                                                                    Header="Process"
+                                                                    IsReadOnly="True" />
+                                                <DataGridTextColumn Width="150"
+                                                                    Binding="{Binding Request.RequestUri.Host, Mode=OneWay}"
+                                                                    Header="Host"
+                                                                    IsReadOnly="True" />
+                                                <DataGridTextColumn Width="200"
+                                                                    Binding="{Binding Request.RequestUri.PathAndQuery, Mode=OneWay}"
+                                                                    Header="URL"
+                                                                    IsReadOnly="True" />
+                                                <DataGridTextColumn Width="100"
+                                                                    Binding="{Binding Response.HttpStatusCode, Mode=OneWay, FallbackValue={x:Null}}"
+                                                                    Header="Result"
+                                                                    IsReadOnly="True" />
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Grid>
+                                </xcad:LayoutAnchorable>
+                            </xcad:LayoutAnchorablePane>
+                        </xcad:LayoutAnchorablePaneGroup>
+                        <xcad:LayoutAnchorablePaneGroup DockWidth="60*" Orientation="Vertical">
+                            <xcad:LayoutAnchorablePane>
+                                <xcad:LayoutAnchorable Title="Request">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="50*" MinHeight="100" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="50*" MinHeight="100" />
+                                        </Grid.RowDefinitions>
+                                        <DataGrid Grid.Row="0"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  AutoGenerateColumns="False"
+                                                  DockPanel.Dock="Top"
+                                                  EnableRowVirtualization="True"
+                                                  HeadersVisibility="Column"
+                                                  ItemsSource="{Binding SelectedWebSession.Request.Headers, FallbackValue={x:Null}}">
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Width="150"
+                                                                        Header="Key"
+                                                                        IsReadOnly="True">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBox HorizontalAlignment="Stretch"
+                                                                     BorderThickness="0"
+                                                                     IsReadOnly="True"
+                                                                     Text="{Binding Key, Mode=OneWay}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTemplateColumn Width="250"
+                                                                        Header="Value"
+                                                                        IsReadOnly="True">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ItemsControl ItemsSource="{Binding Values}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox HorizontalAlignment="Stretch"
+                                                                                 BorderThickness="0"
+                                                                                 IsReadOnly="True"
+                                                                                 Text="{Binding ., Mode=OneWay}" />
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                        <GridSplitter Grid.Row="1"
+                                                      Height="5"
+                                                      HorizontalAlignment="Stretch"
+                                                      VerticalAlignment="Center" />
+                                        <TextBox Grid.Row="2"
+                                                 HorizontalAlignment="Stretch"
+                                                 VerticalAlignment="Stretch"
+                                                 VerticalContentAlignment="Top"
+                                                 AcceptsReturn="True"
+                                                 DockPanel.Dock="Bottom"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding SelectedWebSession.Request.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
+                                                 VerticalScrollBarVisibility="Auto" />
+                                    </Grid>
+                                </xcad:LayoutAnchorable>
+                            </xcad:LayoutAnchorablePane>
+                            <xcad:LayoutAnchorablePane>
+                                <xcad:LayoutAnchorable Title="Response">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="50*" MinHeight="100" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="50*" MinHeight="100" />
+                                        </Grid.RowDefinitions>
+                                        <DataGrid Grid.Row="0"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  AutoGenerateColumns="False"
+                                                  DockPanel.Dock="Top"
+                                                  EnableRowVirtualization="True"
+                                                  HeadersVisibility="Column"
+                                                  ItemsSource="{Binding SelectedWebSession.Response.Headers, FallbackValue={x:Null}}">
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Width="150"
+                                                                        Header="Key"
+                                                                        IsReadOnly="True">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBox HorizontalAlignment="Stretch"
+                                                                     BorderThickness="0"
+                                                                     IsReadOnly="True"
+                                                                     Text="{Binding Key, Mode=OneWay}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTemplateColumn Width="250"
+                                                                        Header="Value"
+                                                                        IsReadOnly="True">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ItemsControl ItemsSource="{Binding Values}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox HorizontalAlignment="Stretch"
+                                                                                 BorderThickness="0"
+                                                                                 IsReadOnly="True"
+                                                                                 Text="{Binding ., Mode=OneWay}" />
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                        <GridSplitter Grid.Row="1"
+                                                      Height="5"
+                                                      HorizontalAlignment="Stretch"
+                                                      VerticalAlignment="Center" />
+                                        <TextBox Grid.Row="2"
+                                                 HorizontalAlignment="Stretch"
+                                                 VerticalAlignment="Stretch"
+                                                 VerticalContentAlignment="Top"
+                                                 AcceptsReturn="True"
+                                                 DockPanel.Dock="Bottom"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding SelectedWebSession.Response.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
+                                                 VerticalScrollBarVisibility="Auto" />
+                                    </Grid>
+                                </xcad:LayoutAnchorable>
+                            </xcad:LayoutAnchorablePane>
+                        </xcad:LayoutAnchorablePaneGroup>
+                    </xcad:LayoutAnchorablePaneGroup>
+                    <xcad:LayoutAnchorablePaneGroup DockHeight="20*">
+                        <xcad:LayoutAnchorablePane>
+                            <xcad:LayoutAnchorable Title="Errors">
+                                <Grid>
+                                    <DataGrid HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch"
+                                              AutoGenerateColumns="False"
+                                              EnableRowVirtualization="True"
+                                              HeadersVisibility="Column"
+                                              ItemsSource="{Binding Errors}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width="*"
+                                                                Binding="{Binding ., Mode=OneWay}"
+                                                                Header="Exception"
+                                                                IsReadOnly="True" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </xcad:LayoutAnchorable>
+                        </xcad:LayoutAnchorablePane>
+                    </xcad:LayoutAnchorablePaneGroup>
+                </xcad:LayoutPanel>
+            </xcad:LayoutRoot>
+        </xcad:DockingManager>
+    </DockPanel>
+</Window>
