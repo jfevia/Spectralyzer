@@ -10,26 +10,26 @@ namespace Spectralyzer.App.Host.ViewModels;
 
 public sealed class WebSessionViewModel : ObservableObject
 {
-    private WebResponse? _response;
+    private WebResponseMessage? _responseMessage;
 
     public int Index { get; }
 
     public string Process { get; }
 
-    public WebRequest Request { get; }
+    public WebRequestMessage RequestMessage { get; }
 
-    public WebResponse? Response
+    public WebResponseMessage? ResponseMessage
     {
-        get => _response;
-        set => SetProperty(ref _response, value);
+        get => _responseMessage;
+        set => SetProperty(ref _responseMessage, value);
     }
 
-    public WebSessionViewModel(int index, Process process, WebRequest request)
+    public WebSessionViewModel(int index, Process process, WebRequestMessage requestMessage)
     {
         ArgumentNullException.ThrowIfNull(process);
 
         Index = index;
         Process = $"{process.ProcessName}:{process.Id}";
-        Request = request ?? throw new ArgumentNullException(nameof(request));
+        RequestMessage = requestMessage ?? throw new ArgumentNullException(nameof(requestMessage));
     }
 }

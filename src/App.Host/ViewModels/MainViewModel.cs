@@ -13,7 +13,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spectralyzer.Core;
 using ExceptionEventArgs = Spectralyzer.Core.ExceptionEventArgs;
-using WebRequest = Spectralyzer.Core.WebRequest;
 
 namespace Spectralyzer.App.Host.ViewModels;
 
@@ -77,10 +76,10 @@ public class MainViewModel : ObservableObject
         _decryptSsl = true;
 
         _webSessionById = new ConcurrentDictionary<Guid, WebSessionViewModel>();
-        WebSessions = new ObservableCollection<WebSessionViewModel>();
+        WebSessions = [];
         WebSessions.CollectionChanged += OnWebSessionsCollectionChanged;
 
-        Errors = new ObservableCollection<Exception>();
+        Errors = [];
 
         StartCaptureCommand = new AsyncRelayCommand(StartCaptureAsync);
         StopCaptureCommand = new AsyncRelayCommand(StopCaptureAsync);
@@ -93,10 +92,10 @@ public class MainViewModel : ObservableObject
         WebSessions.Clear();
     }
 
-    private WebSessionViewModel CreateWebSession(WebRequest webRequest)
+    private WebSessionViewModel CreateWebSession(WebRequestMessage webRequestMessage)
     {
-        var process = Process.GetProcessById(webRequest.ProcessId);
-        return new WebSessionViewModel(_webSessionById.Count, process, webRequest);
+        var process = Process.GetProcessById(webRequestMessage.ProcessId);
+        return new WebSessionViewModel(_webSessionById.Count, process, webRequestMessage);
     }
 
     private IWebProxyServer GetOrCreateWebProxyServer()
@@ -149,9 +148,9 @@ public class MainViewModel : ObservableObject
             return;
         }
 
-        if (_webSessionById.TryGetValue(e.WebResponse.Id, out var webSession))
+        if (_webSessionById.TryGetValue(e.WebResponseMessage.Id, out var webSession))
         {
-            webSession.Response = e.WebResponse;
+            webSession.ResponseMessage = e.WebResponseMessage;
         }
     }
 
@@ -163,8 +162,8 @@ public class MainViewModel : ObservableObject
             return;
         }
 
-        var webSession = CreateWebSession(e.WebRequest);
-        _webSessionById[webSession.Request.Id] = webSession;
+        var webSession = CreateWebSession(e.WebRequestMessage);
+        _webSessionById[webSession.RequestMessage.Id] = webSession;
         WebSessions.Add(webSession);
     }
 

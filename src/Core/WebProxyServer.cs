@@ -69,7 +69,7 @@ public sealed class WebProxyServer : IWebProxyServer
             bodyString = await e.GetResponseBodyAsString();
         }
 
-        var webResponse = new WebResponse(
+        var webResponseMessage = new WebResponseMessage(
             userData.Id,
             (HttpStatusCode)response.StatusCode,
             response.HttpVersion,
@@ -79,7 +79,7 @@ public sealed class WebProxyServer : IWebProxyServer
                     .Select(s => new WebHeader(s.Key, s.Select(h => h.Value).ToList()))
                     .ToList(),
             bodyString);
-        ResponseReceived?.Invoke(this, new WebResponseEventArgs(webResponse));
+        ResponseReceived?.Invoke(this, new WebResponseEventArgs(webResponseMessage));
     }
 
     private async Task OnBeforeRequestAsync(object sender, SessionEventArgs e)
@@ -96,7 +96,7 @@ public sealed class WebProxyServer : IWebProxyServer
             bodyString = await e.GetRequestBodyAsString();
         }
 
-        var webRequest = new WebRequest(
+        var webRequestMessage = new WebRequestMessage(
             userData.Id,
             request.Method,
             request.RequestUri,
@@ -108,7 +108,7 @@ public sealed class WebProxyServer : IWebProxyServer
                    .ToList(),
             bodyString,
             httpClient.ProcessId.Value);
-        SendingRequest?.Invoke(this, new WebRequestEventArgs(webRequest));
+        SendingRequest?.Invoke(this, new WebRequestEventArgs(webRequestMessage));
     }
 
     private sealed class UserData
