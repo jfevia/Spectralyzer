@@ -6,7 +6,7 @@
             <Component Id="ShortcutsComponent" Bitness="always32">
                 <RegistryValue Root="HKCU"
                                Key="Software\Spectralyzer\Spectralyzer"
-                               Name="ProductFolder"
+                               Name="InstallationFolder"
                                Type="string"
                                Value="[ProductFolder]"
                                KeyPath="yes" />
