@@ -16,25 +16,15 @@ public abstract class WebMessage
     private readonly Lazy<JsonDocument?> _jsonDocument;
 
     public JsonDocument? BodyAsJson => _jsonDocument.Value;
-
     public string? BodyAsString { get; }
-
-    public ContentType? ContentType => _contentType.Value;
-
     public IReadOnlyList<WebHeader> Headers { get; }
-
     public Guid Id { get; }
 
-    public Version Version { get; }
+    private ContentType? ContentType => _contentType.Value;
 
-    protected WebMessage(
-        Guid id,
-        Version version,
-        IReadOnlyList<WebHeader> headers,
-        string? bodyAsString)
+    protected WebMessage(Guid id, IReadOnlyList<WebHeader> headers, string? bodyAsString)
     {
         Id = id;
-        Version = version;
         Headers = headers ?? throw new ArgumentNullException(nameof(headers));
         BodyAsString = bodyAsString;
 

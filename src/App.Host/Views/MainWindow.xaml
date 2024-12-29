@@ -15,6 +15,24 @@
         d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
         host:ViewModelLocator.DataContext="{x:Type viewModels:MainViewModel}"
         mc:Ignorable="d">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModels:JsonPrimitiveViewModel}">
+            <TextBlock Text="{Binding Value}" />
+        </DataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonElementViewModel}" ItemsSource="{Binding Value}">
+            <TextBlock Text="{Binding ValueKind}" />
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonPropertyViewModel}" ItemsSource="{Binding Value}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}" />
+                <TextBlock Margin="5,0" Text=":" />
+                <TextBlock Text="{Binding ValueKind}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonDocumentViewModel}" ItemsSource="{Binding Elements}">
+            <TextBlock Text="Root" />
+        </HierarchicalDataTemplate>
+    </Window.Resources>
     <DockPanel LastChildFill="True">
         <ToolBar Height="40"
                  VerticalAlignment="Top"
@@ -61,6 +79,7 @@
                                         <DataGrid HorizontalAlignment="Stretch"
                                                   VerticalAlignment="Stretch"
                                                   AutoGenerateColumns="False"
+                                                  CanUserSortColumns="True"
                                                   EnableRowVirtualization="True"
                                                   HeadersVisibility="Column"
                                                   ItemsSource="{Binding WebSessions}"
@@ -105,6 +124,7 @@
                                                   HorizontalAlignment="Stretch"
                                                   VerticalAlignment="Stretch"
                                                   AutoGenerateColumns="False"
+                                                  CanUserSortColumns="True"
                                                   DockPanel.Dock="Top"
                                                   EnableRowVirtualization="True"
                                                   HeadersVisibility="Column"
@@ -158,10 +178,10 @@
                                                          VerticalScrollBarVisibility="Auto" />
                                             </TabItem>
                                             <TabItem Header="JSON">
-                                                <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.RequestMessage.BodyAsJson, Mode=OneWay, FallbackValue={x:Null}}">
+                                                <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.RequestMessage.JsonElements, Mode=OneWay, FallbackValue={x:Null}}">
                                                     <TreeView.ItemContainerStyle>
                                                         <Style TargetType="{x:Type TreeViewItem}">
-                                                            <Setter Property="IsExpanded" Value="False" />
+                                                            <Setter Property="IsExpanded" Value="True" />
                                                         </Style>
                                                     </TreeView.ItemContainerStyle>
                                                 </TreeView>
@@ -182,6 +202,7 @@
                                                   HorizontalAlignment="Stretch"
                                                   VerticalAlignment="Stretch"
                                                   AutoGenerateColumns="False"
+                                                  CanUserSortColumns="True"
                                                   DockPanel.Dock="Top"
                                                   EnableRowVirtualization="True"
                                                   HeadersVisibility="Column"
@@ -235,7 +256,7 @@
                                                          VerticalScrollBarVisibility="Auto" />
                                             </TabItem>
                                             <TabItem Header="JSON">
-                                                <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.ResponseMessage.BodyAsJson, Mode=OneWay, FallbackValue={x:Null}}">
+                                                <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.ResponseMessage.JsonElements, Mode=OneWay, FallbackValue={x:Null}}">
                                                     <TreeView.ItemContainerStyle>
                                                         <Style TargetType="{x:Type TreeViewItem}">
                                                             <Setter Property="IsExpanded" Value="False" />

@@ -31,6 +31,16 @@ public sealed class WebProxyServer : IWebProxyServer
         _server.RemoveEndPoint(endpoint.Object);
     }
 
+    public void ResetSystemProxy()
+    {
+        _server.DisableAllSystemProxies();
+    }
+
+    public void SetSystemProxy(WebProxyEndpoint endpoint)
+    {
+        _server.SetAsSystemProxy(endpoint.Object, ProxyProtocolType.AllHttp);
+    }
+
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _server.BeforeRequest += OnBeforeRequestAsync;
@@ -72,7 +82,6 @@ public sealed class WebProxyServer : IWebProxyServer
         var webResponseMessage = new WebResponseMessage(
             userData.Id,
             (HttpStatusCode)response.StatusCode,
-            response.HttpVersion,
             response.Headers
                     .GetAllHeaders()
                     .GroupBy(s => s.Name)
@@ -100,7 +109,6 @@ public sealed class WebProxyServer : IWebProxyServer
             userData.Id,
             request.Method,
             request.RequestUri,
-            request.HttpVersion,
             request.Headers
                    .GetAllHeaders()
                    .GroupBy(s => s.Name)

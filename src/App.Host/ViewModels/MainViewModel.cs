@@ -86,6 +86,21 @@ public class MainViewModel : ObservableObject
         ClearSessionsCommand = new RelayCommand(ClearSessions);
     }
 
+    private static WebRequestMessageViewModel CreateWebRequestMessageViewModel(WebRequestMessage webRequestMessage)
+    {
+        return new WebRequestMessageViewModel(webRequestMessage);
+    }
+
+    private static WebResponseMessageViewModel CreateWebResponseMessageViewModel(WebResponseMessage webResponseMessage)
+    {
+        return new WebResponseMessageViewModel(webResponseMessage);
+    }
+
+    private static WebSessionViewModel CreateWebSessionViewModel(int index, WebRequestMessage webRequestMessage, Process process)
+    {
+        return new WebSessionViewModel(index, process, CreateWebRequestMessageViewModel(webRequestMessage));
+    }
+
     private void ClearSessions()
     {
         _webSessionById.Clear();
@@ -95,7 +110,7 @@ public class MainViewModel : ObservableObject
     private WebSessionViewModel CreateWebSession(WebRequestMessage webRequestMessage)
     {
         var process = Process.GetProcessById(webRequestMessage.ProcessId);
-        return new WebSessionViewModel(_webSessionById.Count, process, webRequestMessage);
+        return CreateWebSessionViewModel(_webSessionById.Count, webRequestMessage, process);
     }
 
     private IWebProxyServer GetOrCreateWebProxyServer()
@@ -111,6 +126,7 @@ public class MainViewModel : ObservableObject
         webProxyServer.Error += OnError;
         _webProxyEndpoint = webProxyServer.AddEndpoint(IPAddress.Any, _port, _decryptSsl);
         await webProxyServer.StartAsync(cancellationToken);
+        webProxyServer.SetSystemProxy(_webProxyEndpoint);
         IsCapturingTraffic = true;
     }
 
@@ -121,6 +137,7 @@ public class MainViewModel : ObservableObject
             return;
         }
 
+        _webProxyServer.ResetSystemProxy();
         _webProxyServer.RemoveEndpoint(_webProxyEndpoint);
         _webProxyServer.SendingRequest -= OnSendingRequest;
         _webProxyServer.ResponseReceived -= OnResponseReceived;
@@ -150,7 +167,7 @@ public class MainViewModel : ObservableObject
 
         if (_webSessionById.TryGetValue(e.WebResponseMessage.Id, out var webSession))
         {
-            webSession.ResponseMessage = e.WebResponseMessage;
+            webSession.ResponseMessage = CreateWebResponseMessageViewModel(e.WebResponseMessage);
         }
     }
 

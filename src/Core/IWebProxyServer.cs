@@ -15,6 +15,8 @@ public interface IWebProxyServer
 
     WebProxyEndpoint AddEndpoint(IPAddress ipAddress, int port, bool decryptSsl);
     void RemoveEndpoint(WebProxyEndpoint endpoint);
+    void ResetSystemProxy();
+    void SetSystemProxy(WebProxyEndpoint endpoint);
     Task StartAsync(CancellationToken cancellationToken);
     Task StopAsync(CancellationToken cancellationToken);
 }

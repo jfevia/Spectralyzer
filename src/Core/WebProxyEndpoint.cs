@@ -15,7 +15,7 @@ public sealed class WebProxyEndpoint
 
     public int Port => Object.Port;
 
-    internal ProxyEndPoint Object { get; }
+    internal ExplicitProxyEndPoint Object { get; }
 
     internal WebProxyEndpoint(ExplicitProxyEndPoint explicitProxyEndPoint)
     {
