@@ -19,17 +19,47 @@
         <DataTemplate DataType="{x:Type viewModels:JsonPrimitiveViewModel}">
             <TextBlock Text="{Binding Value}" />
         </DataTemplate>
-        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonElementViewModel}" ItemsSource="{Binding Value}">
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonElementViewModel}" ItemsSource="{Binding Nodes}">
             <TextBlock Text="{Binding ValueKind}" />
         </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonPropertyViewModel}" ItemsSource="{Binding Value}">
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonPropertyViewModel}" ItemsSource="{Binding Nodes}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Name}" />
                 <TextBlock Margin="5,0" Text=":" />
                 <TextBlock Text="{Binding ValueKind}" />
             </StackPanel>
         </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonDocumentViewModel}" ItemsSource="{Binding Elements}">
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonDocumentViewModel}" ItemsSource="{Binding Nodes}">
+            <TextBlock Text="Root" />
+        </HierarchicalDataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:XmlPrimitiveViewModel}">
+            <TextBlock Text="{Binding Value}" />
+        </DataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:XmlElementViewModel}" ItemsSource="{Binding Nodes}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="&lt;" />
+                <TextBlock Text="{Binding Name}" />
+                <ItemsControl ItemsSource="{Binding Attributes}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}" />
+                                <TextBlock Text="=&quot;" />
+                                <TextBlock Text="{Binding Value}" />
+                                <TextBlock Text="&quot;" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Text="&gt;" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:XmlDocumentViewModel}" ItemsSource="{Binding Nodes}">
             <TextBlock Text="Root" />
         </HierarchicalDataTemplate>
     </Window.Resources>
@@ -185,6 +215,15 @@
                                                     </TreeView.ItemContainerStyle>
                                                 </TreeView>
                                             </TabItem>
+                                            <TabItem Header="XML">
+                                                <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.RequestMessage.XmlElements, Mode=OneWay, FallbackValue={x:Null}}">
+                                                    <TreeView.ItemContainerStyle>
+                                                        <Style TargetType="{x:Type TreeViewItem}">
+                                                            <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                                                        </Style>
+                                                    </TreeView.ItemContainerStyle>
+                                                </TreeView>
+                                            </TabItem>
                                         </TabControl>
                                     </Grid>
                                 </xcad:LayoutAnchorable>
@@ -255,6 +294,15 @@
                                             </TabItem>
                                             <TabItem Header="JSON">
                                                 <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.ResponseMessage.JsonElements, Mode=OneWay, FallbackValue={x:Null}}">
+                                                    <TreeView.ItemContainerStyle>
+                                                        <Style TargetType="{x:Type TreeViewItem}">
+                                                            <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                                                        </Style>
+                                                    </TreeView.ItemContainerStyle>
+                                                </TreeView>
+                                            </TabItem>
+                                            <TabItem Header="XML">
+                                                <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.ResponseMessage.XmlElements, Mode=OneWay, FallbackValue={x:Null}}">
                                                     <TreeView.ItemContainerStyle>
                                                         <Style TargetType="{x:Type TreeViewItem}">
                                                             <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />

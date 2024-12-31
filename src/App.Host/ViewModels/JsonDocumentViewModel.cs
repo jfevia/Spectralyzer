@@ -8,18 +8,18 @@ namespace Spectralyzer.App.Host.ViewModels;
 
 public sealed class JsonDocumentViewModel : JsonObjectViewModel
 {
-    private readonly Lazy<IEnumerable<JsonPropertyViewModel>> _elements;
     private readonly JsonDocument _jsonDocument;
+    private readonly Lazy<IEnumerable<JsonObjectViewModel>> _nodeFactory;
 
-    public IEnumerable<JsonPropertyViewModel> Elements => _elements.Value;
+    public IEnumerable<JsonObjectViewModel> Nodes => _nodeFactory.Value;
 
     public JsonDocumentViewModel(JsonDocument jsonDocument)
     {
         _jsonDocument = jsonDocument ?? throw new ArgumentNullException(nameof(jsonDocument));
-        _elements = new Lazy<IEnumerable<JsonPropertyViewModel>>(GetElements);
+        _nodeFactory = new Lazy<IEnumerable<JsonObjectViewModel>>(GetNodes);
     }
 
-    private IEnumerable<JsonPropertyViewModel> GetElements()
+    private IEnumerable<JsonObjectViewModel> GetNodes()
     {
         return JsonFactory.ParseObject(_jsonDocument.RootElement);
     }
