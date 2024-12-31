@@ -10,12 +10,12 @@ namespace Spectralyzer.App.Host.ViewModels;
 
 public sealed class DocumentViewModel : ObservableObject
 {
-    public IHighlightingDefinition? HighlightingDefinition { get; }
+    public IHighlightingDefinition HighlightingDefinition { get; }
     public TextDocument Root { get; }
 
-    public DocumentViewModel(string? highlightDefinitionName, string? bodyAsString)
+    public DocumentViewModel(IHighlightingDefinition highlightingDefinition, string? bodyAsString)
     {
-        HighlightingDefinition = highlightDefinitionName is not null ? HighlightingManager.Instance.GetDefinition(highlightDefinitionName) : null;
+        HighlightingDefinition = highlightingDefinition ?? throw new ArgumentNullException(nameof(highlightingDefinition));
         Root = bodyAsString is not null ? new TextDocument(bodyAsString) : new TextDocument();
     }
 }

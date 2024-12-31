@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Xml;
+using ICSharpCode.AvalonEdit.Highlighting;
 using MimeKit;
 using Spectralyzer.Core;
 using ContentType = MimeKit.ContentType;
@@ -25,6 +26,11 @@ public abstract class WebMessageViewModel
         MediaTypeNames.Application.JsonMergePatch,
         MediaTypeNames.Application.JsonSiren,
         MediaTypeNames.Application.JsonCollection
+    };
+
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
+    {
+        WriteIndented = true
     };
 
     private static readonly HashSet<string> XmlMimeTypes = new(StringComparer.InvariantCultureIgnoreCase)
@@ -146,10 +152,7 @@ public abstract class WebMessageViewModel
                     return null;
                 }
 
-                return JsonSerializer.Serialize(jsonObject, new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                });
+                return JsonSerializer.Serialize(jsonObject, JsonSerializerOptions);
             }
             catch (Exception)
             {
@@ -180,17 +183,22 @@ public abstract class WebMessageViewModel
         }
     }
 
+    private static IHighlightingDefinition GetHighlightingDefinition(string name)
+    {
+        return HighlightingManager.Instance.GetDefinition(name);
+    }
+
     private ContentType? GetContentType()
     {
         (bool IsMatch, ContentType? ContentType)? header = Headers.Select(FindContentType).FirstOrDefault(h => h.IsMatch);
         return header?.ContentType;
     }
 
-    private string? GetDetectedHighlightDefinitionName()
+    private string GetDetectedHighlightDefinitionName()
     {
         if (string.IsNullOrEmpty(_contentType.Value?.MimeType))
         {
-            return null;
+            return ".txt";
         }
 
         if (XmlMimeTypes.Contains(_contentType.Value.MimeType))
@@ -209,13 +217,15 @@ public abstract class WebMessageViewModel
     private DocumentViewModel GetDocument()
     {
         var highlightDefinitionName = GetDetectedHighlightDefinitionName();
+        var highlightingDefinition = GetHighlightingDefinition(highlightDefinitionName);
         var content = GetContent(_contentType.Value?.MimeType, _webMessage.BodyAsString);
-        return new DocumentViewModel(highlightDefinitionName, content);
+        return new DocumentViewModel(highlightingDefinition, content);
     }
 
     private DocumentViewModel GetHttpDocument()
     {
-        return new DocumentViewModel(".http", _httpView.Value);
+        var highlightingDefinition = GetHighlightingDefinition(".http");
+        return new DocumentViewModel(highlightingDefinition, _httpView.Value);
     }
 
     private string GetHttpView()
