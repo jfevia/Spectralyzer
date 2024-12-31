@@ -2,17 +2,17 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-using System.Net;
-
 namespace Spectralyzer.Core;
 
 public sealed class WebResponseMessage : WebMessage
 {
-    public HttpStatusCode HttpStatusCode { get; }
+    public int StatusCode { get; }
+    public string StatusDescription { get; }
 
-    public WebResponseMessage(Guid id, HttpStatusCode httpStatusCode, IReadOnlyList<WebHeader> headers, string? bodyAsString)
-        : base(id, headers, bodyAsString)
+    public WebResponseMessage(Guid id, int statusCode, string statusDescription, Version version, IReadOnlyList<WebHeader> headers, string? bodyAsString)
+        : base(id, version, headers, bodyAsString)
     {
-        HttpStatusCode = httpStatusCode;
+        StatusCode = statusCode;
+        StatusDescription = statusDescription;
     }
 }

@@ -2,6 +2,7 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System.Text;
 using Spectralyzer.Core;
 
 namespace Spectralyzer.App.Host.ViewModels;
@@ -16,5 +17,11 @@ public sealed class WebRequestMessageViewModel : WebMessageViewModel
         : base(webRequestMessage)
     {
         _webRequestMessage = webRequestMessage ?? throw new ArgumentNullException(nameof(webRequestMessage));
+    }
+
+    protected override void OnGeneratingHttpViewHeaders(StringBuilder stringBuilder)
+    {
+        stringBuilder.AppendLine($"{_webRequestMessage.Method} {_webRequestMessage.RequestUri.PathAndQuery}");
+        base.OnGeneratingHttpViewHeaders(stringBuilder);
     }
 }
