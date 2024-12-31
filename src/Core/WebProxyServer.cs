@@ -81,11 +81,13 @@ public sealed class WebProxyServer : IWebProxyServer
 
         var webResponseMessage = new WebResponseMessage(
             userData.Id,
-            (HttpStatusCode)response.StatusCode,
+            response.StatusCode,
+            response.StatusDescription,
+            response.HttpVersion,
             response.Headers
                     .GetAllHeaders()
-                    .GroupBy(s => s.Name)
-                    .Select(s => new WebHeader(s.Key, s.Select(h => h.Value).ToList()))
+                    .GroupBy(header => header.Name)
+                    .Select(header => new WebHeader(header.Key, header.Select(x => x.Value).ToList()))
                     .ToList(),
             bodyString);
         ResponseReceived?.Invoke(this, new WebResponseEventArgs(webResponseMessage));
@@ -109,10 +111,11 @@ public sealed class WebProxyServer : IWebProxyServer
             userData.Id,
             request.Method,
             request.RequestUri,
+            request.HttpVersion,
             request.Headers
                    .GetAllHeaders()
-                   .GroupBy(s => s.Name)
-                   .Select(s => new WebHeader(s.Key, s.Select(x => x.Value).ToList()))
+                   .GroupBy(header => header.Name)
+                   .Select(header => new WebHeader(header.Key, header.Select(x => x.Value).ToList()))
                    .ToList(),
             bodyString,
             httpClient.ProcessId.Value);

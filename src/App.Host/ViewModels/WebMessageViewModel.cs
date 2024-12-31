@@ -3,6 +3,7 @@
 // --------------------------------------------------------------
 
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Xml;
 using MimeKit;
@@ -52,23 +53,48 @@ public abstract class WebMessageViewModel
     };
 
     private readonly Lazy<ContentType?> _contentType;
+    private readonly Lazy<string> _httpView;
     private readonly Lazy<IEnumerable<JsonDocumentViewModel>> _jsonElements;
     private readonly WebMessage _webMessage;
     private readonly Lazy<IEnumerable<XmlDocumentViewModel>> _xmlElements;
-
-    public string? BodyAsString => _webMessage.BodyAsString;
     public IReadOnlyList<WebHeader> Headers => _webMessage.Headers;
+
+    public string HttpView => _httpView.Value;
     public Guid Id => _webMessage.Id;
     public IEnumerable<JsonDocumentViewModel> JsonElements => _jsonElements.Value;
+    public Version Version => _webMessage.Version;
     public IEnumerable<XmlDocumentViewModel> XmlElements => _xmlElements.Value;
 
     protected WebMessageViewModel(WebMessage webMessage)
     {
         _webMessage = webMessage ?? throw new ArgumentNullException(nameof(webMessage));
 
+        _httpView = new Lazy<string>(GetHttpView);
         _contentType = new Lazy<ContentType?>(GetContentType);
         _jsonElements = new Lazy<IEnumerable<JsonDocumentViewModel>>(GetJsonElements);
         _xmlElements = new Lazy<IEnumerable<XmlDocumentViewModel>>(GetXmlElements);
+    }
+
+    protected virtual void OnGeneratedHttpView(StringBuilder stringBuilder)
+    {
+        if (string.IsNullOrEmpty(_webMessage.BodyAsString))
+        {
+            return;
+        }
+
+        stringBuilder.AppendLine();
+        stringBuilder.AppendLine(_webMessage.BodyAsString);
+    }
+
+    protected virtual void OnGeneratingHttpView(StringBuilder stringBuilder)
+    {
+        foreach (var header in _webMessage.Headers.OrderBy(header => header.Key))
+        {
+            foreach (var headerValue in header.Values)
+            {
+                stringBuilder.AppendLine($"{header.Key}: {headerValue}");
+            }
+        }
     }
 
     private static JsonDocumentViewModel CreateJsonDocumentViewModel(JsonDocument jsonDocument)
@@ -108,26 +134,62 @@ public abstract class WebMessageViewModel
         return header?.ContentType;
     }
 
+    private string GetHttpView()
+    {
+        var stringBuilder = new StringBuilder();
+
+        OnGeneratingHttpView(stringBuilder);
+        OnGeneratedHttpView(stringBuilder);
+
+        return stringBuilder.ToString();
+    }
+
     private IEnumerable<JsonDocumentViewModel> GetJsonElements()
     {
-        if (_contentType.Value?.MimeType is null || !JsonMimeTypes.Contains(_contentType.Value.MimeType) || string.IsNullOrEmpty(BodyAsString))
+        if (_contentType.Value?.MimeType is null || !JsonMimeTypes.Contains(_contentType.Value.MimeType) || string.IsNullOrEmpty(_webMessage.BodyAsString))
         {
             yield break;
         }
 
-        var jsonDocument = JsonDocument.Parse(BodyAsString);
-        yield return CreateJsonDocumentViewModel(jsonDocument);
+        JsonDocumentViewModel? jsonDocumentViewModel = null;
+        try
+        {
+            var jsonDocument = JsonDocument.Parse(_webMessage.BodyAsString);
+            jsonDocumentViewModel = CreateJsonDocumentViewModel(jsonDocument);
+        }
+        catch (Exception)
+        {
+            // Nothing
+        }
+
+        if (jsonDocumentViewModel is not null)
+        {
+            yield return jsonDocumentViewModel;
+        }
     }
 
     private IEnumerable<XmlDocumentViewModel> GetXmlElements()
     {
-        if (_contentType.Value?.MimeType is null || !XmlMimeTypes.Contains(_contentType.Value.MimeType) || string.IsNullOrEmpty(BodyAsString))
+        if (_contentType.Value?.MimeType is null || !XmlMimeTypes.Contains(_contentType.Value.MimeType) || string.IsNullOrEmpty(_webMessage.BodyAsString))
         {
             yield break;
         }
 
-        var xmlDocument = new XmlDocument();
-        xmlDocument.LoadXml(BodyAsString);
-        yield return CreateXmlDocumentViewModel(xmlDocument);
+        XmlDocumentViewModel? xmlDocumentViewModel = null;
+        try
+        {
+            var xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(_webMessage.BodyAsString);
+            xmlDocumentViewModel = CreateXmlDocumentViewModel(xmlDocument);
+        }
+        catch (Exception)
+        {
+            // Nothing
+        }
+
+        if (xmlDocumentViewModel is not null)
+        {
+            yield return xmlDocumentViewModel;
+        }
     }
 }

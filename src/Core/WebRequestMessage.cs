@@ -10,8 +10,8 @@ public sealed class WebRequestMessage : WebMessage
     public int ProcessId { get; }
     public Uri RequestUri { get; }
 
-    public WebRequestMessage(Guid id, string? method, Uri requestUri, IReadOnlyList<WebHeader> headers, string? bodyAsString, int processId)
-        : base(id, headers, bodyAsString)
+    public WebRequestMessage(Guid id, string? method, Uri requestUri, Version version, IReadOnlyList<WebHeader> headers, string? bodyAsString, int processId)
+        : base(id, version, headers, bodyAsString)
     {
         Method = method;
         RequestUri = requestUri;

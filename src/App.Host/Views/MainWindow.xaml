@@ -132,8 +132,8 @@
                                                                     Header="URL"
                                                                     IsReadOnly="True" />
                                                 <DataGridTextColumn Width="100"
-                                                                    Binding="{Binding ResponseMessage.HttpStatusCode, Mode=OneWay, FallbackValue={x:Null}}"
-                                                                    Header="Result"
+                                                                    Binding="{Binding ResponseMessage.StatusDescription, Mode=OneWay, FallbackValue={x:Null}}"
+                                                                    Header="Status"
                                                                     IsReadOnly="True" />
                                             </DataGrid.Columns>
                                         </DataGrid>
@@ -197,13 +197,13 @@
                                                       HorizontalAlignment="Stretch"
                                                       VerticalAlignment="Center" />
                                         <TabControl Grid.Row="2">
-                                            <TabItem Header="Raw">
+                                            <TabItem Header="HTTP">
                                                 <TextBox HorizontalAlignment="Stretch"
                                                          VerticalAlignment="Stretch"
                                                          VerticalContentAlignment="Top"
                                                          AcceptsReturn="True"
                                                          IsReadOnly="True"
-                                                         Text="{Binding SelectedWebSession.RequestMessage.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
+                                                         Text="{Binding SelectedWebSession.RequestMessage.HttpView, Mode=OneWay, FallbackValue={x:Null}}"
                                                          VerticalScrollBarVisibility="Auto" />
                                             </TabItem>
                                             <TabItem Header="JSON">
@@ -283,13 +283,13 @@
                                                       HorizontalAlignment="Stretch"
                                                       VerticalAlignment="Center" />
                                         <TabControl Grid.Row="2">
-                                            <TabItem Header="Raw">
+                                            <TabItem Header="HTTP">
                                                 <TextBox HorizontalAlignment="Stretch"
                                                          VerticalAlignment="Stretch"
                                                          VerticalContentAlignment="Top"
                                                          AcceptsReturn="True"
                                                          IsReadOnly="True"
-                                                         Text="{Binding SelectedWebSession.ResponseMessage.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
+                                                         Text="{Binding SelectedWebSession.ResponseMessage.HttpView, Mode=OneWay, FallbackValue={x:Null}}"
                                                          VerticalScrollBarVisibility="Auto" />
                                             </TabItem>
                                             <TabItem Header="JSON">
