@@ -54,12 +54,13 @@ public abstract class WebMessageViewModel
 
     private readonly Lazy<ContentType?> _contentType;
     private readonly Lazy<DocumentViewModel> _document;
+    private readonly Lazy<DocumentViewModel> _httpDocument;
     private readonly Lazy<string> _httpView;
     private readonly WebMessage _webMessage;
 
     public DocumentViewModel Document => _document.Value;
     public IReadOnlyList<WebHeader> Headers => _webMessage.Headers;
-    public string HttpView => _httpView.Value;
+    public DocumentViewModel HttpDocument => _httpDocument.Value;
     public Guid Id => _webMessage.Id;
     public Version Version => _webMessage.Version;
 
@@ -70,6 +71,7 @@ public abstract class WebMessageViewModel
         _httpView = new Lazy<string>(GetHttpView);
         _contentType = new Lazy<ContentType?>(GetContentType);
         _document = new Lazy<DocumentViewModel>(GetDocument);
+        _httpDocument = new Lazy<DocumentViewModel>(GetHttpDocument);
     }
 
     protected virtual void OnGeneratingHttpViewBody(StringBuilder stringBuilder)
@@ -155,7 +157,7 @@ public abstract class WebMessageViewModel
             }
         }
 
-        string? GetContentAsXml()
+        string GetContentAsXml()
         {
             try
             {
@@ -184,14 +186,7 @@ public abstract class WebMessageViewModel
         return header?.ContentType;
     }
 
-    private DocumentViewModel GetDocument()
-    {
-        var highlightDefinitionName = GetHighlightDefinitionName();
-        var content = GetContent(_contentType.Value?.MimeType, _webMessage.BodyAsString);
-        return new DocumentViewModel(highlightDefinitionName, content);
-    }
-
-    private string? GetHighlightDefinitionName()
+    private string? GetDetectedHighlightDefinitionName()
     {
         if (string.IsNullOrEmpty(_contentType.Value?.MimeType))
         {
@@ -209,6 +204,18 @@ public abstract class WebMessageViewModel
         }
 
         return ".http";
+    }
+
+    private DocumentViewModel GetDocument()
+    {
+        var highlightDefinitionName = GetDetectedHighlightDefinitionName();
+        var content = GetContent(_contentType.Value?.MimeType, _webMessage.BodyAsString);
+        return new DocumentViewModel(highlightDefinitionName, content);
+    }
+
+    private DocumentViewModel GetHttpDocument()
+    {
+        return new DocumentViewModel(".http", _httpView.Value);
     }
 
     private string GetHttpView()

@@ -2,6 +2,10 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System.Reflection;
+using System.Xml;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -43,6 +47,16 @@ public sealed class AppHostBuilder
 
     public AppHost Build()
     {
+        var assembly = Assembly.GetExecutingAssembly();
+
+        using var stream = assembly.GetManifestResourceStream("Spectralyzer.App.Host.Resources.http.xshd");
+        if (stream is not null)
+        {
+            using var reader = new XmlTextReader(stream);
+            var highlightingDefinition = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+            HighlightingManager.Instance.RegisterHighlighting("http", [".http"], highlightingDefinition);
+        }
+
         var host = _builder.Build();
         return new AppHost(host);
     }

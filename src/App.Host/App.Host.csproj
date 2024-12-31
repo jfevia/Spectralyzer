@@ -37,4 +37,9 @@
         </Page>
     </ItemGroup>
 
+    <ItemGroup>
+        <None Remove="Resources\http.xshd" />
+        <EmbeddedResource Include="Resources\http.xshd" />
+    </ItemGroup>
+
 </Project>

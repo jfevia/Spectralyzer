@@ -99,14 +99,10 @@
                                 <xcad:LayoutAnchorable Title="Request">
                                     <TabControl>
                                         <TabItem Header="HTTP">
-                                            <TextBox HorizontalAlignment="Stretch"
-                                                     VerticalAlignment="Stretch"
-                                                     VerticalContentAlignment="Top"
-                                                     AcceptsReturn="True"
-                                                     HorizontalScrollBarVisibility="Auto"
-                                                     IsReadOnly="True"
-                                                     Text="{Binding SelectedWebSession.RequestMessage.HttpView, Mode=OneWay, FallbackValue={x:Null}}"
-                                                     VerticalScrollBarVisibility="Auto" />
+                                            <avalonedit:TextEditor DataContext="{Binding SelectedWebSession.RequestMessage.HttpDocument, Mode=OneWay, FallbackValue={x:Null}}"
+                                                                   Document="{Binding Root, Mode=OneWay}"
+                                                                   IsReadOnly="True"
+                                                                   SyntaxHighlighting="{Binding HighlightingDefinition, Mode=OneWay}" />
                                         </TabItem>
                                         <TabItem Header="Viewer">
                                             <Grid>
@@ -161,8 +157,7 @@
                                                               Height="5"
                                                               HorizontalAlignment="Stretch"
                                                               VerticalAlignment="Center" />
-                                                <avalonedit:TextEditor x:Name="RequestTextEditor"
-                                                                       Grid.Row="2"
+                                                <avalonedit:TextEditor Grid.Row="2"
                                                                        DataContext="{Binding SelectedWebSession.RequestMessage.Document, Mode=OneWay, FallbackValue={x:Null}}"
                                                                        Document="{Binding Root, Mode=OneWay}"
                                                                        IsReadOnly="True"
@@ -176,14 +171,18 @@
                                 <xcad:LayoutAnchorable Title="Response">
                                     <TabControl>
                                         <TabItem Header="HTTP">
-                                            <TextBox HorizontalAlignment="Stretch"
-                                                     VerticalAlignment="Stretch"
-                                                     VerticalContentAlignment="Top"
-                                                     AcceptsReturn="True"
-                                                     HorizontalScrollBarVisibility="Auto"
-                                                     IsReadOnly="True"
-                                                     Text="{Binding SelectedWebSession.ResponseMessage.HttpView, Mode=OneWay, FallbackValue={x:Null}}"
-                                                     VerticalScrollBarVisibility="Auto" />
+                                            <avalonedit:TextEditor DataContext="{Binding SelectedWebSession.ResponseMessage.HttpDocument, Mode=OneWay, FallbackValue={x:Null}}"
+                                                                   Document="{Binding Root, Mode=OneWay}"
+                                                                   IsReadOnly="True"
+                                                                   SyntaxHighlighting="http" />
+                                            <!-- <TextBox HorizontalAlignment="Stretch" -->
+                                            <!--          VerticalAlignment="Stretch" -->
+                                            <!--          VerticalContentAlignment="Top" -->
+                                            <!--          AcceptsReturn="True" -->
+                                            <!--          HorizontalScrollBarVisibility="Auto" -->
+                                            <!--          IsReadOnly="True" -->
+                                            <!--          Text="{Binding SelectedWebSession.ResponseMessage.HttpView, Mode=OneWay, FallbackValue={x:Null}}" -->
+                                            <!--          VerticalScrollBarVisibility="Auto" /> -->
                                         </TabItem>
                                         <TabItem Header="Viewer">
                                             <Grid>
