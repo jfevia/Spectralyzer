@@ -9,15 +9,16 @@ namespace Spectralyzer.App.Host.ViewModels;
 public sealed class JsonElementViewModel : JsonObjectViewModel
 {
     private readonly JsonElement _jsonElement;
-    private readonly Lazy<IEnumerable<JsonObjectViewModel>> _valueFactory;
+    private readonly Lazy<IEnumerable<JsonObjectViewModel>> _nodeFactory;
 
-    public IEnumerable<JsonObjectViewModel> Value => _valueFactory.Value;
+    public IEnumerable<JsonObjectViewModel> Nodes => _nodeFactory.Value;
     public JsonValueKind ValueKind => _jsonElement.ValueKind;
 
-    public JsonElementViewModel(JsonElement jsonElement, Func<JsonElement, IEnumerable<JsonObjectViewModel>> valueFactory)
+    public JsonElementViewModel(JsonElement jsonElement, Func<JsonElement, IEnumerable<JsonObjectViewModel>> nodeFactory)
     {
-        _jsonElement = jsonElement;
+        ArgumentNullException.ThrowIfNull(nodeFactory);
 
-        _valueFactory = new Lazy<IEnumerable<JsonObjectViewModel>>(() => valueFactory.Invoke(jsonElement));
+        _jsonElement = jsonElement;
+        _nodeFactory = new Lazy<IEnumerable<JsonObjectViewModel>>(() => nodeFactory.Invoke(jsonElement));
     }
 }

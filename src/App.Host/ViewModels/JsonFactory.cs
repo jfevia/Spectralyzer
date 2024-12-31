@@ -8,48 +8,59 @@ namespace Spectralyzer.App.Host.ViewModels;
 
 public static class JsonFactory
 {
-    public static IEnumerable<JsonElementViewModel> ParseArray(JsonElement jsonElement)
+    public static IEnumerable<JsonObjectViewModel> ParseObject(JsonElement jsonElement)
     {
-        foreach (var childElement in jsonElement.EnumerateArray())
-        {
-            yield return new JsonElementViewModel(childElement, ParseValue);
-        }
+        return jsonElement.EnumerateObject().Select(CreateJsonPropertyViewModel);
     }
 
-    public static IEnumerable<JsonPropertyViewModel> ParseObject(JsonElement jsonElement)
+    private static JsonElementViewModel CreateJsonElementViewModel(JsonElement childElement)
     {
-        foreach (var jsonProperty in jsonElement.EnumerateObject())
-        {
-            yield return new JsonPropertyViewModel(jsonProperty, property => ParseValue(property.Value));
-        }
+        return new JsonElementViewModel(childElement, ParseElement);
     }
 
-    public static IEnumerable<JsonObjectViewModel> ParseValue(JsonElement jsonElement)
+    private static JsonPrimitiveViewModel CreateJsonPrimitiveViewModel(JsonElement jsonElement)
+    {
+        return jsonElement.ValueKind switch
+        {
+            JsonValueKind.String => new JsonPrimitiveViewModel(jsonElement.GetString()),
+            JsonValueKind.Number => new JsonPrimitiveViewModel(jsonElement.GetDouble()),
+            JsonValueKind.True or JsonValueKind.False => new JsonPrimitiveViewModel(jsonElement.GetBoolean()),
+            _ => throw new ArgumentOutOfRangeException(nameof(jsonElement), jsonElement, null)
+        };
+    }
+
+    private static JsonPropertyViewModel CreateJsonPropertyViewModel(JsonProperty jsonProperty)
+    {
+        return new JsonPropertyViewModel(jsonProperty, property => ParseElement(property.Value));
+    }
+
+    private static IEnumerable<JsonElementViewModel> ParseArray(JsonElement jsonElement)
+    {
+        return jsonElement.EnumerateArray().Select(CreateJsonElementViewModel);
+    }
+
+    private static IEnumerable<JsonObjectViewModel> ParseElement(JsonElement jsonElement)
     {
         switch (jsonElement.ValueKind)
         {
-            case JsonValueKind.String:
-                yield return new JsonPrimitiveViewModel(jsonElement.GetString());
-                break;
-            case JsonValueKind.Number:
-                yield return new JsonPrimitiveViewModel(jsonElement.GetDouble());
-                break;
-            case JsonValueKind.True or JsonValueKind.False:
-                yield return new JsonPrimitiveViewModel(jsonElement.GetBoolean());
-                break;
             case JsonValueKind.Array:
-                foreach (var element in ParseArray(jsonElement))
+                foreach (var jsonObject in ParseArray(jsonElement))
                 {
-                    yield return element;
+                    yield return jsonObject;
                 }
 
                 break;
             case JsonValueKind.Object:
-                foreach (var element in ParseObject(jsonElement))
+                foreach (var jsonObject in ParseObject(jsonElement))
                 {
-                    yield return element;
+                    yield return jsonObject;
                 }
 
+                break;
+            case JsonValueKind.String:
+            case JsonValueKind.Number:
+            case JsonValueKind.True or JsonValueKind.False:
+                yield return CreateJsonPrimitiveViewModel(jsonElement);
                 break;
             default:
                 yield break;
