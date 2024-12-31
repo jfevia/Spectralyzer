@@ -185,7 +185,7 @@ public abstract class WebMessageViewModel
 
     private static IHighlightingDefinition GetHighlightingDefinition(string name)
     {
-        return HighlightingManager.Instance.GetDefinition(name);
+        return HighlightingManager.Instance.GetDefinitionByExtension(name);
     }
 
     private ContentType? GetContentType()
@@ -198,7 +198,7 @@ public abstract class WebMessageViewModel
     {
         if (string.IsNullOrEmpty(_contentType.Value?.MimeType))
         {
-            return ".txt";
+            return ".http";
         }
 
         if (XmlMimeTypes.Contains(_contentType.Value.MimeType))
