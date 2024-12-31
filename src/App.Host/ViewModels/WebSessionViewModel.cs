@@ -4,32 +4,31 @@
 
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Spectralyzer.Core;
 
 namespace Spectralyzer.App.Host.ViewModels;
 
 public sealed class WebSessionViewModel : ObservableObject
 {
-    private WebResponse? _response;
+    private WebResponseMessageViewModel? _responseMessage;
 
     public int Index { get; }
 
     public string Process { get; }
 
-    public WebRequest Request { get; }
+    public WebRequestMessageViewModel RequestMessage { get; }
 
-    public WebResponse? Response
+    public WebResponseMessageViewModel? ResponseMessage
     {
-        get => _response;
-        set => SetProperty(ref _response, value);
+        get => _responseMessage;
+        set => SetProperty(ref _responseMessage, value);
     }
 
-    public WebSessionViewModel(int index, Process process, WebRequest request)
+    public WebSessionViewModel(int index, Process process, WebRequestMessageViewModel requestMessage)
     {
         ArgumentNullException.ThrowIfNull(process);
 
         Index = index;
         Process = $"{process.ProcessName}:{process.Id}";
-        Request = request ?? throw new ArgumentNullException(nameof(request));
+        RequestMessage = requestMessage ?? throw new ArgumentNullException(nameof(requestMessage));
     }
 }

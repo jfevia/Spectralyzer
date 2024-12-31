@@ -6,10 +6,10 @@ namespace Spectralyzer.Core;
 
 public sealed class WebRequestEventArgs : EventArgs
 {
-    public WebRequest WebRequest { get; }
+    public WebRequestMessage WebRequestMessage { get; }
 
-    public WebRequestEventArgs(WebRequest webRequest)
+    public WebRequestEventArgs(WebRequestMessage webRequestMessage)
     {
-        WebRequest = webRequest ?? throw new ArgumentNullException(nameof(webRequest));
+        WebRequestMessage = webRequestMessage ?? throw new ArgumentNullException(nameof(webRequestMessage));
     }
 }

@@ -62,7 +62,7 @@ jobs:
             name = "$version"
             body = ""
             draft = $false
-            prerelease = $true
+            prerelease = $false
             generate_release_notes = $true
         } | ConvertTo-Json
         $response = Invoke-RestMethod -Uri $apiUrl -Method Post -Headers $headers -Body $body

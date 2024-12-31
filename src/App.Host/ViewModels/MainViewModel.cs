@@ -13,7 +13,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spectralyzer.Core;
 using ExceptionEventArgs = Spectralyzer.Core.ExceptionEventArgs;
-using WebRequest = Spectralyzer.Core.WebRequest;
 
 namespace Spectralyzer.App.Host.ViewModels;
 
@@ -77,14 +76,29 @@ public class MainViewModel : ObservableObject
         _decryptSsl = true;
 
         _webSessionById = new ConcurrentDictionary<Guid, WebSessionViewModel>();
-        WebSessions = new ObservableCollection<WebSessionViewModel>();
+        WebSessions = [];
         WebSessions.CollectionChanged += OnWebSessionsCollectionChanged;
 
-        Errors = new ObservableCollection<Exception>();
+        Errors = [];
 
         StartCaptureCommand = new AsyncRelayCommand(StartCaptureAsync);
         StopCaptureCommand = new AsyncRelayCommand(StopCaptureAsync);
         ClearSessionsCommand = new RelayCommand(ClearSessions);
+    }
+
+    private static WebRequestMessageViewModel CreateWebRequestMessageViewModel(WebRequestMessage webRequestMessage)
+    {
+        return new WebRequestMessageViewModel(webRequestMessage);
+    }
+
+    private static WebResponseMessageViewModel CreateWebResponseMessageViewModel(WebResponseMessage webResponseMessage)
+    {
+        return new WebResponseMessageViewModel(webResponseMessage);
+    }
+
+    private static WebSessionViewModel CreateWebSessionViewModel(int index, WebRequestMessage webRequestMessage, Process process)
+    {
+        return new WebSessionViewModel(index, process, CreateWebRequestMessageViewModel(webRequestMessage));
     }
 
     private void ClearSessions()
@@ -93,10 +107,10 @@ public class MainViewModel : ObservableObject
         WebSessions.Clear();
     }
 
-    private WebSessionViewModel CreateWebSession(WebRequest webRequest)
+    private WebSessionViewModel CreateWebSession(WebRequestMessage webRequestMessage)
     {
-        var process = Process.GetProcessById(webRequest.ProcessId);
-        return new WebSessionViewModel(_webSessionById.Count, process, webRequest);
+        var process = Process.GetProcessById(webRequestMessage.ProcessId);
+        return CreateWebSessionViewModel(_webSessionById.Count, webRequestMessage, process);
     }
 
     private IWebProxyServer GetOrCreateWebProxyServer()
@@ -112,6 +126,7 @@ public class MainViewModel : ObservableObject
         webProxyServer.Error += OnError;
         _webProxyEndpoint = webProxyServer.AddEndpoint(IPAddress.Any, _port, _decryptSsl);
         await webProxyServer.StartAsync(cancellationToken);
+        webProxyServer.SetSystemProxy(_webProxyEndpoint);
         IsCapturingTraffic = true;
     }
 
@@ -122,6 +137,7 @@ public class MainViewModel : ObservableObject
             return;
         }
 
+        _webProxyServer.ResetSystemProxy();
         _webProxyServer.RemoveEndpoint(_webProxyEndpoint);
         _webProxyServer.SendingRequest -= OnSendingRequest;
         _webProxyServer.ResponseReceived -= OnResponseReceived;
@@ -149,9 +165,9 @@ public class MainViewModel : ObservableObject
             return;
         }
 
-        if (_webSessionById.TryGetValue(e.WebResponse.Id, out var webSession))
+        if (_webSessionById.TryGetValue(e.WebResponseMessage.Id, out var webSession))
         {
-            webSession.Response = e.WebResponse;
+            webSession.ResponseMessage = CreateWebResponseMessageViewModel(e.WebResponseMessage);
         }
     }
 
@@ -163,8 +179,8 @@ public class MainViewModel : ObservableObject
             return;
         }
 
-        var webSession = CreateWebSession(e.WebRequest);
-        _webSessionById[webSession.Request.Id] = webSession;
+        var webSession = CreateWebSession(e.WebRequestMessage);
+        _webSessionById[webSession.RequestMessage.Id] = webSession;
         WebSessions.Add(webSession);
     }
 

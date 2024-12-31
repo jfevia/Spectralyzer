@@ -15,6 +15,24 @@
         d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
         host:ViewModelLocator.DataContext="{x:Type viewModels:MainViewModel}"
         mc:Ignorable="d">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModels:JsonPrimitiveViewModel}">
+            <TextBlock Text="{Binding Value}" />
+        </DataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonElementViewModel}" ItemsSource="{Binding Value}">
+            <TextBlock Text="{Binding ValueKind}" />
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonPropertyViewModel}" ItemsSource="{Binding Value}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}" />
+                <TextBlock Margin="5,0" Text=":" />
+                <TextBlock Text="{Binding ValueKind}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:JsonDocumentViewModel}" ItemsSource="{Binding Elements}">
+            <TextBlock Text="Root" />
+        </HierarchicalDataTemplate>
+    </Window.Resources>
     <DockPanel LastChildFill="True">
         <ToolBar Height="40"
                  VerticalAlignment="Top"
@@ -61,6 +79,7 @@
                                         <DataGrid HorizontalAlignment="Stretch"
                                                   VerticalAlignment="Stretch"
                                                   AutoGenerateColumns="False"
+                                                  CanUserSortColumns="True"
                                                   EnableRowVirtualization="True"
                                                   HeadersVisibility="Column"
                                                   ItemsSource="{Binding WebSessions}"
@@ -75,15 +94,15 @@
                                                                     Header="Process"
                                                                     IsReadOnly="True" />
                                                 <DataGridTextColumn Width="150"
-                                                                    Binding="{Binding Request.RequestUri.Host, Mode=OneWay}"
+                                                                    Binding="{Binding RequestMessage.RequestUri.Host, Mode=OneWay}"
                                                                     Header="Host"
                                                                     IsReadOnly="True" />
                                                 <DataGridTextColumn Width="200"
-                                                                    Binding="{Binding Request.RequestUri.PathAndQuery, Mode=OneWay}"
+                                                                    Binding="{Binding RequestMessage.RequestUri.PathAndQuery, Mode=OneWay}"
                                                                     Header="URL"
                                                                     IsReadOnly="True" />
                                                 <DataGridTextColumn Width="100"
-                                                                    Binding="{Binding Response.HttpStatusCode, Mode=OneWay, FallbackValue={x:Null}}"
+                                                                    Binding="{Binding ResponseMessage.HttpStatusCode, Mode=OneWay, FallbackValue={x:Null}}"
                                                                     Header="Result"
                                                                     IsReadOnly="True" />
                                             </DataGrid.Columns>
@@ -105,10 +124,11 @@
                                                   HorizontalAlignment="Stretch"
                                                   VerticalAlignment="Stretch"
                                                   AutoGenerateColumns="False"
+                                                  CanUserSortColumns="True"
                                                   DockPanel.Dock="Top"
                                                   EnableRowVirtualization="True"
                                                   HeadersVisibility="Column"
-                                                  ItemsSource="{Binding SelectedWebSession.Request.Headers, FallbackValue={x:Null}}">
+                                                  ItemsSource="{Binding SelectedWebSession.RequestMessage.Headers, FallbackValue={x:Null}}">
                                             <DataGrid.Columns>
                                                 <DataGridTemplateColumn Width="150"
                                                                         Header="Key"
@@ -146,15 +166,26 @@
                                                       Height="5"
                                                       HorizontalAlignment="Stretch"
                                                       VerticalAlignment="Center" />
-                                        <TextBox Grid.Row="2"
-                                                 HorizontalAlignment="Stretch"
-                                                 VerticalAlignment="Stretch"
-                                                 VerticalContentAlignment="Top"
-                                                 AcceptsReturn="True"
-                                                 DockPanel.Dock="Bottom"
-                                                 IsReadOnly="True"
-                                                 Text="{Binding SelectedWebSession.Request.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
-                                                 VerticalScrollBarVisibility="Auto" />
+                                        <TabControl Grid.Row="2">
+                                            <TabItem Header="Raw">
+                                                <TextBox HorizontalAlignment="Stretch"
+                                                         VerticalAlignment="Stretch"
+                                                         VerticalContentAlignment="Top"
+                                                         AcceptsReturn="True"
+                                                         IsReadOnly="True"
+                                                         Text="{Binding SelectedWebSession.RequestMessage.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
+                                                         VerticalScrollBarVisibility="Auto" />
+                                            </TabItem>
+                                            <TabItem Header="JSON">
+                                                <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.RequestMessage.JsonElements, Mode=OneWay, FallbackValue={x:Null}}">
+                                                    <TreeView.ItemContainerStyle>
+                                                        <Style TargetType="{x:Type TreeViewItem}">
+                                                            <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                                                        </Style>
+                                                    </TreeView.ItemContainerStyle>
+                                                </TreeView>
+                                            </TabItem>
+                                        </TabControl>
                                     </Grid>
                                 </xcad:LayoutAnchorable>
                             </xcad:LayoutAnchorablePane>
@@ -170,10 +201,11 @@
                                                   HorizontalAlignment="Stretch"
                                                   VerticalAlignment="Stretch"
                                                   AutoGenerateColumns="False"
+                                                  CanUserSortColumns="True"
                                                   DockPanel.Dock="Top"
                                                   EnableRowVirtualization="True"
                                                   HeadersVisibility="Column"
-                                                  ItemsSource="{Binding SelectedWebSession.Response.Headers, FallbackValue={x:Null}}">
+                                                  ItemsSource="{Binding SelectedWebSession.ResponseMessage.Headers, FallbackValue={x:Null}}">
                                             <DataGrid.Columns>
                                                 <DataGridTemplateColumn Width="150"
                                                                         Header="Key"
@@ -211,15 +243,26 @@
                                                       Height="5"
                                                       HorizontalAlignment="Stretch"
                                                       VerticalAlignment="Center" />
-                                        <TextBox Grid.Row="2"
-                                                 HorizontalAlignment="Stretch"
-                                                 VerticalAlignment="Stretch"
-                                                 VerticalContentAlignment="Top"
-                                                 AcceptsReturn="True"
-                                                 DockPanel.Dock="Bottom"
-                                                 IsReadOnly="True"
-                                                 Text="{Binding SelectedWebSession.Response.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
-                                                 VerticalScrollBarVisibility="Auto" />
+                                        <TabControl Grid.Row="2">
+                                            <TabItem Header="Raw">
+                                                <TextBox HorizontalAlignment="Stretch"
+                                                         VerticalAlignment="Stretch"
+                                                         VerticalContentAlignment="Top"
+                                                         AcceptsReturn="True"
+                                                         IsReadOnly="True"
+                                                         Text="{Binding SelectedWebSession.ResponseMessage.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
+                                                         VerticalScrollBarVisibility="Auto" />
+                                            </TabItem>
+                                            <TabItem Header="JSON">
+                                                <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.ResponseMessage.JsonElements, Mode=OneWay, FallbackValue={x:Null}}">
+                                                    <TreeView.ItemContainerStyle>
+                                                        <Style TargetType="{x:Type TreeViewItem}">
+                                                            <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                                                        </Style>
+                                                    </TreeView.ItemContainerStyle>
+                                                </TreeView>
+                                            </TabItem>
+                                        </TabControl>
                                     </Grid>
                                 </xcad:LayoutAnchorable>
                             </xcad:LayoutAnchorablePane>
