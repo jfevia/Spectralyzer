@@ -2,8 +2,11 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-using CommunityToolkit.Mvvm.ComponentModel;
+namespace Spectralyzer.Core;
 
-namespace Spectralyzer.App.Host.ViewModels;
-
-public abstract class XmlObjectViewModel : ObservableObject;
+public static class FileExtensions
+{
+    public const string Http = ".http";
+    public const string Json = ".json";
+    public const string Xml = ".xml";
+}

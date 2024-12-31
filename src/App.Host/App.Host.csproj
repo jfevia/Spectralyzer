@@ -19,6 +19,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AvalonEdit" />
         <PackageReference Include="CommunityToolkit.Mvvm" />
         <PackageReference Include="Extended.Wpf.Toolkit" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
@@ -34,6 +35,11 @@
             <XamlRuntime>Wpf</XamlRuntime>
             <SubType>Designer</SubType>
         </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Resources\http.xshd" />
+        <EmbeddedResource Include="Resources\http.xshd" />
     </ItemGroup>
 
 </Project>

@@ -23,6 +23,7 @@ public sealed class AppHostBuilder
             ctx.AddHostedService<ExceptionHandlerHostedService>();
             ctx.AddTransient<IWebProxyServerFactory, WebProxyServerFactory>();
             ctx.AddTransient<MainViewModel, MainViewModel>();
+            ctx.AddHostedService<HighlightingDefinitionsHostedService>();
         });
         _builder.ConfigureLogging(ctx =>
         {

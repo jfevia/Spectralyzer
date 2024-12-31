@@ -4,6 +4,7 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="AvalonEdit" Version="6.3.0.90" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageVersion Include="Extended.Wpf.Toolkit" Version="4.6.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
