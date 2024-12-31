@@ -3,7 +3,6 @@
 // --------------------------------------------------------------
 
 using System.IO;
-using System.Net.Mime;
 using System.Text.Json;
 using System.Xml;
 using MimeKit;
@@ -17,18 +16,39 @@ public abstract class WebMessageViewModel
     private static readonly HashSet<string> JsonMimeTypes = new(StringComparer.InvariantCultureIgnoreCase)
     {
         MediaTypeNames.Application.Json,
+        MediaTypeNames.Application.JsonLd,
         MediaTypeNames.Application.JsonPatch,
+        MediaTypeNames.Application.JsonApi,
         MediaTypeNames.Application.JsonSequence,
-        MediaTypeNames.Application.ProblemJson
+        MediaTypeNames.Application.ProblemJson,
+        MediaTypeNames.Application.JsonMergePatch,
+        MediaTypeNames.Application.JsonSiren,
+        MediaTypeNames.Application.JsonCollection
     };
 
     private static readonly HashSet<string> XmlMimeTypes = new(StringComparer.InvariantCultureIgnoreCase)
     {
         MediaTypeNames.Application.Xml,
+        MediaTypeNames.Application.Rss,
+        MediaTypeNames.Application.Atom,
+        MediaTypeNames.Application.MathML,
+        MediaTypeNames.Application.Smil,
+        MediaTypeNames.Application.Xaml,
+        MediaTypeNames.Application.Soap,
+        MediaTypeNames.Application.Wsdl,
+        MediaTypeNames.Application.Xslt,
         MediaTypeNames.Application.XmlDtd,
         MediaTypeNames.Application.XmlPatch,
         MediaTypeNames.Application.ProblemXml,
-        MediaTypeNames.Application.Soap
+        MediaTypeNames.Text.Xml,
+        MediaTypeNames.Text.Html,
+        MediaTypeNames.Image.Svg,
+        MediaTypeNames.Document.OpenXmlWord,
+        MediaTypeNames.Document.OpenXmlSpreadsheet,
+        MediaTypeNames.Document.OpenXmlPresentation,
+        MediaTypeNames.Document.OpenDocumentText,
+        MediaTypeNames.Document.OpenDocumentSpreadsheet,
+        MediaTypeNames.Ebook.EPUB
     };
 
     private readonly Lazy<ContentType?> _contentType;
