@@ -116,7 +116,6 @@
                                                           VerticalAlignment="Stretch"
                                                           AutoGenerateColumns="False"
                                                           CanUserSortColumns="True"
-                                                          DockPanel.Dock="Top"
                                                           EnableRowVirtualization="True"
                                                           HeadersVisibility="Column"
                                                           ItemsSource="{Binding SelectedWebSession.RequestMessage.Headers, FallbackValue={x:Null}}">
@@ -188,7 +187,6 @@
                                                           VerticalAlignment="Stretch"
                                                           AutoGenerateColumns="False"
                                                           CanUserSortColumns="True"
-                                                          DockPanel.Dock="Top"
                                                           EnableRowVirtualization="True"
                                                           HeadersVisibility="Column"
                                                           ItemsSource="{Binding SelectedWebSession.ResponseMessage.Headers, FallbackValue={x:Null}}">

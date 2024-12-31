@@ -13,9 +13,9 @@ public sealed class DocumentViewModel : ObservableObject
     public IHighlightingDefinition HighlightingDefinition { get; }
     public TextDocument Root { get; }
 
-    public DocumentViewModel(IHighlightingDefinition highlightingDefinition, string? bodyAsString)
+    public DocumentViewModel(IHighlightingDefinition highlightingDefinition, TextDocument textDocument)
     {
         HighlightingDefinition = highlightingDefinition ?? throw new ArgumentNullException(nameof(highlightingDefinition));
-        Root = bodyAsString is not null ? new TextDocument(bodyAsString) : new TextDocument();
+        Root = textDocument ?? throw new ArgumentNullException(nameof(textDocument));
     }
 }

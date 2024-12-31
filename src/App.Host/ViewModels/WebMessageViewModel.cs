@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Xml;
+using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using MimeKit;
 using Spectralyzer.Core;
@@ -102,6 +103,11 @@ public abstract class WebMessageViewModel
         }
     }
 
+    private static TextDocument CreateTextDocument(string? bodyAsString)
+    {
+        return !string.IsNullOrEmpty(bodyAsString) ? new TextDocument(bodyAsString) : new TextDocument();
+    }
+
     private static (bool IsMatch, ContentType? ContentType) FindContentType(WebHeader webHeader)
     {
         using var stream = new MemoryStream();
@@ -125,7 +131,7 @@ public abstract class WebMessageViewModel
 
     private static string? GetContent(string? mimeType, string? bodyAsString)
     {
-        if (string.IsNullOrEmpty(mimeType) || bodyAsString is null)
+        if (string.IsNullOrEmpty(mimeType) || string.IsNullOrEmpty(bodyAsString))
         {
             return bodyAsString;
         }
@@ -183,7 +189,7 @@ public abstract class WebMessageViewModel
         }
     }
 
-    private static IHighlightingDefinition GetHighlightingDefinition(string name)
+    private static IHighlightingDefinition GetHighlightingDefinitionByFileExtension(string name)
     {
         return HighlightingManager.Instance.GetDefinitionByExtension(name);
     }
@@ -198,34 +204,36 @@ public abstract class WebMessageViewModel
     {
         if (string.IsNullOrEmpty(_contentType.Value?.MimeType))
         {
-            return ".http";
+            return FileExtensions.Http;
         }
 
         if (XmlMimeTypes.Contains(_contentType.Value.MimeType))
         {
-            return ".xml";
+            return FileExtensions.Xml;
         }
 
         if (JsonMimeTypes.Contains(_contentType.Value.MimeType))
         {
-            return ".json";
+            return FileExtensions.Json;
         }
 
-        return ".http";
+        return FileExtensions.Http;
     }
 
     private DocumentViewModel GetDocument()
     {
         var highlightDefinitionName = GetDetectedHighlightDefinitionName();
-        var highlightingDefinition = GetHighlightingDefinition(highlightDefinitionName);
+        var highlightingDefinition = GetHighlightingDefinitionByFileExtension(highlightDefinitionName);
         var content = GetContent(_contentType.Value?.MimeType, _webMessage.BodyAsString);
-        return new DocumentViewModel(highlightingDefinition, content);
+        var textDocument = CreateTextDocument(content);
+        return new DocumentViewModel(highlightingDefinition, textDocument);
     }
 
     private DocumentViewModel GetHttpDocument()
     {
-        var highlightingDefinition = GetHighlightingDefinition(".http");
-        return new DocumentViewModel(highlightingDefinition, _httpView.Value);
+        var highlightingDefinition = GetHighlightingDefinitionByFileExtension(FileExtensions.Http);
+        var textDocument = CreateTextDocument(_httpView.Value);
+        return new DocumentViewModel(highlightingDefinition, textDocument);
     }
 
     private string GetHttpView()
