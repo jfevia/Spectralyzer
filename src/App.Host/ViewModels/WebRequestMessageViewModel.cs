@@ -24,9 +24,9 @@ public sealed class WebRequestMessageViewModel
         _jsonElements = new Lazy<IEnumerable<JsonDocumentViewModel>>(GetJsonElements);
     }
 
-    private static JsonDocumentViewModel CreateJsonDocumentViewModel(JsonDocument bodyAsJson)
+    private static JsonDocumentViewModel CreateJsonDocumentViewModel(JsonDocument jsonDocument)
     {
-        return new JsonDocumentViewModel(bodyAsJson);
+        return new JsonDocumentViewModel(jsonDocument);
     }
 
     private IEnumerable<JsonDocumentViewModel> GetJsonElements()

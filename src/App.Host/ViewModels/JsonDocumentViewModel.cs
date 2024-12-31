@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Spectralyzer.App.Host.ViewModels;
 
-public sealed class JsonDocumentViewModel
+public sealed class JsonDocumentViewModel : JsonObjectViewModel
 {
     private readonly Lazy<IEnumerable<JsonPropertyViewModel>> _elements;
     private readonly JsonDocument _jsonDocument;

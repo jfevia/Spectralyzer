@@ -20,8 +20,6 @@ public abstract class WebMessage
     public IReadOnlyList<WebHeader> Headers { get; }
     public Guid Id { get; }
 
-    private ContentType? ContentType => _contentType.Value;
-
     protected WebMessage(Guid id, IReadOnlyList<WebHeader> headers, string? bodyAsString)
     {
         Id = id;
@@ -61,7 +59,7 @@ public abstract class WebMessage
 
     private JsonDocument? GetJsonDocument()
     {
-        if (!MediaTypeNames.Application.Json.Equals(ContentType?.MimeType, StringComparison.InvariantCultureIgnoreCase) || string.IsNullOrEmpty(BodyAsString))
+        if (!MediaTypeNames.Application.Json.Equals(_contentType.Value?.MimeType, StringComparison.InvariantCultureIgnoreCase) || string.IsNullOrEmpty(BodyAsString))
         {
             return null;
         }

@@ -172,7 +172,6 @@
                                                          VerticalAlignment="Stretch"
                                                          VerticalContentAlignment="Top"
                                                          AcceptsReturn="True"
-                                                         DockPanel.Dock="Bottom"
                                                          IsReadOnly="True"
                                                          Text="{Binding SelectedWebSession.RequestMessage.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
                                                          VerticalScrollBarVisibility="Auto" />
@@ -181,7 +180,7 @@
                                                 <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.RequestMessage.JsonElements, Mode=OneWay, FallbackValue={x:Null}}">
                                                     <TreeView.ItemContainerStyle>
                                                         <Style TargetType="{x:Type TreeViewItem}">
-                                                            <Setter Property="IsExpanded" Value="True" />
+                                                            <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
                                                         </Style>
                                                     </TreeView.ItemContainerStyle>
                                                 </TreeView>
@@ -250,7 +249,6 @@
                                                          VerticalAlignment="Stretch"
                                                          VerticalContentAlignment="Top"
                                                          AcceptsReturn="True"
-                                                         DockPanel.Dock="Bottom"
                                                          IsReadOnly="True"
                                                          Text="{Binding SelectedWebSession.ResponseMessage.BodyAsString, Mode=OneWay, FallbackValue={x:Null}}"
                                                          VerticalScrollBarVisibility="Auto" />
@@ -259,7 +257,7 @@
                                                 <TreeView IsTextSearchEnabled="True" ItemsSource="{Binding SelectedWebSession.ResponseMessage.JsonElements, Mode=OneWay, FallbackValue={x:Null}}">
                                                     <TreeView.ItemContainerStyle>
                                                         <Style TargetType="{x:Type TreeViewItem}">
-                                                            <Setter Property="IsExpanded" Value="False" />
+                                                            <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
                                                         </Style>
                                                     </TreeView.ItemContainerStyle>
                                                 </TreeView>
