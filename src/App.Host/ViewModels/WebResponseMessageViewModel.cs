@@ -20,9 +20,9 @@ public sealed class WebResponseMessageViewModel : WebMessageViewModel
         _webResponseMessage = webResponseMessage ?? throw new ArgumentNullException(nameof(webResponseMessage));
     }
 
-    protected override void OnGeneratingHttpView(StringBuilder stringBuilder)
+    protected override void OnGeneratingHttpViewHeaders(StringBuilder stringBuilder)
     {
         stringBuilder.AppendLine($"HTTP/{Version} {StatusCode} {StatusDescription}");
-        base.OnGeneratingHttpView(stringBuilder);
+        base.OnGeneratingHttpViewHeaders(stringBuilder);
     }
 }

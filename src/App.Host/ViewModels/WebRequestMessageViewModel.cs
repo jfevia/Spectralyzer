@@ -19,9 +19,9 @@ public sealed class WebRequestMessageViewModel : WebMessageViewModel
         _webRequestMessage = webRequestMessage ?? throw new ArgumentNullException(nameof(webRequestMessage));
     }
 
-    protected override void OnGeneratingHttpView(StringBuilder stringBuilder)
+    protected override void OnGeneratingHttpViewHeaders(StringBuilder stringBuilder)
     {
         stringBuilder.AppendLine($"{_webRequestMessage.Method} {_webRequestMessage.RequestUri.PathAndQuery}");
-        base.OnGeneratingHttpView(stringBuilder);
+        base.OnGeneratingHttpViewHeaders(stringBuilder);
     }
 }

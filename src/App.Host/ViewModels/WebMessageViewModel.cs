@@ -75,7 +75,7 @@ public abstract class WebMessageViewModel
         _xmlElements = new Lazy<IEnumerable<XmlDocumentViewModel>>(GetXmlElements);
     }
 
-    protected virtual void OnGeneratedHttpView(StringBuilder stringBuilder)
+    protected virtual void OnGeneratingHttpViewBody(StringBuilder stringBuilder)
     {
         if (string.IsNullOrEmpty(_webMessage.BodyAsString))
         {
@@ -86,7 +86,7 @@ public abstract class WebMessageViewModel
         stringBuilder.AppendLine(_webMessage.BodyAsString);
     }
 
-    protected virtual void OnGeneratingHttpView(StringBuilder stringBuilder)
+    protected virtual void OnGeneratingHttpViewHeaders(StringBuilder stringBuilder)
     {
         foreach (var header in _webMessage.Headers.OrderBy(header => header.Key))
         {
@@ -138,8 +138,8 @@ public abstract class WebMessageViewModel
     {
         var stringBuilder = new StringBuilder();
 
-        OnGeneratingHttpView(stringBuilder);
-        OnGeneratedHttpView(stringBuilder);
+        OnGeneratingHttpViewHeaders(stringBuilder);
+        OnGeneratingHttpViewBody(stringBuilder);
 
         return stringBuilder.ToString();
     }
