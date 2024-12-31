@@ -32,10 +32,8 @@ public abstract class WebMessageViewModel
     };
 
     private readonly Lazy<ContentType?> _contentType;
-    private readonly Lazy<JsonDocument?> _jsonDocument;
     private readonly Lazy<IEnumerable<JsonDocumentViewModel>> _jsonElements;
     private readonly WebMessage _webMessage;
-    private readonly Lazy<XmlDocument?> _xmlDocument;
     private readonly Lazy<IEnumerable<XmlDocumentViewModel>> _xmlElements;
 
     public string? BodyAsString => _webMessage.BodyAsString;
@@ -47,12 +45,10 @@ public abstract class WebMessageViewModel
     protected WebMessageViewModel(WebMessage webMessage)
     {
         _webMessage = webMessage ?? throw new ArgumentNullException(nameof(webMessage));
-        _jsonElements = new Lazy<IEnumerable<JsonDocumentViewModel>>(GetJsonElements);
-        _xmlElements = new Lazy<IEnumerable<XmlDocumentViewModel>>(GetXmlElements);
 
         _contentType = new Lazy<ContentType?>(GetContentType);
-        _jsonDocument = new Lazy<JsonDocument?>(GetJsonDocument);
-        _xmlDocument = new Lazy<XmlDocument?>(GetXmlDocument);
+        _jsonElements = new Lazy<IEnumerable<JsonDocumentViewModel>>(GetJsonElements);
+        _xmlElements = new Lazy<IEnumerable<XmlDocumentViewModel>>(GetXmlElements);
     }
 
     private static JsonDocumentViewModel CreateJsonDocumentViewModel(JsonDocument jsonDocument)
@@ -92,41 +88,26 @@ public abstract class WebMessageViewModel
         return header?.ContentType;
     }
 
-    private JsonDocument? GetJsonDocument()
+    private IEnumerable<JsonDocumentViewModel> GetJsonElements()
     {
         if (_contentType.Value?.MimeType is null || !JsonMimeTypes.Contains(_contentType.Value.MimeType) || string.IsNullOrEmpty(BodyAsString))
         {
-            return null;
+            yield break;
         }
 
-        return JsonDocument.Parse(BodyAsString);
-    }
-
-    private IEnumerable<JsonDocumentViewModel> GetJsonElements()
-    {
-        if (_jsonDocument.Value is not null)
-        {
-            yield return CreateJsonDocumentViewModel(_jsonDocument.Value);
-        }
-    }
-
-    private XmlDocument? GetXmlDocument()
-    {
-        if (_contentType.Value?.MimeType is null || !XmlMimeTypes.Contains(_contentType.Value.MimeType) || string.IsNullOrEmpty(BodyAsString))
-        {
-            return null;
-        }
-
-        var xmlDocument = new XmlDocument();
-        xmlDocument.LoadXml(BodyAsString);
-        return xmlDocument;
+        var jsonDocument = JsonDocument.Parse(BodyAsString);
+        yield return CreateJsonDocumentViewModel(jsonDocument);
     }
 
     private IEnumerable<XmlDocumentViewModel> GetXmlElements()
     {
-        if (_xmlDocument.Value is not null)
+        if (_contentType.Value?.MimeType is null || !XmlMimeTypes.Contains(_contentType.Value.MimeType) || string.IsNullOrEmpty(BodyAsString))
         {
-            yield return CreateXmlDocumentViewModel(_xmlDocument.Value);
+            yield break;
         }
+
+        var xmlDocument = new XmlDocument();
+        xmlDocument.LoadXml(BodyAsString);
+        yield return CreateXmlDocumentViewModel(xmlDocument);
     }
 }
