@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 
-namespace Spectralyzer.App.Host.ViewModels;
+namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
 public sealed class DocumentViewModel : ObservableObject
 {

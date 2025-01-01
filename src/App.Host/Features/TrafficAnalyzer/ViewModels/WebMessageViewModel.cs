@@ -12,7 +12,7 @@ using MimeKit;
 using Spectralyzer.Core;
 using ContentType = MimeKit.ContentType;
 
-namespace Spectralyzer.App.Host.ViewModels;
+namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
 public abstract class WebMessageViewModel
 {

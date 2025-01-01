@@ -5,7 +5,7 @@
 using System.Text;
 using Spectralyzer.Core;
 
-namespace Spectralyzer.App.Host.ViewModels;
+namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
 public sealed class WebResponseMessageViewModel : WebMessageViewModel
 {

@@ -5,7 +5,7 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Spectralyzer.App.Host.ViewModels;
+namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
 public sealed class WebSessionViewModel : ObservableObject
 {
