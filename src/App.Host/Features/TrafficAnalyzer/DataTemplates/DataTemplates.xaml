@@ -3,7 +3,7 @@
                     xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
                     xmlns:converters="clr-namespace:Spectralyzer.App.Host.Converters"
                     xmlns:helpers="clr-namespace:Spectralyzer.App.Host.Helpers"
-                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                     xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels">
 
     <DataTemplate DataType="{x:Type viewModels:TrafficAnalyzerItem}">
@@ -22,11 +22,12 @@
                 <Label Margin="5"
                        VerticalAlignment="Center"
                        Content="Port:" />
-                <mah:NumericUpDown Margin="5"
-                                   IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
-                                   Maximum="65535"
-                                   Minimum="1"
-                                   Value="{Binding Port}" />
+                <ui:NumberBox Width="200"
+                              Margin="5"
+                              IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
+                              Maximum="65535"
+                              Minimum="1"
+                              Value="{Binding Port}" />
                 <CheckBox Margin="5"
                           VerticalAlignment="Center"
                           Content="Decrypt HTTPS traffic"
