@@ -9,20 +9,20 @@
     <DataTemplate DataType="{x:Type viewModels:TrafficAnalyzerItem}">
         <DockPanel LastChildFill="True">
             <ToolBar DockPanel.Dock="Top">
-                <Button Width="100"
-                        Margin="5"
-                        helpers:VisibilityHelper.IsCollapsed="{Binding IsCapturingTraffic}"
-                        Command="{Binding StartCaptureCommand}"
-                        Content="Start capture" />
-                <Button Width="100"
-                        Margin="5"
-                        helpers:VisibilityHelper.IsVisible="{Binding IsCapturingTraffic}"
-                        Command="{Binding StopCaptureCommand}"
-                        Content="Stop capture" />
-                <Label Margin="5"
-                       VerticalAlignment="Center"
-                       Content="Port:" />
-                <ui:NumberBox Width="200"
+                <ui:Button MinWidth="100"
+                           Margin="5"
+                           helpers:VisibilityHelper.IsCollapsed="{Binding IsCapturingTraffic}"
+                           Command="{Binding StartCaptureCommand}"
+                           Content="Start capture" />
+                <ui:Button MinWidth="100"
+                           Margin="5"
+                           helpers:VisibilityHelper.IsVisible="{Binding IsCapturingTraffic}"
+                           Command="{Binding StopCaptureCommand}"
+                           Content="Stop capture" />
+                <TextBlock Margin="5"
+                           VerticalAlignment="Center"
+                           Text="Port:" />
+                <ui:NumberBox MinWidth="200"
                               Margin="5"
                               IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
                               Maximum="65535"
@@ -34,11 +34,11 @@
                           IsChecked="{Binding DecryptSsl}"
                           IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
                           Style="{StaticResource {x:Type CheckBox}}" />
-                <Button Width="100"
-                        Margin="5"
-                        Command="{Binding ClearSessionsCommand}"
-                        Content="Clear"
-                        IsEnabled="{Binding HasSessions}" />
+                <ui:Button MinWidth="100"
+                           Margin="5"
+                           Command="{Binding ClearSessionsCommand}"
+                           Content="Clear"
+                           IsEnabled="{Binding HasSessions}" />
             </ToolBar>
             <Grid>
                 <Grid.RowDefinitions>

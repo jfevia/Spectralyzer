@@ -27,8 +27,8 @@ public class MainViewModel : ObservableObject
     {
         Items = new List<Item>
         {
-            new RequestComposerItem(),
-            new TrafficAnalyzerItem(webProxyServerFactory)
+            new TrafficAnalyzerItem(webProxyServerFactory),
+            new RequestComposerItem()
         };
         SelectedItem = Items.FirstOrDefault();
     }
