@@ -29,4 +29,10 @@ public sealed class RequestHeaderViewModel : ObservableObject
         get => _value;
         set => SetProperty(ref _value, value);
     }
+
+    public RequestHeaderViewModel(string? key = null, string? value = null)
+    {
+        _key = key;
+        _value = value;
+    }
 }
