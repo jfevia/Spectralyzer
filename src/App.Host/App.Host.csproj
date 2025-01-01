@@ -21,7 +21,7 @@
     <ItemGroup>
         <PackageReference Include="AvalonEdit" />
         <PackageReference Include="CommunityToolkit.Mvvm" />
-        <PackageReference Include="Extended.Wpf.Toolkit" />
+        <PackageReference Include="MahApps.Metro" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
     </ItemGroup>
 

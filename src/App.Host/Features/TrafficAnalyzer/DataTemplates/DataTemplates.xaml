@@ -3,9 +3,8 @@
                     xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
                     xmlns:converters="clr-namespace:Spectralyzer.App.Host.Converters"
                     xmlns:helpers="clr-namespace:Spectralyzer.App.Host.Helpers"
-                    xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels"
-                    xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
-                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels">
 
     <DataTemplate DataType="{x:Type viewModels:TrafficAnalyzerItem}">
         <DockPanel LastChildFill="True">
@@ -23,12 +22,11 @@
                 <Label Margin="5"
                        VerticalAlignment="Center"
                        Content="Port:" />
-                <xctk:IntegerUpDown Width="60"
-                                    Margin="5"
-                                    IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
-                                    Maximum="65535"
-                                    Minimum="1"
-                                    Value="{Binding Port}" />
+                <mah:NumericUpDown Margin="5"
+                                   IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
+                                   Maximum="65535"
+                                   Minimum="1"
+                                   Value="{Binding Port}" />
                 <CheckBox Margin="5"
                           VerticalAlignment="Center"
                           Content="Decrypt HTTPS traffic"
@@ -41,218 +39,220 @@
                         Content="Clear"
                         IsEnabled="{Binding HasSessions}" />
             </ToolBar>
-            <xcad:DockingManager HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <xcad:LayoutRoot>
-                    <xcad:LayoutPanel Orientation="Vertical">
-                        <xcad:LayoutAnchorablePaneGroup DockHeight="80*" Orientation="Horizontal">
-                            <xcad:LayoutAnchorablePaneGroup DockWidth="40*" Orientation="Vertical">
-                                <xcad:LayoutAnchorablePane>
-                                    <xcad:LayoutAnchorable Title="Sessions">
-                                        <Grid>
-                                            <DataGrid HorizontalAlignment="Stretch"
-                                                      VerticalAlignment="Stretch"
-                                                      AutoGenerateColumns="False"
-                                                      CanUserSortColumns="True"
-                                                      EnableRowVirtualization="True"
-                                                      HeadersVisibility="Column"
-                                                      ItemsSource="{Binding WebSessions}"
-                                                      SelectedItem="{Binding SelectedWebSession}">
-                                                <DataGrid.Columns>
-                                                    <DataGridTextColumn Width="50"
-                                                                        Binding="{Binding Index, Mode=OneWay}"
-                                                                        Header="#"
-                                                                        IsReadOnly="True" />
-                                                    <DataGridTextColumn Width="100"
-                                                                        Binding="{Binding Process, Mode=OneWay}"
-                                                                        Header="Process"
-                                                                        IsReadOnly="True" />
-                                                    <DataGridTextColumn Width="150"
-                                                                        Binding="{Binding RequestMessage.RequestUri.Host, Mode=OneWay}"
-                                                                        Header="Host"
-                                                                        IsReadOnly="True" />
-                                                    <DataGridTextColumn Width="200"
-                                                                        Binding="{Binding RequestMessage.RequestUri.PathAndQuery, Mode=OneWay}"
-                                                                        Header="URL"
-                                                                        IsReadOnly="True" />
-                                                    <DataGridTextColumn Width="100"
-                                                                        Binding="{Binding ResponseMessage.StatusDescription, Mode=OneWay, FallbackValue={x:Null}}"
-                                                                        Header="Status"
-                                                                        IsReadOnly="True" />
-                                                </DataGrid.Columns>
-                                            </DataGrid>
-                                        </Grid>
-                                    </xcad:LayoutAnchorable>
-                                </xcad:LayoutAnchorablePane>
-                            </xcad:LayoutAnchorablePaneGroup>
-                            <xcad:LayoutAnchorablePaneGroup DockWidth="60*" Orientation="Vertical">
-                                <xcad:LayoutAnchorablePane>
-                                    <xcad:LayoutAnchorable Title="Request">
-                                        <TabControl>
-                                            <TabItem Header="HTTP">
-                                                <avalonedit:TextEditor DataContext="{Binding SelectedWebSession.RequestMessage.HttpDocument, Mode=OneWay, FallbackValue={x:Null}}"
-                                                                       Document="{Binding Root, Mode=OneWay}"
-                                                                       IsReadOnly="True"
-                                                                       SyntaxHighlighting="{Binding HighlightingDefinition, Mode=OneWay}" />
-                                            </TabItem>
-                                            <TabItem Header="Preview">
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="50*" MinHeight="100" />
-                                                        <RowDefinition Height="Auto" />
-                                                        <RowDefinition Height="50*" MinHeight="100" />
-                                                    </Grid.RowDefinitions>
-                                                    <DataGrid Grid.Row="0"
-                                                              HorizontalAlignment="Stretch"
-                                                              VerticalAlignment="Stretch"
-                                                              AutoGenerateColumns="False"
-                                                              CanUserSortColumns="True"
-                                                              EnableRowVirtualization="True"
-                                                              HeadersVisibility="Column"
-                                                              ItemsSource="{Binding SelectedWebSession.RequestMessage.Headers, FallbackValue={x:Null}}">
-                                                        <DataGrid.Columns>
-                                                            <DataGridTemplateColumn Width="150"
-                                                                                    Header="Key"
-                                                                                    IsReadOnly="True">
-                                                                <DataGridTemplateColumn.CellTemplate>
-                                                                    <DataTemplate>
-                                                                        <TextBox HorizontalAlignment="Stretch"
-                                                                                 BorderThickness="0"
-                                                                                 IsReadOnly="True"
-                                                                                 Text="{Binding Key, Mode=OneWay}" />
-                                                                    </DataTemplate>
-                                                                </DataGridTemplateColumn.CellTemplate>
-                                                            </DataGridTemplateColumn>
-                                                            <DataGridTemplateColumn Width="250"
-                                                                                    Header="Value"
-                                                                                    IsReadOnly="True">
-                                                                <DataGridTemplateColumn.CellTemplate>
-                                                                    <DataTemplate>
-                                                                        <ItemsControl ItemsSource="{Binding Values}">
-                                                                            <ItemsControl.ItemTemplate>
-                                                                                <DataTemplate>
-                                                                                    <TextBox HorizontalAlignment="Stretch"
-                                                                                             BorderThickness="0"
-                                                                                             IsReadOnly="True"
-                                                                                             Text="{Binding ., Mode=OneWay}" />
-                                                                                </DataTemplate>
-                                                                            </ItemsControl.ItemTemplate>
-                                                                        </ItemsControl>
-                                                                    </DataTemplate>
-                                                                </DataGridTemplateColumn.CellTemplate>
-                                                            </DataGridTemplateColumn>
-                                                        </DataGrid.Columns>
-                                                    </DataGrid>
-                                                    <GridSplitter Grid.Row="1"
-                                                                  Height="5"
-                                                                  HorizontalAlignment="Stretch"
-                                                                  VerticalAlignment="Center" />
-                                                    <avalonedit:TextEditor Grid.Row="2"
-                                                                           DataContext="{Binding SelectedWebSession.RequestMessage.Document, Mode=OneWay, FallbackValue={x:Null}}"
-                                                                           Document="{Binding Root, Mode=OneWay}"
-                                                                           IsReadOnly="True"
-                                                                           SyntaxHighlighting="{Binding HighlightingDefinition, Mode=OneWay}" />
-                                                </Grid>
-                                            </TabItem>
-                                        </TabControl>
-                                    </xcad:LayoutAnchorable>
-                                </xcad:LayoutAnchorablePane>
-                                <xcad:LayoutAnchorablePane>
-                                    <xcad:LayoutAnchorable Title="Response">
-                                        <TabControl>
-                                            <TabItem Header="HTTP">
-                                                <avalonedit:TextEditor DataContext="{Binding SelectedWebSession.ResponseMessage.HttpDocument, Mode=OneWay, FallbackValue={x:Null}}"
-                                                                       Document="{Binding Root, Mode=OneWay}"
-                                                                       IsReadOnly="True"
-                                                                       SyntaxHighlighting="{Binding HighlightingDefinition, Mode=OneWay}" />
-                                            </TabItem>
-                                            <TabItem Header="Preview">
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="50*" MinHeight="100" />
-                                                        <RowDefinition Height="Auto" />
-                                                        <RowDefinition Height="50*" MinHeight="100" />
-                                                    </Grid.RowDefinitions>
-                                                    <DataGrid Grid.Row="0"
-                                                              HorizontalAlignment="Stretch"
-                                                              VerticalAlignment="Stretch"
-                                                              AutoGenerateColumns="False"
-                                                              CanUserSortColumns="True"
-                                                              EnableRowVirtualization="True"
-                                                              HeadersVisibility="Column"
-                                                              ItemsSource="{Binding SelectedWebSession.ResponseMessage.Headers, FallbackValue={x:Null}}">
-                                                        <DataGrid.Columns>
-                                                            <DataGridTemplateColumn Width="150"
-                                                                                    Header="Key"
-                                                                                    IsReadOnly="True">
-                                                                <DataGridTemplateColumn.CellTemplate>
-                                                                    <DataTemplate>
-                                                                        <TextBox HorizontalAlignment="Stretch"
-                                                                                 BorderThickness="0"
-                                                                                 IsReadOnly="True"
-                                                                                 Text="{Binding Key, Mode=OneWay}" />
-                                                                    </DataTemplate>
-                                                                </DataGridTemplateColumn.CellTemplate>
-                                                            </DataGridTemplateColumn>
-                                                            <DataGridTemplateColumn Width="250"
-                                                                                    Header="Value"
-                                                                                    IsReadOnly="True">
-                                                                <DataGridTemplateColumn.CellTemplate>
-                                                                    <DataTemplate>
-                                                                        <ItemsControl ItemsSource="{Binding Values}">
-                                                                            <ItemsControl.ItemTemplate>
-                                                                                <DataTemplate>
-                                                                                    <TextBox HorizontalAlignment="Stretch"
-                                                                                             BorderThickness="0"
-                                                                                             IsReadOnly="True"
-                                                                                             Text="{Binding ., Mode=OneWay}" />
-                                                                                </DataTemplate>
-                                                                            </ItemsControl.ItemTemplate>
-                                                                        </ItemsControl>
-                                                                    </DataTemplate>
-                                                                </DataGridTemplateColumn.CellTemplate>
-                                                            </DataGridTemplateColumn>
-                                                        </DataGrid.Columns>
-                                                    </DataGrid>
-                                                    <GridSplitter Grid.Row="1"
-                                                                  Height="5"
-                                                                  HorizontalAlignment="Stretch"
-                                                                  VerticalAlignment="Center" />
-                                                    <avalonedit:TextEditor Grid.Row="2"
-                                                                           DataContext="{Binding SelectedWebSession.ResponseMessage.Document, Mode=OneWay, FallbackValue={x:Null}}"
-                                                                           Document="{Binding Root, Mode=OneWay}"
-                                                                           IsReadOnly="True"
-                                                                           SyntaxHighlighting="{Binding HighlightingDefinition, Mode=OneWay}" />
-                                                </Grid>
-                                            </TabItem>
-                                        </TabControl>
-                                    </xcad:LayoutAnchorable>
-                                </xcad:LayoutAnchorablePane>
-                            </xcad:LayoutAnchorablePaneGroup>
-                        </xcad:LayoutAnchorablePaneGroup>
-                        <xcad:LayoutAnchorablePaneGroup DockHeight="20*">
-                            <xcad:LayoutAnchorablePane>
-                                <xcad:LayoutAnchorable Title="Errors">
-                                    <Grid>
-                                        <DataGrid HorizontalAlignment="Stretch"
-                                                  VerticalAlignment="Stretch"
-                                                  AutoGenerateColumns="False"
-                                                  EnableRowVirtualization="True"
-                                                  HeadersVisibility="Column"
-                                                  ItemsSource="{Binding Errors}">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Width="*"
-                                                                    Binding="{Binding ., Mode=OneWay}"
-                                                                    Header="Exception"
-                                                                    IsReadOnly="True" />
-                                            </DataGrid.Columns>
-                                        </DataGrid>
-                                    </Grid>
-                                </xcad:LayoutAnchorable>
-                            </xcad:LayoutAnchorablePane>
-                        </xcad:LayoutAnchorablePaneGroup>
-                    </xcad:LayoutPanel>
-                </xcad:LayoutRoot>
-            </xcad:DockingManager>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80*" MinHeight="200" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="20*" MinHeight="100" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="35*" MinWidth="200" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="65*" MinWidth="400" />
+                    </Grid.ColumnDefinitions>
+                    <DataGrid Grid.Column="0"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              AutoGenerateColumns="False"
+                              CanUserSortColumns="True"
+                              EnableRowVirtualization="True"
+                              HeadersVisibility="Column"
+                              ItemsSource="{Binding WebSessions}"
+                              SelectedItem="{Binding SelectedWebSession}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="50"
+                                                Binding="{Binding Index, Mode=OneWay}"
+                                                Header="#"
+                                                IsReadOnly="True" />
+                            <DataGridTextColumn Width="100"
+                                                Binding="{Binding Process, Mode=OneWay}"
+                                                Header="Process"
+                                                IsReadOnly="True" />
+                            <DataGridTextColumn Width="150"
+                                                Binding="{Binding RequestMessage.RequestUri.Host, Mode=OneWay}"
+                                                Header="Host"
+                                                IsReadOnly="True" />
+                            <DataGridTextColumn Width="200"
+                                                Binding="{Binding RequestMessage.RequestUri.PathAndQuery, Mode=OneWay}"
+                                                Header="URL"
+                                                IsReadOnly="True" />
+                            <DataGridTextColumn Width="100"
+                                                Binding="{Binding ResponseMessage.StatusDescription, Mode=OneWay, FallbackValue={x:Null}}"
+                                                Header="Status"
+                                                IsReadOnly="True" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <GridSplitter Grid.Column="1"
+                                  Width="5"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Stretch" />
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MinWidth="200" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" MinWidth="200" />
+                        </Grid.ColumnDefinitions>
+                        <TabControl Grid.Column="0">
+                            <TabItem Header="HTTP">
+                                <avalonedit:TextEditor DataContext="{Binding SelectedWebSession.RequestMessage.HttpDocument, Mode=OneWay, FallbackValue={x:Null}}"
+                                                       Document="{Binding Root, Mode=OneWay}"
+                                                       IsReadOnly="True"
+                                                       SyntaxHighlighting="{Binding HighlightingDefinition, Mode=OneWay}" />
+                            </TabItem>
+                            <TabItem Header="Preview">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50*" MinHeight="100" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="50*" MinHeight="100" />
+                                    </Grid.RowDefinitions>
+                                    <DataGrid Grid.Row="0"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch"
+                                              AutoGenerateColumns="False"
+                                              CanUserSortColumns="True"
+                                              EnableRowVirtualization="True"
+                                              HeadersVisibility="Column"
+                                              ItemsSource="{Binding SelectedWebSession.RequestMessage.Headers, FallbackValue={x:Null}}">
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn Width="150"
+                                                                    Header="Key"
+                                                                    IsReadOnly="True">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox HorizontalAlignment="Stretch"
+                                                                 BorderThickness="0"
+                                                                 IsReadOnly="True"
+                                                                 Text="{Binding Key, Mode=OneWay}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Width="250"
+                                                                    Header="Value"
+                                                                    IsReadOnly="True">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ItemsControl ItemsSource="{Binding Values}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBox HorizontalAlignment="Stretch"
+                                                                             BorderThickness="0"
+                                                                             IsReadOnly="True"
+                                                                             Text="{Binding ., Mode=OneWay}" />
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                    <GridSplitter Grid.Row="1"
+                                                  Height="5"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Center" />
+                                    <avalonedit:TextEditor Grid.Row="2"
+                                                           DataContext="{Binding SelectedWebSession.RequestMessage.Document, Mode=OneWay, FallbackValue={x:Null}}"
+                                                           Document="{Binding Root, Mode=OneWay}"
+                                                           IsReadOnly="True"
+                                                           SyntaxHighlighting="{Binding HighlightingDefinition, Mode=OneWay}" />
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                        <GridSplitter Grid.Column="1"
+                                      Width="5"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Stretch" />
+                        <TabControl Grid.Column="2">
+                            <TabItem Header="HTTP">
+                                <avalonedit:TextEditor DataContext="{Binding SelectedWebSession.ResponseMessage.HttpDocument, Mode=OneWay, FallbackValue={x:Null}}"
+                                                       Document="{Binding Root, Mode=OneWay}"
+                                                       IsReadOnly="True"
+                                                       SyntaxHighlighting="{Binding HighlightingDefinition, Mode=OneWay}" />
+                            </TabItem>
+                            <TabItem Header="Preview">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50*" MinHeight="100" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="50*" MinHeight="100" />
+                                    </Grid.RowDefinitions>
+                                    <DataGrid Grid.Row="0"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch"
+                                              AutoGenerateColumns="False"
+                                              CanUserSortColumns="True"
+                                              EnableRowVirtualization="True"
+                                              HeadersVisibility="Column"
+                                              ItemsSource="{Binding SelectedWebSession.ResponseMessage.Headers, FallbackValue={x:Null}}">
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn Width="150"
+                                                                    Header="Key"
+                                                                    IsReadOnly="True">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox HorizontalAlignment="Stretch"
+                                                                 BorderThickness="0"
+                                                                 IsReadOnly="True"
+                                                                 Text="{Binding Key, Mode=OneWay}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Width="250"
+                                                                    Header="Value"
+                                                                    IsReadOnly="True">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ItemsControl ItemsSource="{Binding Values}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBox HorizontalAlignment="Stretch"
+                                                                             BorderThickness="0"
+                                                                             IsReadOnly="True"
+                                                                             Text="{Binding ., Mode=OneWay}" />
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                    <GridSplitter Grid.Row="1"
+                                                  Height="5"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Center" />
+                                    <avalonedit:TextEditor Grid.Row="2"
+                                                           DataContext="{Binding SelectedWebSession.ResponseMessage.Document, Mode=OneWay, FallbackValue={x:Null}}"
+                                                           Document="{Binding Root, Mode=OneWay}"
+                                                           IsReadOnly="True"
+                                                           SyntaxHighlighting="{Binding HighlightingDefinition, Mode=OneWay}" />
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+                </Grid>
+                <GridSplitter Grid.Row="1"
+                              Height="5"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Center" />
+                <Grid Grid.Row="2">
+                    <DataGrid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              AutoGenerateColumns="False"
+                              EnableRowVirtualization="True"
+                              HeadersVisibility="Column"
+                              ItemsSource="{Binding Errors}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="*"
+                                                Binding="{Binding ., Mode=OneWay}"
+                                                Header="Exception"
+                                                IsReadOnly="True" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Grid>
         </DockPanel>
     </DataTemplate>
 
