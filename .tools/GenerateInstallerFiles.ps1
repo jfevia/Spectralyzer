@@ -160,7 +160,6 @@ function Generate-Folders {
     }
 
     $wixContent += "
-                    </Directory>
                 </Directory>
             </Directory>
         </StandardDirectory>
