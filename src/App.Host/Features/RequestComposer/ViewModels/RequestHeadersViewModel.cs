@@ -19,8 +19,8 @@ public sealed class RequestHeadersViewModel : RequestItemViewModel
     {
         Items =
         [
-            new RequestHeaderViewModel("Content-Type", "application/json"),
-            new RequestHeaderViewModel("Accept", "application/json")
+            new RequestHeaderViewModel("Content-Type", "application/json", true),
+            new RequestHeaderViewModel("Accept", "application/json", true)
         ];
 
         AddCommand = new RelayCommand(Add);
@@ -34,6 +34,11 @@ public sealed class RequestHeadersViewModel : RequestItemViewModel
 
     private void DeleteAll()
     {
-        Items.Clear();
+        var itemsToDelete = Items.Where(item => !item.IsReadOnly).ToList();
+
+        foreach (var item in itemsToDelete)
+        {
+            Items.Remove(item);
+        }
     }
 }

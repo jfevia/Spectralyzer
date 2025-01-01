@@ -18,6 +18,8 @@ public sealed class RequestHeaderViewModel : ObservableObject
         set => SetProperty(ref _description, value);
     }
 
+    public bool IsReadOnly { get; }
+
     public string? Key
     {
         get => _key;
@@ -30,8 +32,9 @@ public sealed class RequestHeaderViewModel : ObservableObject
         set => SetProperty(ref _value, value);
     }
 
-    public RequestHeaderViewModel(string? key = null, string? value = null)
+    public RequestHeaderViewModel(string? key = null, string? value = null, bool isReadOnly = false)
     {
+        IsReadOnly = isReadOnly;
         _key = key;
         _value = value;
     }

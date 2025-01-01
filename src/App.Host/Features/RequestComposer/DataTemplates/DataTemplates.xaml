@@ -118,8 +118,30 @@
             </ToolBar>
             <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Items}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Key}" Header="Key" />
-                    <DataGridTextColumn Binding="{Binding Value}" Header="Value" />
+                    <DataGridTemplateColumn Header="Key">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox IsReadOnly="{Binding IsReadOnly, Mode=OneWay}" Text="{Binding Key}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox IsReadOnly="{Binding IsReadOnly, Mode=OneWay}" Text="{Binding Key}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Value">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox IsReadOnly="{Binding IsReadOnly, Mode=OneWay}" Text="{Binding Value}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox IsReadOnly="{Binding IsReadOnly, Mode=OneWay}" Text="{Binding Value}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Binding="{Binding Description}" Header="Description" />
                 </DataGrid.Columns>
             </DataGrid>
