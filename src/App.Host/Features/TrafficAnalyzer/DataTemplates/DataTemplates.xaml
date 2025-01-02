@@ -8,7 +8,7 @@
 
     <DataTemplate DataType="{x:Type viewModels:TrafficAnalyzerItem}">
         <DockPanel LastChildFill="True">
-            <ToolBar DockPanel.Dock="Top">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                 <ui:Button MinWidth="100"
                            Margin="5"
                            helpers:VisibilityHelper.IsCollapsed="{Binding IsCapturingTraffic}"
@@ -23,8 +23,10 @@
                            Content="Stop capture" />
                 <ui:TextBlock Margin="5"
                               VerticalAlignment="Center"
+                              Appearance="Secondary"
+                              FontSize="14"
                               Text="Port:" />
-                <ui:NumberBox MinWidth="100"
+                <ui:NumberBox MinWidth="150"
                               Margin="5"
                               IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
                               Maximum="65535"
@@ -41,7 +43,7 @@
                            Command="{Binding ClearSessionsCommand}"
                            Content="Clear"
                            IsEnabled="{Binding HasSessions}" />
-            </ToolBar>
+            </StackPanel>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="80*" MinHeight="200" />

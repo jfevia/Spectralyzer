@@ -19,11 +19,13 @@
                           Margin="5"
                           ItemsSource="{Binding Methods}"
                           SelectedItem="{Binding SelectedMethod}" />
-                <TextBox Grid.Column="1"
-                         Margin="5"
-                         VerticalContentAlignment="Center"
-                         HorizontalScrollBarVisibility="Auto"
-                         Text="{Binding Url}" />
+                <ui:TextBox Grid.Column="1"
+                            Margin="5"
+                            VerticalContentAlignment="Center"
+                            HorizontalScrollBarVisibility="Auto"
+                            PlaceholderEnabled="True"
+                            PlaceholderText="https://api.product.com/v1/items"
+                            Text="{Binding Url}" />
                 <ui:Button Grid.Column="2"
                            MinWidth="100"
                            Margin="5"
@@ -75,7 +77,7 @@
 
     <DataTemplate DataType="{x:Type viewModels:RequestHeadersViewModel}">
         <DockPanel LastChildFill="True">
-            <ToolBar DockPanel.Dock="Top">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                 <ui:Button MinWidth="100"
                            Margin="5"
                            Command="{Binding AddCommand}"
@@ -84,34 +86,61 @@
                            Margin="5"
                            Command="{Binding DeleteAllCommand}"
                            Content="Delete all" />
-            </ToolBar>
+            </StackPanel>
             <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Items}">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Key">
+                    <DataGridTemplateColumn MinWidth="100" Header="Key">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox IsReadOnly="{Binding IsReadOnly, Mode=OneWay}" Text="{Binding Key}" />
+                                <TextBox VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
+                                         Text="{Binding Key}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
-                                <TextBox IsReadOnly="{Binding IsReadOnly, Mode=OneWay}" Text="{Binding Key}" />
+                                <TextBox VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
+                                         Text="{Binding Key}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Value">
+                    <DataGridTemplateColumn MinWidth="100" Header="Value">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox IsReadOnly="{Binding IsReadOnly, Mode=OneWay}" Text="{Binding Value}" />
+                                <TextBox VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
+                                         Text="{Binding Value}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
-                                <TextBox IsReadOnly="{Binding IsReadOnly, Mode=OneWay}" Text="{Binding Value}" />
+                                <TextBox VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
+                                         Text="{Binding Value}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Binding="{Binding Description}" Header="Description" />
+                    <DataGridTemplateColumn MinWidth="100" Header="Description">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         Text="{Binding Description}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         Text="{Binding Description}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
@@ -120,12 +149,30 @@
     <DataTemplate DataType="{x:Type viewModels:ResponseHeadersViewModel}">
         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Items}">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Key, Mode=OneWay}"
-                                    Header="Key"
-                                    IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Value, Mode=OneWay}"
-                                    Header="Value"
-                                    IsReadOnly="True" />
+                <DataGridTemplateColumn MinWidth="100"
+                                        Header="Key"
+                                        IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox VerticalAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     IsReadOnly="True"
+                                     Text="{Binding Key, Mode=OneWay}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn MinWidth="100"
+                                        Header="Value"
+                                        IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox VerticalAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     IsReadOnly="True"
+                                     Text="{Binding Value, Mode=OneWay}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </DataTemplate>

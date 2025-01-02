@@ -5,9 +5,7 @@
 using System.Net.Http;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using MimeKit;
 using Spectralyzer.App.Host.ViewModels;
-using Spectralyzer.Core;
 
 namespace Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 
@@ -72,9 +70,13 @@ public sealed class RequestComposerItem : Item
         SendRequestCommand = new AsyncRelayCommand(SendRequestAsync);
     }
 
-    private async Task SendRequestAsync(CancellationToken cancellationToken)
+    private static ResponseHeaderViewModel CreateResponseHeaderViewModel(string key, string value)
     {
-        var httpClient = _httpClientFactory.CreateClient();
+        return new ResponseHeaderViewModel(key, value);
+    }
+
+    private HttpRequestMessage CreateHttpRequestMessage()
+    {
         var httpRequestMessage = new HttpRequestMessage(_selectedMethod!, Url);
 
         foreach (var requestHeader in _requestHeaders.Items.Where(item => !string.IsNullOrEmpty(item.Key)))
@@ -82,62 +84,35 @@ public sealed class RequestComposerItem : Item
             httpRequestMessage.Headers.Add(requestHeader.Key!, requestHeader.Value);
         }
 
-        httpRequestMessage.Content = !string.IsNullOrEmpty(_requestBody.Body) ? new StringContent(_requestBody.Body) : null;
+        httpRequestMessage.Content = !string.IsNullOrEmpty(_requestBody.Body)
+            ? new StringContent(_requestBody.Body)
+            : null;
 
-        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
+        return httpRequestMessage;
+    }
 
+    private async Task ProcessHttpResponseMessageAsync(HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken)
+    {
         _responseHeaders.Items.Clear();
 
         foreach (var httpResponseHeader in httpResponseMessage.Headers)
         {
             foreach (var httpResponseHeaderValue in httpResponseHeader.Value)
             {
-                _responseHeaders.Items.Add(new ResponseHeaderViewModel(httpResponseHeader.Key, httpResponseHeaderValue));
+                var responseHeaderViewModel = CreateResponseHeaderViewModel(httpResponseHeader.Key, httpResponseHeaderValue);
+                _responseHeaders.Items.Add(responseHeaderViewModel);
             }
         }
 
-        _responseBody.Body = await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken);
+        await _responseBody.ProcessHttpResponseMessageAsync(httpResponseMessage, cancellationToken);
+    }
 
-        var result = GetContentType();
-        if (result.IsMatch)
-        {
-            _responseBody.SelectedFormat = GetSelectedFormat(result.ContentType);
-        }
-        else
-        {
-            _responseBody.SelectedFormat = "None";
-        }
+    private async Task SendRequestAsync(CancellationToken cancellationToken)
+    {
+        var httpClient = _httpClientFactory.CreateClient();
+        var httpRequestMessage = CreateHttpRequestMessage();
+        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
-        return;
-
-        (bool IsMatch, ContentType? ContentType) GetContentType()
-        {
-            if (httpResponseMessage.Content.Headers.ContentType is null)
-            {
-                return (false, null);
-            }
-
-            return HeaderHelper.FindContentType(httpResponseMessage.Content.Headers.ContentType);
-        }
-
-        string GetSelectedFormat(ContentType? contentType)
-        {
-            if (contentType is null)
-            {
-                return "None";
-            }
-
-            if (KnownFormats.IsJson(contentType.MimeType))
-            {
-                return "JSON";
-            }
-
-            if (KnownFormats.IsXml(contentType.MimeType))
-            {
-                return "XML";
-            }
-
-            return "None";
-        }
+        await ProcessHttpResponseMessageAsync(httpResponseMessage, cancellationToken);
     }
 }

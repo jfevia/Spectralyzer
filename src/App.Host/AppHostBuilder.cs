@@ -30,8 +30,10 @@ public sealed class AppHostBuilder
             ctx.AddSingleton<RequestComposerItem>();
 
             ctx.AddTransient<IExceptionHandler, DefaultExceptionHandler>();
+
+            ctx.AddHostedService<ContainerLocatorHostedService>();
             ctx.AddHostedService<ExceptionHandlerHostedService>();
-            ctx.AddHostedService<ApplicationHostService>();
+            ctx.AddHostedService<MainWindowHostService>();
             ctx.AddHostedService<HighlightingDefinitionsHostedService>();
         });
         _builder.ConfigureLogging(ctx =>

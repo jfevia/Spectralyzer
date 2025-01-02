@@ -4,12 +4,12 @@
 
 using System.Windows;
 using Microsoft.Extensions.Hosting;
-using Spectralyzer.App.Host.Features.RequestComposer.Pages;
 using Spectralyzer.App.Host.Views;
+using Wpf.Ui.Controls;
 
 namespace Spectralyzer.App.Host;
 
-public class ApplicationHostService : IHostedService
+public class MainWindowHostService : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
@@ -42,6 +42,12 @@ public class ApplicationHostService : IHostedService
             return;
         }
 
-        _ = mainWindow.NavigationView.Navigate(typeof(RequestComposerItemPage));
+        var navigationViewItem = mainWindow.NavigationView.MenuItems.OfType<NavigationViewItem>().FirstOrDefault();
+        if (navigationViewItem?.TargetPageType is null)
+        {
+            return;
+        }
+
+        _ = mainWindow.NavigationView.Navigate(navigationViewItem.TargetPageType);
     }
 }

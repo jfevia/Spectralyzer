@@ -16,7 +16,6 @@ public partial class App
         {
             var builder = new AppHostBuilder();
             host = builder.Build();
-            ContainerLocator.Set(() => host.Services);
             host.Start();
         }
         catch (Exception ex)

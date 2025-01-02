@@ -13,10 +13,6 @@ public sealed class ResponseHeadersViewModel : ResponseItemViewModel
 
     public ResponseHeadersViewModel()
     {
-        Items =
-        [
-            new ResponseHeaderViewModel("Content-Type", "application/json"),
-            new ResponseHeaderViewModel("Accept", "application/json")
-        ];
+        Items = [];
     }
 }
