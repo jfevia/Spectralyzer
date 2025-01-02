@@ -205,6 +205,7 @@
                       ItemsSource="{Binding Formats}"
                       SelectedItem="{Binding SelectedFormat}" />
             <TextBox Grid.Row="1"
+                     IsReadOnly="True"
                      Text="{Binding Body}"
                      TextWrapping="Wrap"
                      VerticalScrollBarVisibility="Auto" />
