@@ -66,26 +66,71 @@
                               ItemsSource="{Binding WebSessions}"
                               SelectedItem="{Binding SelectedWebSession}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Width="50"
-                                                Binding="{Binding Index, Mode=OneWay}"
-                                                Header="#"
-                                                IsReadOnly="True" />
-                            <DataGridTextColumn Width="100"
-                                                Binding="{Binding Process, Mode=OneWay}"
-                                                Header="Process"
-                                                IsReadOnly="True" />
-                            <DataGridTextColumn Width="150"
-                                                Binding="{Binding RequestMessage.RequestUri.Host, Mode=OneWay}"
-                                                Header="Host"
-                                                IsReadOnly="True" />
-                            <DataGridTextColumn Width="200"
-                                                Binding="{Binding RequestMessage.RequestUri.PathAndQuery, Mode=OneWay}"
-                                                Header="URL"
-                                                IsReadOnly="True" />
-                            <DataGridTextColumn Width="100"
-                                                Binding="{Binding ResponseMessage.StatusDescription, Mode=OneWay, FallbackValue={x:Null}}"
-                                                Header="Status"
-                                                IsReadOnly="True" />
+                            <DataGridTemplateColumn MinWidth="50"
+                                                    Header="#"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox VerticalAlignment="Top"
+                                                 VerticalContentAlignment="Center"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding Index, Mode=OneWay}"
+                                                 TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn MinWidth="100"
+                                                    Header="Process"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox VerticalAlignment="Top"
+                                                 VerticalContentAlignment="Center"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding Process, Mode=OneWay}"
+                                                 TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn MinWidth="100"
+                                                    Header="Host"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox VerticalAlignment="Top"
+                                                 VerticalContentAlignment="Center"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding RequestMessage.RequestUri.Host, Mode=OneWay}"
+                                                 TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn MinWidth="200"
+                                                    Header="URL"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox VerticalAlignment="Top"
+                                                 VerticalContentAlignment="Center"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding RequestMessage.RequestUri.PathAndQuery, Mode=OneWay}"
+                                                 TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn MinWidth="100"
+                                                    Header="Status"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox VerticalAlignment="Top"
+                                                 VerticalContentAlignment="Center"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding ResponseMessage.StatusDescription, Mode=OneWay, FallbackValue={x:Null}}"
+                                                 TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                     <GridSplitter Grid.Column="1"
@@ -121,19 +166,22 @@
                                               HeadersVisibility="Column"
                                               ItemsSource="{Binding SelectedWebSession.RequestMessage.Headers, FallbackValue={x:Null}}">
                                         <DataGrid.Columns>
-                                            <DataGridTemplateColumn Width="150"
+                                            <DataGridTemplateColumn Width="*"
+                                                                    MinWidth="100"
                                                                     Header="Key"
                                                                     IsReadOnly="True">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <TextBox HorizontalAlignment="Stretch"
-                                                                 BorderThickness="0"
+                                                        <TextBox VerticalAlignment="Top"
+                                                                 VerticalContentAlignment="Center"
                                                                  IsReadOnly="True"
-                                                                 Text="{Binding Key, Mode=OneWay}" />
+                                                                 Text="{Binding Key, Mode=OneWay}"
+                                                                 TextWrapping="Wrap" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Width="250"
+                                            <DataGridTemplateColumn Width="*"
+                                                                    MinWidth="100"
                                                                     Header="Value"
                                                                     IsReadOnly="True">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -141,10 +189,11 @@
                                                         <ItemsControl ItemsSource="{Binding Values}">
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <TextBox HorizontalAlignment="Stretch"
-                                                                             BorderThickness="0"
+                                                                    <TextBox VerticalAlignment="Top"
+                                                                             VerticalContentAlignment="Center"
                                                                              IsReadOnly="True"
-                                                                             Text="{Binding ., Mode=OneWay}" />
+                                                                             Text="{Binding ., Mode=OneWay}"
+                                                                             TextWrapping="Wrap" />
                                                                 </DataTemplate>
                                                             </ItemsControl.ItemTemplate>
                                                         </ItemsControl>
@@ -192,19 +241,22 @@
                                               HeadersVisibility="Column"
                                               ItemsSource="{Binding SelectedWebSession.ResponseMessage.Headers, FallbackValue={x:Null}}">
                                         <DataGrid.Columns>
-                                            <DataGridTemplateColumn Width="150"
+                                            <DataGridTemplateColumn Width="*"
+                                                                    MinWidth="100"
                                                                     Header="Key"
                                                                     IsReadOnly="True">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <TextBox HorizontalAlignment="Stretch"
-                                                                 BorderThickness="0"
+                                                        <TextBox VerticalAlignment="Top"
+                                                                 VerticalContentAlignment="Center"
                                                                  IsReadOnly="True"
-                                                                 Text="{Binding Key, Mode=OneWay}" />
+                                                                 Text="{Binding Key, Mode=OneWay}"
+                                                                 TextWrapping="Wrap" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Width="250"
+                                            <DataGridTemplateColumn Width="*"
+                                                                    MinWidth="100"
                                                                     Header="Value"
                                                                     IsReadOnly="True">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -212,10 +264,11 @@
                                                         <ItemsControl ItemsSource="{Binding Values}">
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <TextBox HorizontalAlignment="Stretch"
-                                                                             BorderThickness="0"
+                                                                    <TextBox VerticalAlignment="Top"
+                                                                             VerticalContentAlignment="Center"
                                                                              IsReadOnly="True"
-                                                                             Text="{Binding ., Mode=OneWay}" />
+                                                                             Text="{Binding ., Mode=OneWay}"
+                                                                             TextWrapping="Wrap" />
                                                                 </DataTemplate>
                                                             </ItemsControl.ItemTemplate>
                                                         </ItemsControl>
@@ -250,10 +303,20 @@
                               HeadersVisibility="Column"
                               ItemsSource="{Binding Errors}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Width="*"
-                                                Binding="{Binding ., Mode=OneWay}"
-                                                Header="Exception"
-                                                IsReadOnly="True" />
+                            <DataGridTemplateColumn Width="*"
+                                                    MinWidth="100"
+                                                    Header="Exception"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox VerticalAlignment="Top"
+                                                 VerticalContentAlignment="Center"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding ., Mode=OneWay}"
+                                                 TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

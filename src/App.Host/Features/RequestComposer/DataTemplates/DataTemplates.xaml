@@ -89,55 +89,67 @@
             </StackPanel>
             <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Items}">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn MinWidth="100" Header="Key">
+                    <DataGridTemplateColumn Width="*"
+                                            MinWidth="100"
+                                            Header="Key">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox VerticalAlignment="Center"
+                                <TextBox VerticalAlignment="Top"
                                          VerticalContentAlignment="Center"
                                          IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
-                                         Text="{Binding Key}" />
+                                         Text="{Binding Key}"
+                                         TextWrapping="Wrap" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
-                                <TextBox VerticalAlignment="Center"
+                                <TextBox VerticalAlignment="Top"
                                          VerticalContentAlignment="Center"
                                          IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
-                                         Text="{Binding Key}" />
+                                         Text="{Binding Key}"
+                                         TextWrapping="Wrap" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn MinWidth="100" Header="Value">
+                    <DataGridTemplateColumn Width="*"
+                                            MinWidth="100"
+                                            Header="Value">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox VerticalAlignment="Center"
+                                <TextBox VerticalAlignment="Top"
                                          VerticalContentAlignment="Center"
                                          IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
-                                         Text="{Binding Value}" />
+                                         Text="{Binding Value}"
+                                         TextWrapping="Wrap" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
-                                <TextBox VerticalAlignment="Center"
+                                <TextBox VerticalAlignment="Top"
                                          VerticalContentAlignment="Center"
                                          IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
-                                         Text="{Binding Value}" />
+                                         Text="{Binding Value}"
+                                         TextWrapping="Wrap" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn MinWidth="100" Header="Description">
+                    <DataGridTemplateColumn Width="*"
+                                            MinWidth="100"
+                                            Header="Description">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox VerticalAlignment="Center"
+                                <TextBox VerticalAlignment="Top"
                                          VerticalContentAlignment="Center"
-                                         Text="{Binding Description}" />
+                                         Text="{Binding Description}"
+                                         TextWrapping="Wrap" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
-                                <TextBox VerticalAlignment="Center"
+                                <TextBox VerticalAlignment="Top"
                                          VerticalContentAlignment="Center"
-                                         Text="{Binding Description}" />
+                                         Text="{Binding Description}"
+                                         TextWrapping="Wrap" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
@@ -149,27 +161,31 @@
     <DataTemplate DataType="{x:Type viewModels:ResponseHeadersViewModel}">
         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Items}">
             <DataGrid.Columns>
-                <DataGridTemplateColumn MinWidth="100"
+                <DataGridTemplateColumn Width="*"
+                                        MinWidth="100"
                                         Header="Key"
                                         IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox VerticalAlignment="Center"
+                            <TextBox VerticalAlignment="Top"
                                      VerticalContentAlignment="Center"
                                      IsReadOnly="True"
-                                     Text="{Binding Key, Mode=OneWay}" />
+                                     Text="{Binding Key, Mode=OneWay}"
+                                     TextWrapping="Wrap" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn MinWidth="100"
+                <DataGridTemplateColumn Width="*"
+                                        MinWidth="100"
                                         Header="Value"
                                         IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox VerticalAlignment="Center"
+                            <TextBox VerticalAlignment="Top"
                                      VerticalContentAlignment="Center"
                                      IsReadOnly="True"
-                                     Text="{Binding Value, Mode=OneWay}" />
+                                     Text="{Binding Value, Mode=OneWay}"
+                                     TextWrapping="Wrap" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
