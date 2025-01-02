@@ -4,7 +4,7 @@
 
 namespace Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 
-public sealed class ResponsePreviewViewModel : ResponseItemViewModel
+public sealed class ResponseBodyViewModel : ResponseItemViewModel
 {
     private string? _body;
     private string? _selectedFormat;
@@ -25,7 +25,7 @@ public sealed class ResponsePreviewViewModel : ResponseItemViewModel
         set => SetProperty(ref _selectedFormat, value);
     }
 
-    public ResponsePreviewViewModel()
+    public ResponseBodyViewModel()
     {
         Formats =
         [

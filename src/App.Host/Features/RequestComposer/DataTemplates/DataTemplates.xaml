@@ -55,28 +55,6 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:RequestParametersViewModel}">
-        <DockPanel LastChildFill="True">
-            <ToolBar DockPanel.Dock="Top">
-                <ui:Button MinWidth="100"
-                           Margin="5"
-                           Command="{Binding AddCommand}"
-                           Content="Add" />
-                <ui:Button MinWidth="100"
-                           Margin="5"
-                           Command="{Binding DeleteAllCommand}"
-                           Content="Delete all" />
-            </ToolBar>
-            <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Items}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Key}" Header="Key" />
-                    <DataGridTextColumn Binding="{Binding Value}" Header="Value" />
-                    <DataGridTextColumn Binding="{Binding Description}" Header="Description" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
-    </DataTemplate>
-
     <DataTemplate DataType="{x:Type viewModels:RequestBodyViewModel}">
         <Grid>
             <Grid.RowDefinitions>
@@ -90,24 +68,6 @@
                       SelectedItem="{Binding SelectedFormat}" />
             <TextBox Grid.Row="1"
                      Text="{Binding Body}"
-                     TextWrapping="Wrap"
-                     VerticalScrollBarVisibility="Auto" />
-        </Grid>
-    </DataTemplate>
-
-    <DataTemplate DataType="{x:Type viewModels:RequestAuthViewModel}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <ComboBox Grid.Row="0"
-                      Margin="5"
-                      HorizontalAlignment="Left"
-                      ItemsSource="{Binding TokenTypes}"
-                      SelectedItem="{Binding SelectedTokenType}" />
-            <TextBox Grid.Row="1"
-                     Text="Hello World!"
                      TextWrapping="Wrap"
                      VerticalScrollBarVisibility="Auto" />
         </Grid>
@@ -170,7 +130,7 @@
         </DataGrid>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:ResponsePreviewViewModel}">
+    <DataTemplate DataType="{x:Type viewModels:ResponseBodyViewModel}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -186,32 +146,6 @@
                      TextWrapping="Wrap"
                      VerticalScrollBarVisibility="Auto" />
         </Grid>
-    </DataTemplate>
-
-    <DataTemplate DataType="{x:Type viewModels:CookiesViewModel}">
-        <DockPanel LastChildFill="True">
-            <ToolBar DockPanel.Dock="Top">
-                <ui:Button MinWidth="100"
-                           Margin="5"
-                           Command="{Binding AddCommand}"
-                           Content="Add" />
-                <ui:Button MinWidth="100"
-                           Margin="5"
-                           Command="{Binding DeleteAllCommand}"
-                           Content="Delete all" />
-            </ToolBar>
-            <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Items}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Key}" Header="Key" />
-                    <DataGridTextColumn Binding="{Binding Value}" Header="Value" />
-                    <DataGridTextColumn Binding="{Binding Domain}" Header="Domain" />
-                    <DataGridTextColumn Binding="{Binding Path}" Header="Path" />
-                    <DataGridTextColumn Binding="{Binding Expires}" Header="Expires" />
-                    <DataGridTextColumn Binding="{Binding IsSecure}" Header="Secure" />
-                    <DataGridTextColumn Binding="{Binding IsHttpOnly}" Header="HTTP only" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
     </DataTemplate>
 
 </ResourceDictionary>

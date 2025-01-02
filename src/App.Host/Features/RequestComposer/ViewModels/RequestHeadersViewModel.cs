@@ -19,8 +19,7 @@ public sealed class RequestHeadersViewModel : RequestItemViewModel
     {
         Items =
         [
-            new RequestHeaderViewModel("Content-Type", "application/json", true),
-            new RequestHeaderViewModel("Accept", "application/json", true)
+            new RequestHeaderViewModel("Accept", "*/*", true)
         ];
 
         AddCommand = new RelayCommand(Add);

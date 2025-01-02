@@ -8,7 +8,6 @@ using System.Text.Json;
 using System.Xml;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
-using MimeKit;
 using Spectralyzer.Core;
 using ContentType = MimeKit.ContentType;
 
@@ -16,47 +15,9 @@ namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
 public abstract class WebMessageViewModel
 {
-    private static readonly HashSet<string> JsonMimeTypes = new(StringComparer.InvariantCultureIgnoreCase)
-    {
-        MediaTypeNames.Application.Json,
-        MediaTypeNames.Application.JsonLd,
-        MediaTypeNames.Application.JsonPatch,
-        MediaTypeNames.Application.JsonApi,
-        MediaTypeNames.Application.JsonSequence,
-        MediaTypeNames.Application.ProblemJson,
-        MediaTypeNames.Application.JsonMergePatch,
-        MediaTypeNames.Application.JsonSiren,
-        MediaTypeNames.Application.JsonCollection
-    };
-
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         WriteIndented = true
-    };
-
-    private static readonly HashSet<string> XmlMimeTypes = new(StringComparer.InvariantCultureIgnoreCase)
-    {
-        MediaTypeNames.Application.Xml,
-        MediaTypeNames.Application.Rss,
-        MediaTypeNames.Application.Atom,
-        MediaTypeNames.Application.MathML,
-        MediaTypeNames.Application.Smil,
-        MediaTypeNames.Application.Xaml,
-        MediaTypeNames.Application.Soap,
-        MediaTypeNames.Application.Wsdl,
-        MediaTypeNames.Application.Xslt,
-        MediaTypeNames.Application.XmlDtd,
-        MediaTypeNames.Application.XmlPatch,
-        MediaTypeNames.Application.ProblemXml,
-        MediaTypeNames.Text.Xml,
-        MediaTypeNames.Text.Html,
-        MediaTypeNames.Image.Svg,
-        MediaTypeNames.Document.OpenXmlWord,
-        MediaTypeNames.Document.OpenXmlSpreadsheet,
-        MediaTypeNames.Document.OpenXmlPresentation,
-        MediaTypeNames.Document.OpenDocumentText,
-        MediaTypeNames.Document.OpenDocumentSpreadsheet,
-        MediaTypeNames.Ebook.EPUB
     };
 
     private readonly Lazy<ContentType?> _contentType;
@@ -108,27 +69,6 @@ public abstract class WebMessageViewModel
         return !string.IsNullOrEmpty(bodyAsString) ? new TextDocument(bodyAsString) : new TextDocument();
     }
 
-    private static (bool IsMatch, ContentType? ContentType) FindContentType(WebHeader webHeader)
-    {
-        using var stream = new MemoryStream();
-        using var textWriter = new StreamWriter(stream);
-        textWriter.Write($"{webHeader.Key}: {webHeader.Values[0]}");
-        textWriter.Flush();
-        stream.Position = 0;
-
-        var mimeParser = new MimeParser(stream, true);
-        var headerList = mimeParser.ParseHeaders();
-
-        var contentTypeHeader = headerList.FirstOrDefault(s => s.Id == HeaderId.ContentType);
-        if (contentTypeHeader is null)
-        {
-            return (IsMatch: false, ContentType: null);
-        }
-
-        var contentType = ContentType.Parse(contentTypeHeader.Value);
-        return (IsMatch: true, ContentType: contentType);
-    }
-
     private static string? GetContent(string? mimeType, string? bodyAsString)
     {
         if (string.IsNullOrEmpty(mimeType) || string.IsNullOrEmpty(bodyAsString))
@@ -136,12 +76,12 @@ public abstract class WebMessageViewModel
             return bodyAsString;
         }
 
-        if (JsonMimeTypes.Contains(mimeType))
+        if (KnownFormats.IsJson(mimeType))
         {
             return GetContentAsJson();
         }
 
-        if (XmlMimeTypes.Contains(mimeType))
+        if (KnownFormats.IsXml(mimeType))
         {
             return GetContentAsXml();
         }
@@ -196,7 +136,9 @@ public abstract class WebMessageViewModel
 
     private ContentType? GetContentType()
     {
-        (bool IsMatch, ContentType? ContentType)? header = Headers.Select(FindContentType).FirstOrDefault(h => h.IsMatch);
+        (bool IsMatch, ContentType? ContentType)? header = Headers.SelectMany(header => header.Values.Select(value => (header.Key, Value: value)))
+                                                                  .Select(header => HeaderHelper.FindContentType(header.Key, header.Value))
+                                                                  .FirstOrDefault(header => header.IsMatch);
         return header?.ContentType;
     }
 
@@ -207,14 +149,14 @@ public abstract class WebMessageViewModel
             return FileExtensions.Http;
         }
 
-        if (XmlMimeTypes.Contains(_contentType.Value.MimeType))
-        {
-            return FileExtensions.Xml;
-        }
-
-        if (JsonMimeTypes.Contains(_contentType.Value.MimeType))
+        if (KnownFormats.IsJson(_contentType.Value.MimeType))
         {
             return FileExtensions.Json;
+        }
+
+        if (KnownFormats.IsXml(_contentType.Value.MimeType))
+        {
+            return FileExtensions.Xml;
         }
 
         return FileExtensions.Http;

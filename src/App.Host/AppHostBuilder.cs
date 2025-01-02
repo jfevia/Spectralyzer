@@ -21,12 +21,16 @@ public sealed class AppHostBuilder
         _builder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder();
         _builder.ConfigureServices(ctx =>
         {
+            ctx.AddHttpClient();
+
+            ctx.AddTransient<IWebProxyServerFactory, WebProxyServerFactory>();
+
+            ctx.AddSingleton<MainViewModel>();
+            ctx.AddSingleton<TrafficAnalyzerItem>();
+            ctx.AddSingleton<RequestComposerItem>();
+
             ctx.AddTransient<IExceptionHandler, DefaultExceptionHandler>();
             ctx.AddHostedService<ExceptionHandlerHostedService>();
-            ctx.AddTransient<IWebProxyServerFactory, WebProxyServerFactory>();
-            ctx.AddTransient<MainViewModel>();
-            ctx.AddTransient<TrafficAnalyzerItem>();
-            ctx.AddTransient<RequestComposerItem>();
             ctx.AddHostedService<ApplicationHostService>();
             ctx.AddHostedService<HighlightingDefinitionsHostedService>();
         });
