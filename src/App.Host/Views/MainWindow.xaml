@@ -1,45 +1,39 @@
-﻿<Window x:Class="Spectralyzer.App.Host.Views.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:host="clr-namespace:Spectralyzer.App.Host"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.ViewModels"
-        Title="Spectralyzer"
-        Width="1600"
-        Height="800"
-        d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
-        host:ViewModelLocator.DataContext="{x:Type viewModels:MainViewModel}"
-        mc:Ignorable="d">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Features/RequestComposer/DataTemplates/DataTemplates.xaml" />
-                <ResourceDictionary Source="../Features/TrafficAnalyzer/DataTemplates/DataTemplates.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="200" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" MinWidth="200" />
-        </Grid.ColumnDefinitions>
-        <ListBox Grid.Column="0"
-                 ItemsSource="{Binding Items}"
-                 SelectedItem="{Binding SelectedItem}">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type viewModels:Item}">
-                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <GridSplitter Grid.Column="1"
-                      Width="5"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Stretch" />
-        <ContentControl Grid.Column="2"
-                        Content="{Binding SelectedItem}"
-                        Focusable="False" />
-    </Grid>
-</Window>
+﻿<ui:FluentWindow x:Class="Spectralyzer.App.Host.Views.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:host="clr-namespace:Spectralyzer.App.Host"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:requestComposer="clr-namespace:Spectralyzer.App.Host.Features.RequestComposer.Pages"
+                 xmlns:trafficAnalyzer="clr-namespace:Spectralyzer.App.Host.Features.TrafficAnalyzer.Pages"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.ViewModels"
+                 Title="Spectralyzer"
+                 Width="1200"
+                 Height="800"
+                 d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
+                 host:ViewModelLocator.DataContext="{x:Type viewModels:MainViewModel}"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica"
+                 WindowCornerPreference="Default"
+                 WindowStartupLocation="CenterOwner"
+                 mc:Ignorable="d">
+    <DockPanel LastChildFill="True">
+        <ui:TitleBar Title="Spectralyzer" DockPanel.Dock="Top" />
+        <ui:NavigationView MinHeight="300"
+                           x:Name="NavigationView"
+                           Margin="0"
+                           IsBackButtonVisible="Collapsed"
+                           IsPaneToggleVisible="False"
+                           PaneDisplayMode="LeftFluent">
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem Content="Traffic"
+                                       Icon="{ui:SymbolIcon GlobeSurface24}"
+                                       TargetPageType="{x:Type trafficAnalyzer:TrafficAnalyzerItemPage}" />
+                <ui:NavigationViewItem Content="Create"
+                                       Icon="{ui:SymbolIcon NotepadEdit20}"
+                                       TargetPageType="{x:Type requestComposer:RequestComposerItemPage}" />
+            </ui:NavigationView.MenuItems>
+        </ui:NavigationView>
+    </DockPanel>
+</ui:FluentWindow>

@@ -12,17 +12,19 @@
                 <ui:Button MinWidth="100"
                            Margin="5"
                            helpers:VisibilityHelper.IsCollapsed="{Binding IsCapturingTraffic}"
+                           Appearance="Primary"
                            Command="{Binding StartCaptureCommand}"
                            Content="Start capture" />
                 <ui:Button MinWidth="100"
                            Margin="5"
                            helpers:VisibilityHelper.IsVisible="{Binding IsCapturingTraffic}"
+                           Appearance="Primary"
                            Command="{Binding StopCaptureCommand}"
                            Content="Stop capture" />
-                <TextBlock Margin="5"
-                           VerticalAlignment="Center"
-                           Text="Port:" />
-                <ui:NumberBox MinWidth="200"
+                <ui:TextBlock Margin="5"
+                              VerticalAlignment="Center"
+                              Text="Port:" />
+                <ui:NumberBox MinWidth="100"
                               Margin="5"
                               IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
                               Maximum="65535"

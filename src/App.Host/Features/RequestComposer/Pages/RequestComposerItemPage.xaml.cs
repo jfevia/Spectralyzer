@@ -2,8 +2,12 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-using CommunityToolkit.Mvvm.ComponentModel;
+namespace Spectralyzer.App.Host.Features.RequestComposer.Pages;
 
-namespace Spectralyzer.App.Host.ViewModels;
-
-public class MainViewModel : ObservableObject;
+public partial class RequestComposerItemPage
+{
+    public RequestComposerItemPage()
+    {
+        InitializeComponent();
+    }
+}

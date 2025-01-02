@@ -5,6 +5,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
+using Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 using Spectralyzer.App.Host.ViewModels;
 using Spectralyzer.Core;
 
@@ -22,7 +24,10 @@ public sealed class AppHostBuilder
             ctx.AddTransient<IExceptionHandler, DefaultExceptionHandler>();
             ctx.AddHostedService<ExceptionHandlerHostedService>();
             ctx.AddTransient<IWebProxyServerFactory, WebProxyServerFactory>();
-            ctx.AddTransient<MainViewModel, MainViewModel>();
+            ctx.AddTransient<MainViewModel>();
+            ctx.AddTransient<TrafficAnalyzerItem>();
+            ctx.AddTransient<RequestComposerItem>();
+            ctx.AddHostedService<ApplicationHostService>();
             ctx.AddHostedService<HighlightingDefinitionsHostedService>();
         });
         _builder.ConfigureLogging(ctx =>
