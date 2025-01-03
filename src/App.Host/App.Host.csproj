@@ -36,8 +36,10 @@
             <XamlRuntime>Wpf</XamlRuntime>
             <SubType>Designer</SubType>
         </Page>
-        <Page Update="Features\TrafficAnalyzer\Views\TrafficAnalyzerItemPage.xaml">
+        <Page Update="Features\TrafficAnalyzer\Pages\TrafficAnalyzerItemPage.xaml">
             <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
         </Page>
         <Page Update="Features\RequestComposer\Pages\RequestComposerItemPage.xaml">
             <Generator>MSBuild:Compile</Generator>
