@@ -6,8 +6,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.Features.RequestComposer.ViewModels"
       Title="Request composer"
-      d:DataContext="{d:DesignInstance viewModels:RequestComposerItem}"
-      host:ViewModelLocator.DataContext="{x:Type viewModels:RequestComposerItem}"
+      d:DataContext="{d:DesignInstance viewModels:HttpRequestComposerItem}"
+      host:ViewModelLocator.DataContext="{x:Type viewModels:HttpRequestComposerItem}"
       mc:Ignorable="d">
     <Page.Resources>
         <ResourceDictionary>

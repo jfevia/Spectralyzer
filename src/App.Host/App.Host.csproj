@@ -23,6 +23,8 @@
         <PackageReference Include="CommunityToolkit.Mvvm" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Microsoft.Web.WebView2" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
         <PackageReference Include="WPF-UI" />
     </ItemGroup>
 
@@ -51,6 +53,12 @@
     <ItemGroup>
         <None Remove="Resources\http.xshd" />
         <EmbeddedResource Include="Resources\http.xshd" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="Assets\MonacoEditor\**">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

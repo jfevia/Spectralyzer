@@ -1,9 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-                    xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.Features.RequestComposer.ViewModels">
+                    xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.Features.RequestComposer.ViewModels"
+                    xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf">
 
-    <DataTemplate DataType="{x:Type viewModels:RequestComposerItem}">
+    <DataTemplate DataType="{x:Type viewModels:HttpRequestComposerItem}">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -54,22 +56,22 @@
                               VerticalAlignment="Center"
                               Appearance="Secondary"
                               FontSize="14"
-                              Text="{Binding ResponseDetails.StatusCode, FallbackValue={x:Null}}" />
+                              Text="{Binding HttpResponseDetails.StatusCode, FallbackValue={x:Null}}" />
                 <ui:TextBlock Margin="5"
                               VerticalAlignment="Center"
                               Appearance="Secondary"
                               FontSize="14"
-                              Text="{Binding ResponseDetails.StatusDescription, FallbackValue={x:Null}}" />
+                              Text="{Binding HttpResponseDetails.StatusDescription, FallbackValue={x:Null}}" />
                 <ui:TextBlock Margin="5"
                               VerticalAlignment="Center"
                               Appearance="Secondary"
                               FontSize="14"
-                              Text="{Binding ResponseDetails.Elapsed.TotalMilliseconds, StringFormat={}{0} ms, FallbackValue={x:Null}}" />
+                              Text="{Binding HttpResponseDetails.Elapsed.TotalMilliseconds, StringFormat={}{0} ms, FallbackValue={x:Null}}" />
                 <ui:TextBlock Margin="5"
                               VerticalAlignment="Center"
                               Appearance="Secondary"
                               FontSize="14"
-                              Text="{Binding ResponseDetails.ContentLength, StringFormat={}{0} bytes, FallbackValue={x:Null}}" />
+                              Text="{Binding HttpResponseDetails.ContentLength, StringFormat={}{0} bytes, FallbackValue={x:Null}}" />
             </StackPanel>
             <TabControl Grid.Row="1"
                         Grid.Column="1"
@@ -83,7 +85,7 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:RequestBodyViewModel}">
+    <DataTemplate DataType="{x:Type viewModels:HttpRequestBodyViewModel}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -94,14 +96,24 @@
                       HorizontalAlignment="Left"
                       ItemsSource="{Binding Formats}"
                       SelectedItem="{Binding SelectedFormat}" />
-            <TextBox Grid.Row="1"
-                     Text="{Binding Body}"
-                     TextWrapping="Wrap"
-                     VerticalScrollBarVisibility="Auto" />
+            <wpf:WebView2 x:Name="WebView2"
+                          Grid.Row="1"
+                          Margin="0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="Loaded">
+                        <b:InvokeCommandAction Command="{Binding InitializeCommand}" CommandParameter="{Binding ElementName=WebView2}" />
+                    </b:EventTrigger>
+                    <b:EventTrigger EventName="NavigationCompleted">
+                        <b:InvokeCommandAction Command="{Binding InitializeEditorCommand}" CommandParameter="{Binding ElementName=WebView2}" />
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+            </wpf:WebView2>
         </Grid>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:RequestHeadersViewModel}">
+    <DataTemplate DataType="{x:Type viewModels:HttpRequestHeadersViewModel}">
         <DockPanel LastChildFill="True">
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                 <ui:Button MinWidth="100"
@@ -184,7 +196,7 @@
         </DockPanel>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:ResponseHeadersViewModel}">
+    <DataTemplate DataType="{x:Type viewModels:HttpResponseHeadersViewModel}">
         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Items}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="*"
@@ -219,7 +231,7 @@
         </DataGrid>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:ResponseBodyViewModel}">
+    <DataTemplate DataType="{x:Type viewModels:HttpResponseBodyViewModel}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -230,11 +242,20 @@
                       HorizontalAlignment="Left"
                       ItemsSource="{Binding Formats}"
                       SelectedItem="{Binding SelectedFormat}" />
-            <TextBox Grid.Row="1"
-                     IsReadOnly="True"
-                     Text="{Binding Body}"
-                     TextWrapping="Wrap"
-                     VerticalScrollBarVisibility="Auto" />
+            <wpf:WebView2 x:Name="WebView2"
+                          Grid.Row="1"
+                          Margin="0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="Loaded">
+                        <b:InvokeCommandAction Command="{Binding InitializeCommand}" CommandParameter="{Binding ElementName=WebView2}" />
+                    </b:EventTrigger>
+                    <b:EventTrigger EventName="NavigationCompleted">
+                        <b:InvokeCommandAction Command="{Binding InitializeEditorCommand}" CommandParameter="{Binding ElementName=WebView2}" />
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+            </wpf:WebView2>
         </Grid>
     </DataTemplate>
 

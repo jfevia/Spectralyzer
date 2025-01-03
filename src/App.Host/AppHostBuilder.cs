@@ -23,14 +23,14 @@ public sealed class AppHostBuilder
         _builder.ConfigureServices(ctx =>
         {
             ctx.AddTransient<PerformanceHandler>();
-            ctx.AddHttpClient<RequestComposerItem>("Default")
+            ctx.AddHttpClient<HttpRequestComposerItem>("Default")
                .AddHttpMessageHandler<PerformanceHandler>();
 
             ctx.AddTransient<IWebProxyServerFactory, WebProxyServerFactory>();
 
             ctx.AddSingleton<MainViewModel>();
             ctx.AddSingleton<TrafficAnalyzerItem>();
-            ctx.AddSingleton<RequestComposerItem>();
+            ctx.AddSingleton<HttpRequestComposerItem>();
 
             ctx.AddTransient<IExceptionHandler, DefaultExceptionHandler>();
 

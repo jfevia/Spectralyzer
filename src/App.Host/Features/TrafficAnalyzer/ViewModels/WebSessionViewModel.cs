@@ -3,7 +3,6 @@
 // --------------------------------------------------------------
 
 using System.Diagnostics;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
