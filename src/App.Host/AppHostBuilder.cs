@@ -9,6 +9,7 @@ using Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 using Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 using Spectralyzer.App.Host.ViewModels;
 using Spectralyzer.Core;
+using Spectralyzer.Core.Http;
 
 namespace Spectralyzer.App.Host;
 
@@ -21,7 +22,9 @@ public sealed class AppHostBuilder
         _builder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder();
         _builder.ConfigureServices(ctx =>
         {
-            ctx.AddHttpClient();
+            ctx.AddTransient<PerformanceHandler>();
+            ctx.AddHttpClient<RequestComposerItem>("Default")
+               .AddHttpMessageHandler<PerformanceHandler>();
 
             ctx.AddTransient<IWebProxyServerFactory, WebProxyServerFactory>();
 

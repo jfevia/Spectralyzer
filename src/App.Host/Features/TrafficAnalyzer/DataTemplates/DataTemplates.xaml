@@ -36,8 +36,7 @@
                           VerticalAlignment="Center"
                           Content="Decrypt HTTPS traffic"
                           IsChecked="{Binding DecryptSsl}"
-                          IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
-                          Style="{StaticResource {x:Type CheckBox}}" />
+                          IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}" />
                 <ui:Button MinWidth="100"
                            Margin="5"
                            Command="{Binding ClearSessionsCommand}"

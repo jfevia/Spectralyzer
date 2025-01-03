@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Spectralyzer.App.Host.ViewModels;
+using Spectralyzer.Core.Http;
 
 namespace Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 
@@ -23,6 +24,7 @@ public sealed class RequestComposerItem : Item
 
     public IEnumerable<HttpMethod> Methods { get; }
     public IEnumerable<RequestItemViewModel> RequestItems { get; }
+    public ResponseDetailsViewModel ResponseDetails { get; }
     public IEnumerable<ResponseItemViewModel> ResponseItems { get; }
 
     public HttpMethod? SelectedMethod
@@ -54,6 +56,8 @@ public sealed class RequestComposerItem : Item
             _responseBody,
             _responseHeaders
         ];
+
+        ResponseDetails = new ResponseDetailsViewModel();
 
         Methods =
         [
@@ -95,6 +99,16 @@ public sealed class RequestComposerItem : Item
     {
         _responseHeaders.Items.Clear();
 
+        ResponseDetails.StatusCode = (int)httpResponseMessage.StatusCode;
+        ResponseDetails.StatusDescription = httpResponseMessage.ReasonPhrase;
+
+        if (httpResponseMessage.RequestMessage?.Options.TryGetValue(HttpRequestOptionKeys.Elapsed, out var elapsed) == true)
+        {
+            ResponseDetails.Elapsed = elapsed;
+        }
+
+        ResponseDetails.ContentLength = httpResponseMessage.Content.Headers.ContentLength ?? 0;
+
         foreach (var httpResponseHeader in httpResponseMessage.Headers)
         {
             foreach (var httpResponseHeaderValue in httpResponseHeader.Value)
@@ -109,7 +123,7 @@ public sealed class RequestComposerItem : Item
 
     private async Task SendRequestAsync(CancellationToken cancellationToken)
     {
-        var httpClient = _httpClientFactory.CreateClient();
+        var httpClient = _httpClientFactory.CreateClient("Default");
         var httpRequestMessage = CreateHttpRequestMessage();
         var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 

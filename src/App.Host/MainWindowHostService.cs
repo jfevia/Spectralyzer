@@ -13,16 +13,6 @@ public class MainWindowHostService : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        return HandleActivationAsync();
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-
-    private Task HandleActivationAsync()
-    {
         if (Application.Current.Windows.OfType<MainWindow>().Any())
         {
             return Task.CompletedTask;
@@ -32,6 +22,11 @@ public class MainWindowHostService : IHostedService
         mainWindow.Loaded += OnMainWindowLoaded;
         mainWindow.Show();
 
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
         return Task.CompletedTask;
     }
 

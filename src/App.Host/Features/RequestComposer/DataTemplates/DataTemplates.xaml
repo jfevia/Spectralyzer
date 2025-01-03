@@ -5,11 +5,15 @@
 
     <DataTemplate DataType="{x:Type viewModels:RequestComposerItem}">
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid>
+            <Grid Grid.Row="0" Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -34,26 +38,48 @@
                            Command="{Binding SendRequestCommand}"
                            Content="Send" />
             </Grid>
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TabControl Grid.Column="0" ItemsSource="{Binding RequestItems}">
-                    <TabControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Title}" />
-                        </DataTemplate>
-                    </TabControl.ItemTemplate>
-                </TabControl>
-                <TabControl Grid.Column="1" ItemsSource="{Binding ResponseItems}">
-                    <TabControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Title}" />
-                        </DataTemplate>
-                    </TabControl.ItemTemplate>
-                </TabControl>
-            </Grid>
+            <TabControl Grid.Row="1"
+                        Grid.Column="0"
+                        ItemsSource="{Binding RequestItems}">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Title}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+            </TabControl>
+            <StackPanel Grid.Row="0"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                <ui:TextBlock Margin="5"
+                              VerticalAlignment="Center"
+                              Appearance="Secondary"
+                              FontSize="14"
+                              Text="{Binding ResponseDetails.StatusCode, FallbackValue={x:Null}}" />
+                <ui:TextBlock Margin="5"
+                              VerticalAlignment="Center"
+                              Appearance="Secondary"
+                              FontSize="14"
+                              Text="{Binding ResponseDetails.StatusDescription, FallbackValue={x:Null}}" />
+                <ui:TextBlock Margin="5"
+                              VerticalAlignment="Center"
+                              Appearance="Secondary"
+                              FontSize="14"
+                              Text="{Binding ResponseDetails.Elapsed.TotalMilliseconds, StringFormat={}{0} ms, FallbackValue={x:Null}}" />
+                <ui:TextBlock Margin="5"
+                              VerticalAlignment="Center"
+                              Appearance="Secondary"
+                              FontSize="14"
+                              Text="{Binding ResponseDetails.ContentLength, StringFormat={}{0} bytes, FallbackValue={x:Null}}" />
+            </StackPanel>
+            <TabControl Grid.Row="1"
+                        Grid.Column="1"
+                        ItemsSource="{Binding ResponseItems}">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Title}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+            </TabControl>
         </Grid>
     </DataTemplate>
 
