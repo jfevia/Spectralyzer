@@ -2,7 +2,7 @@
   "name": "Spectralyzer",
   "version": "1.0.0",
   "scripts": {
-    "build-monaco": "xcopy /E /I node_modules\\monaco-editor wwwroot\\monaco-editor"
+    "build": "xcopy /E /I /Y node_modules wwwroot"
   },
   "dependencies": {
     "monaco-editor": "^0.52.2"
