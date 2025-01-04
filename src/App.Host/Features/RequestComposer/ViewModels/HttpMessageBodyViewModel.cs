@@ -34,7 +34,6 @@ public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
 
     public IEnumerable<string> Formats { get; }
     public ICommand InitializeCommand { get; }
-    public ICommand InitializeEditorCommand { get; }
 
     public string? SelectedFormat
     {
@@ -53,8 +52,7 @@ public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
 
         SelectedFormat = Formats.FirstOrDefault();
 
-        InitializeCommand = new RelayCommand<WebView2>(Initialize);
-        InitializeEditorCommand = new AsyncRelayCommand<WebView2>(InitializeEditorAsync);
+        InitializeCommand = new AsyncRelayCommand<WebView2>(InitializeAsync);
     }
 
     protected virtual Task InitializeEditorAsync(MonacoEditorController monacoEditorController, CancellationToken cancellationToken)
@@ -62,7 +60,7 @@ public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
         return Task.CompletedTask;
     }
 
-    private void Initialize(WebView2? obj)
+    private async Task InitializeAsync(WebView2? obj, CancellationToken cancellationToken)
     {
         if (obj is null)
         {
@@ -73,17 +71,8 @@ public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
 
         var source = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\MonacoEditor\Index.html");
         var sourceUri = new Uri(source);
-        _monacoEditorController.NavigateTo(sourceUri);
-    }
 
-    private async Task InitializeEditorAsync(WebView2? obj, CancellationToken cancellationToken)
-    {
-        if (_monacoEditorController is null || obj is null)
-        {
-            return;
-        }
-
-        await _monacoEditorController.InitializeAsync(cancellationToken);
+        await _monacoEditorController.InitializeAsync(sourceUri, cancellationToken);
         OnSelectedFormatChanged(_selectedFormat);
         OnBodyChanged(_body);
         await InitializeEditorAsync(_monacoEditorController, cancellationToken);

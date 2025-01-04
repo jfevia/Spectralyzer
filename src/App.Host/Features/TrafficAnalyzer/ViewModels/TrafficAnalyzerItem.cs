@@ -114,8 +114,8 @@ public sealed class TrafficAnalyzerItem : Item
     private async Task StartCaptureAsync(CancellationToken cancellationToken)
     {
         var webProxyServer = GetOrCreateWebProxyServer();
-        webProxyServer.SendingRequest += OnSendingRequest;
-        webProxyServer.ResponseReceived += OnResponseReceived;
+        webProxyServer.Request += OnRequest;
+        webProxyServer.Response += OnResponse;
         webProxyServer.Error += OnError;
         _webProxyEndpoint = webProxyServer.AddEndpoint(IPAddress.Any, _port, _decryptSsl);
         await webProxyServer.StartAsync(cancellationToken);
@@ -132,8 +132,8 @@ public sealed class TrafficAnalyzerItem : Item
 
         _webProxyServer.ResetSystemProxy();
         _webProxyServer.RemoveEndpoint(_webProxyEndpoint);
-        _webProxyServer.SendingRequest -= OnSendingRequest;
-        _webProxyServer.ResponseReceived -= OnResponseReceived;
+        _webProxyServer.Request -= OnRequest;
+        _webProxyServer.Response -= OnResponse;
         _webProxyServer.Error -= OnError;
         await _webProxyServer.StopAsync(cancellationToken);
         IsCapturingTraffic = false;
@@ -150,11 +150,24 @@ public sealed class TrafficAnalyzerItem : Item
         Errors.Add(e.Exception);
     }
 
-    private void OnResponseReceived(object? sender, WebResponseEventArgs e)
+    private void OnRequest(object? sender, WebRequestEventArgs e)
     {
         if (!Application.Current.Dispatcher.CheckAccess())
         {
-            Application.Current.Dispatcher.Invoke(() => OnResponseReceived(sender, e));
+            Application.Current.Dispatcher.Invoke(() => OnRequest(sender, e));
+            return;
+        }
+
+        var webSession = CreateWebSession(e.WebRequestMessage);
+        _webSessionById[webSession.RequestMessage.RequestId] = webSession;
+        WebSessions.Add(webSession);
+    }
+
+    private void OnResponse(object? sender, WebResponseEventArgs e)
+    {
+        if (!Application.Current.Dispatcher.CheckAccess())
+        {
+            Application.Current.Dispatcher.Invoke(() => OnResponse(sender, e));
             return;
         }
 
@@ -162,19 +175,6 @@ public sealed class TrafficAnalyzerItem : Item
         {
             webSession.ResponseMessage.ProcessMessage(e.WebResponseMessage);
         }
-    }
-
-    private void OnSendingRequest(object? sender, WebRequestEventArgs e)
-    {
-        if (!Application.Current.Dispatcher.CheckAccess())
-        {
-            Application.Current.Dispatcher.Invoke(() => OnSendingRequest(sender, e));
-            return;
-        }
-
-        var webSession = CreateWebSession(e.WebRequestMessage);
-        _webSessionById[webSession.RequestMessage.RequestId] = webSession;
-        WebSessions.Add(webSession);
     }
 
     private void OnWebSessionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

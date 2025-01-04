@@ -14,8 +14,7 @@ using Spectralyzer.Core;
 
 namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
-public abstract class WebMessageViewModel<TMessage> : ObservableObject
-    where TMessage : WebMessage
+public abstract class WebMessageViewModel : ObservableObject
 {
     private static class Format
     {
@@ -46,7 +45,6 @@ public abstract class WebMessageViewModel<TMessage> : ObservableObject
     }
 
     public ICommand InitializeCommand { get; }
-    public ICommand InitializeEditorCommand { get; }
 
     public Guid RequestId { get; }
 
@@ -59,7 +57,7 @@ public abstract class WebMessageViewModel<TMessage> : ObservableObject
     public Version? Version
     {
         get => _version;
-        private set => SetProperty(ref _version, value);
+        protected set => SetProperty(ref _version, value);
     }
 
     protected WebMessageViewModel(Guid requestId)
@@ -72,23 +70,9 @@ public abstract class WebMessageViewModel<TMessage> : ObservableObject
             Format.Xml,
             Format.Fallback
         ];
-        SelectedFormat = Formats.FirstOrDefault();
+        SelectedFormat = Formats.LastOrDefault();
 
-        InitializeCommand = new RelayCommand<WebView2>(Initialize);
-        InitializeEditorCommand = new AsyncRelayCommand<WebView2>(InitializeEditorAsync);
-    }
-
-    public virtual void ProcessMessage(TMessage message)
-    {
-        Headers.Clear();
-
-        foreach (var header in message.Headers)
-        {
-            Headers.Add(header);
-        }
-
-        Body = message.BodyAsString;
-        Version = message.Version;
+        InitializeCommand = new AsyncRelayCommand<WebView2>(InitializeAsync);
     }
 
     protected virtual void OnGeneratingHttpViewBody(StringBuilder stringBuilder)
@@ -123,7 +107,7 @@ public abstract class WebMessageViewModel<TMessage> : ObservableObject
         return stringBuilder.ToString();
     }
 
-    private void Initialize(WebView2? obj)
+    private async Task InitializeAsync(WebView2? obj, CancellationToken cancellationToken)
     {
         if (obj is null)
         {
@@ -134,17 +118,8 @@ public abstract class WebMessageViewModel<TMessage> : ObservableObject
 
         var source = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\MonacoEditor\Index.html");
         var sourceUri = new Uri(source);
-        _monacoEditorController.NavigateTo(sourceUri);
-    }
 
-    private async Task InitializeEditorAsync(WebView2? obj, CancellationToken cancellationToken)
-    {
-        if (_monacoEditorController is null || obj is null)
-        {
-            return;
-        }
-
-        await _monacoEditorController.InitializeAsync(cancellationToken);
+        await _monacoEditorController.InitializeAsync(sourceUri, cancellationToken);
         OnSelectedFormatChanged(_selectedFormat);
         OnBodyChanged(_body);
         await _monacoEditorController.SetIsReadOnlyAsync(true);
@@ -158,7 +133,7 @@ public abstract class WebMessageViewModel<TMessage> : ObservableObject
 
             if (_monacoEditorController is not null && value is not null)
             {
-                await _monacoEditorController.SetContentAsync(value);
+                await _monacoEditorController.SetContentAsync(HttpView);
             }
         }
         catch (Exception ex)
@@ -180,5 +155,27 @@ public abstract class WebMessageViewModel<TMessage> : ObservableObject
         {
             Debug.WriteLine(ex);
         }
+    }
+}
+
+public abstract class WebMessageViewModel<TMessage> : WebMessageViewModel
+    where TMessage : WebMessage
+{
+    protected WebMessageViewModel(Guid requestId)
+        : base(requestId)
+    {
+    }
+
+    public virtual void ProcessMessage(TMessage message)
+    {
+        Headers.Clear();
+
+        foreach (var header in message.Headers)
+        {
+            Headers.Add(header);
+        }
+
+        Body = message.BodyAsString;
+        Version = message.Version;
     }
 }

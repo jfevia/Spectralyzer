@@ -50,12 +50,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Resources\http.xshd" />
-    </ItemGroup>
-
-    <ItemGroup>
         <Content Include="Assets\MonacoEditor\**">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 

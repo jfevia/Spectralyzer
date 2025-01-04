@@ -105,9 +105,6 @@
                     <b:EventTrigger EventName="Loaded">
                         <b:InvokeCommandAction Command="{Binding InitializeCommand}" CommandParameter="{Binding ElementName=WebView2}" />
                     </b:EventTrigger>
-                    <b:EventTrigger EventName="NavigationCompleted">
-                        <b:InvokeCommandAction Command="{Binding InitializeEditorCommand}" CommandParameter="{Binding ElementName=WebView2}" />
-                    </b:EventTrigger>
                 </b:Interaction.Triggers>
             </wpf:WebView2>
         </Grid>
@@ -250,9 +247,6 @@
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="Loaded">
                         <b:InvokeCommandAction Command="{Binding InitializeCommand}" CommandParameter="{Binding ElementName=WebView2}" />
-                    </b:EventTrigger>
-                    <b:EventTrigger EventName="NavigationCompleted">
-                        <b:InvokeCommandAction Command="{Binding InitializeEditorCommand}" CommandParameter="{Binding ElementName=WebView2}" />
                     </b:EventTrigger>
                 </b:Interaction.Triggers>
             </wpf:WebView2>
