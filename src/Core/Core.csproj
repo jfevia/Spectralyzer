@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MimeKit" />
         <PackageReference Include="Unobtanium.Web.Proxy" />
     </ItemGroup>
 

@@ -7,21 +7,21 @@ using Spectralyzer.Core;
 
 namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
-public sealed class WebRequestMessageViewModel : WebMessageViewModel
+public sealed class WebRequestMessageViewModel : WebMessageViewModel<WebRequestMessage>
 {
-    private readonly WebRequestMessage _webRequestMessage;
+    public string HttpMethod { get; }
+    public Uri RequestUri { get; }
 
-    public Uri RequestUri => _webRequestMessage.RequestUri;
-
-    public WebRequestMessageViewModel(WebRequestMessage webRequestMessage)
-        : base(webRequestMessage)
+    public WebRequestMessageViewModel(Guid requestId, Uri requestUri, string method)
+        : base(requestId)
     {
-        _webRequestMessage = webRequestMessage ?? throw new ArgumentNullException(nameof(webRequestMessage));
+        RequestUri = requestUri;
+        HttpMethod = method ?? throw new ArgumentNullException(nameof(method));
     }
 
     protected override void OnGeneratingHttpViewHeaders(StringBuilder stringBuilder)
     {
-        stringBuilder.AppendLine($"{_webRequestMessage.Method} {_webRequestMessage.RequestUri.PathAndQuery}");
+        stringBuilder.AppendLine($"{HttpMethod} {RequestUri.PathAndQuery}");
         base.OnGeneratingHttpViewHeaders(stringBuilder);
     }
 }

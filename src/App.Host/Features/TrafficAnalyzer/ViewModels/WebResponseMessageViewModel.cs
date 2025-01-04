@@ -7,17 +7,33 @@ using Spectralyzer.Core;
 
 namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
-public sealed class WebResponseMessageViewModel : WebMessageViewModel
+public sealed class WebResponseMessageViewModel : WebMessageViewModel<WebResponseMessage>
 {
-    private readonly WebResponseMessage _webResponseMessage;
+    private int? _statusCode;
+    private string? _statusDescription;
 
-    public int StatusCode => _webResponseMessage.StatusCode;
-    public string StatusDescription => _webResponseMessage.StatusDescription;
-
-    public WebResponseMessageViewModel(WebResponseMessage webResponseMessage)
-        : base(webResponseMessage)
+    public int? StatusCode
     {
-        _webResponseMessage = webResponseMessage ?? throw new ArgumentNullException(nameof(webResponseMessage));
+        get => _statusCode;
+        private set => SetProperty(ref _statusCode, value);
+    }
+
+    public string? StatusDescription
+    {
+        get => _statusDescription;
+        private set => SetProperty(ref _statusDescription, value);
+    }
+
+    public WebResponseMessageViewModel(Guid requestId)
+        : base(requestId)
+    {
+    }
+
+    public override void ProcessMessage(WebResponseMessage message)
+    {
+        base.ProcessMessage(message);
+        StatusCode = message.StatusCode;
+        StatusDescription = message.StatusDescription;
     }
 
     protected override void OnGeneratingHttpViewHeaders(StringBuilder stringBuilder)

@@ -2,60 +2,109 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Text.Json;
-using System.Xml;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Highlighting;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Web.WebView2.Wpf;
+using Spectralyzer.App.Host.Controllers;
 using Spectralyzer.Core;
-using ContentType = MimeKit.ContentType;
 
 namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
-public abstract class WebMessageViewModel
+public abstract class WebMessageViewModel<TMessage> : ObservableObject
+    where TMessage : WebMessage
 {
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
+    private static class Format
     {
-        WriteIndented = true
-    };
+        public const string Fallback = "None";
+        public const string Json = "JSON";
+        public const string Xml = "XML";
+    }
 
-    private readonly Lazy<ContentType?> _contentType;
-    private readonly Lazy<DocumentViewModel> _document;
-    private readonly Lazy<DocumentViewModel> _httpDocument;
-    private readonly Lazy<string> _httpView;
-    private readonly WebMessage _webMessage;
+    private string? _body;
+    private string? _httpView;
+    private MonacoEditorController? _monacoEditorController;
+    private string? _selectedFormat;
+    private Version? _version;
 
-    public DocumentViewModel Document => _document.Value;
-    public IReadOnlyList<WebHeader> Headers => _webMessage.Headers;
-    public DocumentViewModel HttpDocument => _httpDocument.Value;
-    public Guid Id => _webMessage.Id;
-    public Version Version => _webMessage.Version;
-
-    protected WebMessageViewModel(WebMessage webMessage)
+    public string? Body
     {
-        _webMessage = webMessage ?? throw new ArgumentNullException(nameof(webMessage));
+        get => _body;
+        set => SetProperty(ref _body, value, OnBodyChanged);
+    }
 
-        _httpView = new Lazy<string>(GetHttpView);
-        _contentType = new Lazy<ContentType?>(GetContentType);
-        _document = new Lazy<DocumentViewModel>(GetDocument);
-        _httpDocument = new Lazy<DocumentViewModel>(GetHttpDocument);
+    public IEnumerable<string> Formats { get; }
+    public ObservableCollection<WebHeader> Headers { get; } = [];
+
+    public string? HttpView
+    {
+        get => _httpView;
+        private set => SetProperty(ref _httpView, value);
+    }
+
+    public ICommand InitializeCommand { get; }
+    public ICommand InitializeEditorCommand { get; }
+
+    public Guid RequestId { get; }
+
+    public string? SelectedFormat
+    {
+        get => _selectedFormat;
+        set => SetProperty(ref _selectedFormat, value, OnSelectedFormatChanged);
+    }
+
+    public Version? Version
+    {
+        get => _version;
+        private set => SetProperty(ref _version, value);
+    }
+
+    protected WebMessageViewModel(Guid requestId)
+    {
+        RequestId = requestId;
+
+        Formats =
+        [
+            Format.Json,
+            Format.Xml,
+            Format.Fallback
+        ];
+        SelectedFormat = Formats.FirstOrDefault();
+
+        InitializeCommand = new RelayCommand<WebView2>(Initialize);
+        InitializeEditorCommand = new AsyncRelayCommand<WebView2>(InitializeEditorAsync);
+    }
+
+    public virtual void ProcessMessage(TMessage message)
+    {
+        Headers.Clear();
+
+        foreach (var header in message.Headers)
+        {
+            Headers.Add(header);
+        }
+
+        Body = message.BodyAsString;
+        Version = message.Version;
     }
 
     protected virtual void OnGeneratingHttpViewBody(StringBuilder stringBuilder)
     {
-        if (string.IsNullOrEmpty(_webMessage.BodyAsString))
+        if (string.IsNullOrEmpty(_body))
         {
             return;
         }
 
         stringBuilder.AppendLine();
-        stringBuilder.AppendLine(_webMessage.BodyAsString);
+        stringBuilder.AppendLine(_body);
     }
 
     protected virtual void OnGeneratingHttpViewHeaders(StringBuilder stringBuilder)
     {
-        foreach (var header in _webMessage.Headers.OrderBy(header => header.Key))
+        foreach (var header in Headers.OrderBy(header => header.Key))
         {
             foreach (var headerValue in header.Values)
             {
@@ -64,121 +113,7 @@ public abstract class WebMessageViewModel
         }
     }
 
-    private static TextDocument CreateTextDocument(string? bodyAsString)
-    {
-        return !string.IsNullOrEmpty(bodyAsString) ? new TextDocument(bodyAsString) : new TextDocument();
-    }
-
-    private static string? GetContent(string? mimeType, string? bodyAsString)
-    {
-        if (string.IsNullOrEmpty(mimeType) || string.IsNullOrEmpty(bodyAsString))
-        {
-            return bodyAsString;
-        }
-
-        if (KnownFormats.IsJson(mimeType))
-        {
-            return GetContentAsJson();
-        }
-
-        if (KnownFormats.IsXml(mimeType))
-        {
-            return GetContentAsXml();
-        }
-
-        return bodyAsString;
-
-        string? GetContentAsJson()
-        {
-            try
-            {
-                var jsonObject = JsonSerializer.Deserialize<object?>(bodyAsString);
-                if (jsonObject is null)
-                {
-                    return null;
-                }
-
-                return JsonSerializer.Serialize(jsonObject, JsonSerializerOptions);
-            }
-            catch (Exception)
-            {
-                return bodyAsString;
-            }
-        }
-
-        string GetContentAsXml()
-        {
-            try
-            {
-                var xmlDocument = new XmlDocument();
-                xmlDocument.LoadXml(bodyAsString);
-
-                using var stringWriter = new StringWriter();
-                using (var xmlTextWriter = new XmlTextWriter(stringWriter))
-                {
-                    xmlTextWriter.Formatting = Formatting.Indented;
-                    xmlDocument.WriteTo(xmlTextWriter);
-                }
-
-                return stringWriter.ToString();
-            }
-            catch (Exception)
-            {
-                return bodyAsString;
-            }
-        }
-    }
-
-    private static IHighlightingDefinition GetHighlightingDefinitionByFileExtension(string name)
-    {
-        return HighlightingManager.Instance.GetDefinitionByExtension(name);
-    }
-
-    private ContentType? GetContentType()
-    {
-        (bool IsMatch, ContentType? ContentType)? header = Headers.SelectMany(header => header.Values.Select(value => (header.Key, Value: value)))
-                                                                  .Select(header => HeaderHelper.FindContentType(header.Key, header.Value))
-                                                                  .FirstOrDefault(header => header.IsMatch);
-        return header?.ContentType;
-    }
-
-    private string GetDetectedHighlightDefinitionName()
-    {
-        if (string.IsNullOrEmpty(_contentType.Value?.MimeType))
-        {
-            return FileExtensions.Http;
-        }
-
-        if (KnownFormats.IsJson(_contentType.Value.MimeType))
-        {
-            return FileExtensions.Json;
-        }
-
-        if (KnownFormats.IsXml(_contentType.Value.MimeType))
-        {
-            return FileExtensions.Xml;
-        }
-
-        return FileExtensions.Http;
-    }
-
-    private DocumentViewModel GetDocument()
-    {
-        var highlightDefinitionName = GetDetectedHighlightDefinitionName();
-        var highlightingDefinition = GetHighlightingDefinitionByFileExtension(highlightDefinitionName);
-        var content = GetContent(_contentType.Value?.MimeType, _webMessage.BodyAsString);
-        var textDocument = CreateTextDocument(content);
-        return new DocumentViewModel(highlightingDefinition, textDocument);
-    }
-
-    private DocumentViewModel GetHttpDocument()
-    {
-        var highlightingDefinition = GetHighlightingDefinitionByFileExtension(FileExtensions.Http);
-        var textDocument = CreateTextDocument(_httpView.Value);
-        return new DocumentViewModel(highlightingDefinition, textDocument);
-    }
-
-    private string GetHttpView()
+    private string GenerateHttpView()
     {
         var stringBuilder = new StringBuilder();
 
@@ -186,5 +121,64 @@ public abstract class WebMessageViewModel
         OnGeneratingHttpViewBody(stringBuilder);
 
         return stringBuilder.ToString();
+    }
+
+    private void Initialize(WebView2? obj)
+    {
+        if (obj is null)
+        {
+            return;
+        }
+
+        _monacoEditorController = new MonacoEditorController(obj);
+
+        var source = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\MonacoEditor\Index.html");
+        var sourceUri = new Uri(source);
+        _monacoEditorController.NavigateTo(sourceUri);
+    }
+
+    private async Task InitializeEditorAsync(WebView2? obj, CancellationToken cancellationToken)
+    {
+        if (_monacoEditorController is null || obj is null)
+        {
+            return;
+        }
+
+        await _monacoEditorController.InitializeAsync(cancellationToken);
+        OnSelectedFormatChanged(_selectedFormat);
+        OnBodyChanged(_body);
+        await _monacoEditorController.SetIsReadOnlyAsync(true);
+    }
+
+    private async void OnBodyChanged(string? value)
+    {
+        try
+        {
+            HttpView = GenerateHttpView();
+
+            if (_monacoEditorController is not null && value is not null)
+            {
+                await _monacoEditorController.SetContentAsync(value);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+        }
+    }
+
+    private async void OnSelectedFormatChanged(string? value)
+    {
+        try
+        {
+            if (_monacoEditorController is not null && value is not null)
+            {
+                await _monacoEditorController.SetLanguageAsync(value);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+        }
     }
 }

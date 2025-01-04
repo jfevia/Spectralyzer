@@ -37,7 +37,6 @@ public sealed class AppHostBuilder
             ctx.AddHostedService<ContainerLocatorHostedService>();
             ctx.AddHostedService<ExceptionHandlerHostedService>();
             ctx.AddHostedService<MainWindowHostService>();
-            ctx.AddHostedService<HighlightingDefinitionsHostedService>();
         });
         _builder.ConfigureLogging(ctx =>
         {

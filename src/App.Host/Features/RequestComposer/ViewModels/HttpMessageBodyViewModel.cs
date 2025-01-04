@@ -13,7 +13,7 @@ namespace Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 
 public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
 {
-    protected static class Format
+    private static class Format
     {
         public const string Fallback = "None";
         public const string Json = "JSON";
@@ -21,6 +21,7 @@ public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
     }
 
     private string? _body;
+    private MonacoEditorController? _monacoEditorController;
     private string? _selectedFormat;
 
     public override string Title => "Body";
@@ -41,8 +42,6 @@ public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
         set => SetProperty(ref _selectedFormat, value, OnSelectedFormatChanged);
     }
 
-    private MonacoEditorController? _monacoEditorController;
-
     protected HttpMessageBodyViewModel()
     {
         Formats =
@@ -56,19 +55,6 @@ public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
 
         InitializeCommand = new RelayCommand<WebView2>(Initialize);
         InitializeEditorCommand = new AsyncRelayCommand<WebView2>(InitializeEditorAsync);
-    }
-
-    private async Task InitializeEditorAsync(WebView2? obj, CancellationToken cancellationToken)
-    {
-        if (_monacoEditorController is null || obj is null)
-        {
-            return;
-        }
-
-        await _monacoEditorController.InitializeAsync(cancellationToken);
-        OnSelectedFormatChanged(_selectedFormat);
-        OnBodyChanged(_body);
-        await InitializeEditorAsync(_monacoEditorController, cancellationToken);
     }
 
     protected virtual Task InitializeEditorAsync(MonacoEditorController monacoEditorController, CancellationToken cancellationToken)
@@ -88,6 +74,19 @@ public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
         var source = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\MonacoEditor\Index.html");
         var sourceUri = new Uri(source);
         _monacoEditorController.NavigateTo(sourceUri);
+    }
+
+    private async Task InitializeEditorAsync(WebView2? obj, CancellationToken cancellationToken)
+    {
+        if (_monacoEditorController is null || obj is null)
+        {
+            return;
+        }
+
+        await _monacoEditorController.InitializeAsync(cancellationToken);
+        OnSelectedFormatChanged(_selectedFormat);
+        OnBodyChanged(_body);
+        await InitializeEditorAsync(_monacoEditorController, cancellationToken);
     }
 
     private async void OnBodyChanged(string? value)

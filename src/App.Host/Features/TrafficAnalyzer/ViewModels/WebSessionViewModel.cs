@@ -8,19 +8,10 @@ namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
 public sealed class WebSessionViewModel : ObservableObject
 {
-    private WebResponseMessageViewModel? _responseMessage;
-
     public int Index { get; }
-
     public string Process { get; }
-
     public WebRequestMessageViewModel RequestMessage { get; }
-
-    public WebResponseMessageViewModel? ResponseMessage
-    {
-        get => _responseMessage;
-        set => SetProperty(ref _responseMessage, value);
-    }
+    public WebResponseMessageViewModel ResponseMessage { get; }
 
     public WebSessionViewModel(int index, Process process, WebRequestMessageViewModel requestMessage)
     {
@@ -29,5 +20,7 @@ public sealed class WebSessionViewModel : ObservableObject
         Index = index;
         Process = $"{process.ProcessName}:{process.Id}";
         RequestMessage = requestMessage ?? throw new ArgumentNullException(nameof(requestMessage));
+        
+        ResponseMessage = new WebResponseMessageViewModel(requestMessage.RequestId);
     }
 }

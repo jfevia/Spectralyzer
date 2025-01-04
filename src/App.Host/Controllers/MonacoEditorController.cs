@@ -3,7 +3,6 @@
 // --------------------------------------------------------------
 
 using System.Web;
-using System.Windows;
 using Microsoft.Web.WebView2.Wpf;
 
 namespace Spectralyzer.App.Host.Controllers;
@@ -17,11 +16,6 @@ public sealed class MonacoEditorController
     public MonacoEditorController(WebView2 webView2)
     {
         _webView2 = webView2 ?? throw new ArgumentNullException(nameof(webView2));
-    }
-
-    public void DispatchScript(string script)
-    {
-        Application.Current.Dispatcher.InvokeAsync(async () => await _webView2.ExecuteScriptAsync(script));
     }
 
     public async Task InitializeAsync(CancellationToken cancellationToken)

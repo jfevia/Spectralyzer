@@ -86,12 +86,7 @@ public sealed class TrafficAnalyzerItem : Item
 
     private static WebRequestMessageViewModel CreateWebRequestMessageViewModel(WebRequestMessage webRequestMessage)
     {
-        return new WebRequestMessageViewModel(webRequestMessage);
-    }
-
-    private static WebResponseMessageViewModel CreateWebResponseMessageViewModel(WebResponseMessage webResponseMessage)
-    {
-        return new WebResponseMessageViewModel(webResponseMessage);
+        return new WebRequestMessageViewModel(webRequestMessage.Id, webRequestMessage.RequestUri, webRequestMessage.Method);
     }
 
     private static WebSessionViewModel CreateWebSessionViewModel(int index, WebRequestMessage webRequestMessage, Process process)
@@ -165,7 +160,7 @@ public sealed class TrafficAnalyzerItem : Item
 
         if (_webSessionById.TryGetValue(e.WebResponseMessage.Id, out var webSession))
         {
-            webSession.ResponseMessage = CreateWebResponseMessageViewModel(e.WebResponseMessage);
+            webSession.ResponseMessage.ProcessMessage(e.WebResponseMessage);
         }
     }
 
@@ -178,7 +173,7 @@ public sealed class TrafficAnalyzerItem : Item
         }
 
         var webSession = CreateWebSession(e.WebRequestMessage);
-        _webSessionById[webSession.RequestMessage.Id] = webSession;
+        _webSessionById[webSession.RequestMessage.RequestId] = webSession;
         WebSessions.Add(webSession);
     }
 

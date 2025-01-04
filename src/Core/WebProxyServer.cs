@@ -109,7 +109,7 @@ public sealed class WebProxyServer : IWebProxyServer
 
         var webRequestMessage = new WebRequestMessage(
             userData.Id,
-            request.Method,
+            request.Method!,
             request.RequestUri,
             request.HttpVersion,
             request.Headers
