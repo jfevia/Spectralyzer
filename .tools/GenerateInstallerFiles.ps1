@@ -21,6 +21,7 @@ function Get-Name {
     $Name = $Name -replace '-', ""
     $Name = $Name -replace 'Debug', ""
     $Name = $Name -replace 'Release', ""
+    return $Name
 }
 
 function Get-RelativePath {
