@@ -79,7 +79,7 @@ public sealed class TrafficAnalyzerItem : Item
 
     private static WebRequestMessageViewModel CreateWebRequestMessageViewModel(WebRequestMessage webRequestMessage)
     {
-        return new WebRequestMessageViewModel(webRequestMessage.Id, webRequestMessage.RequestUri, webRequestMessage.Method);
+        return new WebRequestMessageViewModel(webRequestMessage.Id, webRequestMessage.RequestUri, webRequestMessage.Method, webRequestMessage.BodyAsString, webRequestMessage.Headers);
     }
 
     private static WebSessionViewModel CreateWebSessionViewModel(int index, WebRequestMessage webRequestMessage, Process process)

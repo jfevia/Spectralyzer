@@ -37,9 +37,9 @@ public sealed class MonacoEditorController
         await navigationTask;
     }
 
-    public async Task SetContentAsync(string contents)
+    public async Task SetContentAsync(string? contents)
     {
-        var escapedContents = HttpUtility.JavaScriptStringEncode(contents);
+        var escapedContents = !string.IsNullOrEmpty(contents) ? HttpUtility.JavaScriptStringEncode(contents) : contents;
         await _webView2.ExecuteScriptAsync($"{EditorObject}.setValue(\"{escapedContents}\");");
     }
 

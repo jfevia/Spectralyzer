@@ -3,7 +3,6 @@
 // --------------------------------------------------------------
 
 using System.Net.Http;
-using Spectralyzer.App.Host.Controllers;
 
 namespace Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 
@@ -11,10 +10,9 @@ public sealed class HttpResponseBodyViewModel : HttpMessageBodyViewModel
 {
     public override string Title => "Preview";
 
-    protected override async Task InitializeEditorAsync(MonacoEditorController monacoEditorController)
+    public HttpResponseBodyViewModel()
     {
-        await monacoEditorController.SetIsReadOnlyAsync(true);
-        await base.InitializeEditorAsync(monacoEditorController);
+        IsReadOnly = true;
     }
 
     public async Task ProcessHttpResponseMessageAsync(HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken)
