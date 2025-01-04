@@ -107,7 +107,7 @@ public abstract class WebMessageViewModel : ObservableObject
         return stringBuilder.ToString();
     }
 
-    private async Task InitializeAsync(WebView2? obj, CancellationToken cancellationToken)
+    private async Task InitializeAsync(WebView2? obj)
     {
         if (obj is null)
         {
@@ -119,7 +119,7 @@ public abstract class WebMessageViewModel : ObservableObject
         var source = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\MonacoEditor\Index.html");
         var sourceUri = new Uri(source);
 
-        await _monacoEditorController.InitializeAsync(sourceUri, cancellationToken);
+        await _monacoEditorController.InitializeAsync(sourceUri);
         OnSelectedFormatChanged(_selectedFormat);
         OnBodyChanged(_body);
         await _monacoEditorController.SetIsReadOnlyAsync(true);

@@ -11,10 +11,10 @@ public sealed class HttpResponseBodyViewModel : HttpMessageBodyViewModel
 {
     public override string Title => "Preview";
 
-    protected override async Task InitializeEditorAsync(MonacoEditorController monacoEditorController, CancellationToken cancellationToken)
+    protected override async Task InitializeEditorAsync(MonacoEditorController monacoEditorController)
     {
         await monacoEditorController.SetIsReadOnlyAsync(true);
-        await base.InitializeEditorAsync(monacoEditorController, cancellationToken);
+        await base.InitializeEditorAsync(monacoEditorController);
     }
 
     public async Task ProcessHttpResponseMessageAsync(HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken)

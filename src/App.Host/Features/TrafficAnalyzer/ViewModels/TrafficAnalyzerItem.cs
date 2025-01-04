@@ -18,11 +18,11 @@ namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 public sealed class TrafficAnalyzerItem : Item
 {
     private readonly IWebProxyServerFactory _webProxyServerFactory;
-    private readonly ConcurrentDictionary<Guid, WebSessionViewModel> _webSessionById;
-    private bool _decryptSsl;
+    private readonly ConcurrentDictionary<Guid, WebSessionViewModel> _webSessionById = new();
+    private bool _decryptSsl = true;
     private bool _hasSessions;
     private bool _isCapturingTraffic;
-    private int _port;
+    private int _port = 8000;
     private WebSessionViewModel? _selectedWebSession;
     private WebProxyEndpoint? _webProxyEndpoint;
     private IWebProxyServer? _webProxyServer;
@@ -36,7 +36,7 @@ public sealed class TrafficAnalyzerItem : Item
         set => SetProperty(ref _decryptSsl, value);
     }
 
-    public ObservableCollection<Exception> Errors { get; }
+    public ObservableCollection<Exception> Errors { get; } = [];
 
     public bool HasSessions
     {
@@ -64,20 +64,13 @@ public sealed class TrafficAnalyzerItem : Item
 
     public ICommand StartCaptureCommand { get; }
     public ICommand StopCaptureCommand { get; }
-    public ObservableCollection<WebSessionViewModel> WebSessions { get; }
+    public ObservableCollection<WebSessionViewModel> WebSessions { get; } = [];
 
     public TrafficAnalyzerItem(IWebProxyServerFactory webProxyServerFactory)
     {
         _webProxyServerFactory = webProxyServerFactory ?? throw new ArgumentNullException(nameof(webProxyServerFactory));
 
-        _port = 8000;
-        _decryptSsl = true;
-
-        _webSessionById = new ConcurrentDictionary<Guid, WebSessionViewModel>();
-        WebSessions = [];
         WebSessions.CollectionChanged += OnWebSessionsCollectionChanged;
-
-        Errors = [];
 
         StartCaptureCommand = new AsyncRelayCommand(StartCaptureAsync);
         StopCaptureCommand = new AsyncRelayCommand(StopCaptureAsync);

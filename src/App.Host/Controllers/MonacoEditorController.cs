@@ -21,7 +21,7 @@ public sealed class MonacoEditorController
         _webView2 = webView2 ?? throw new ArgumentNullException(nameof(webView2));
     }
 
-    public async Task InitializeAsync(Uri source, CancellationToken cancellationToken)
+    public async Task InitializeAsync(Uri source)
     {
         if (_isInitialized)
         {

@@ -55,12 +55,12 @@ public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
         InitializeCommand = new AsyncRelayCommand<WebView2>(InitializeAsync);
     }
 
-    protected virtual Task InitializeEditorAsync(MonacoEditorController monacoEditorController, CancellationToken cancellationToken)
+    protected virtual Task InitializeEditorAsync(MonacoEditorController monacoEditorController)
     {
         return Task.CompletedTask;
     }
 
-    private async Task InitializeAsync(WebView2? obj, CancellationToken cancellationToken)
+    private async Task InitializeAsync(WebView2? obj)
     {
         if (obj is null)
         {
@@ -72,10 +72,10 @@ public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel
         var source = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\MonacoEditor\Index.html");
         var sourceUri = new Uri(source);
 
-        await _monacoEditorController.InitializeAsync(sourceUri, cancellationToken);
+        await _monacoEditorController.InitializeAsync(sourceUri);
         OnSelectedFormatChanged(_selectedFormat);
         OnBodyChanged(_body);
-        await InitializeEditorAsync(_monacoEditorController, cancellationToken);
+        await InitializeEditorAsync(_monacoEditorController);
     }
 
     private async void OnBodyChanged(string? value)
