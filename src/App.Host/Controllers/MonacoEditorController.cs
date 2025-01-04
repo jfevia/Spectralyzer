@@ -3,6 +3,7 @@
 // --------------------------------------------------------------
 
 using System.Diagnostics;
+using System.IO;
 using System.Web;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
@@ -19,9 +20,11 @@ public sealed class MonacoEditorController
     public MonacoEditorController(WebView2 webView2)
     {
         _webView2 = webView2 ?? throw new ArgumentNullException(nameof(webView2));
+        _webView2.NavigationCompleted += OnNavigationCompleted;
+        _webView2.WebMessageReceived += OnWebMessageReceived;
     }
 
-    public async Task InitializeAsync(Uri source)
+    public async Task InitializeAsync()
     {
         if (_isInitialized)
         {
@@ -31,9 +34,11 @@ public sealed class MonacoEditorController
         _isInitialized = true;
 
         var navigationTask = WaitForNavigationCompletedAsync();
-        _webView2.NavigationCompleted += OnNavigationCompleted;
         await _webView2.EnsureCoreWebView2Async();
-        _webView2.Source = source;
+
+        var source = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Resources\MonacoEditor\Index.html");
+        _webView2.Source = new Uri(source);
+
         await navigationTask;
     }
 
@@ -74,6 +79,11 @@ public sealed class MonacoEditorController
 
         _webView2.NavigationCompleted += handler;
         return taskCompletionSource.Task;
+    }
+
+    private static void OnWebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
+    {
+        Debug.WriteLine(e.TryGetWebMessageAsString());
     }
 
     private async void OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)

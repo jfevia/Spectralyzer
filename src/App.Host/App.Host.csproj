@@ -48,9 +48,17 @@
             <SubType>Designer</SubType>
         </Page>
     </ItemGroup>
+    
+    <ItemGroup>
+        <None Remove="Assets\node_modules\**" />
+        <Content Include="Assets\node_modules\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
     <ItemGroup>
-        <Content Include="Assets\MonacoEditor\**">
+        <None Remove="Resources\MonacoEditor\Index.html" />
+        <Content Include="Resources\MonacoEditor\Index.html">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>

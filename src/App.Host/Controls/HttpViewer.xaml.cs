@@ -4,7 +4,6 @@
 
 using System.Collections;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
 using Spectralyzer.App.Host.Controllers;
 
@@ -81,9 +80,9 @@ public partial class HttpViewer
                 await _monacoEditorController.SetContentAsync(newValue);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine(ex);
+            // Ignored
         }
     }
 
@@ -98,9 +97,9 @@ public partial class HttpViewer
 
             await _monacoEditorController.SetIsReadOnlyAsync(newValue);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine(ex);
+            // Ignored
         }
     }
 
@@ -113,9 +112,9 @@ public partial class HttpViewer
                 await _monacoEditorController.SetLanguageAsync(value);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Debug.WriteLine(ex);
+            // Ignored
         }
     }
 
@@ -126,11 +125,7 @@ public partial class HttpViewer
             Initialized -= OnInitialized;
 
             _monacoEditorController = new MonacoEditorController(WebView2);
-
-            var source = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Assets\MonacoEditor\Index.html");
-            var sourceUri = new Uri(source);
-
-            await _monacoEditorController.InitializeAsync(sourceUri);
+            await _monacoEditorController.InitializeAsync();
             OnSelectedFormatChanged(SelectedFormat);
             OnBodyChanged(Body);
             OnIsReadOnlyChanged(IsReadOnly);
