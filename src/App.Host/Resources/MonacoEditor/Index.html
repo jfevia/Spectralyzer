@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet"
-          data-name="vs/editor/editor.main"
-          href="../../Assets/node_modules/monaco-editor/min/vs/editor/editor.main.css" />
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <link data-name="../../Assets/wwwroot/monaco-editor/min/vs/editor/editor.main"
+          href="../../Assets/wwwroot/monaco-editor/min/vs/editor/editor.main.css"
+          rel="stylesheet"/>
     <style>
-        html, body { height: 100%;margin: 0; }
-        #root { height: 100%; }
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #root {
+            height: 100%;
+        }
     </style>
     <title>Monaco</title>
 </head>
 <body>
-    <div id="root"></div>
-    <script src="../../Assets/node_modules/monaco-editor/min/vs/loader.js"></script>
-    <script>
-        require.config({ paths: { 'vs': '../../Assets/node_modules/monaco-editor/min/vs' } });
-    </script>
-    <script src="/min/vs/editor/editor.main.js"></script>
+<div id="root"></div>
+<script src="../../Assets/wwwroot/monaco-editor/min/vs/loader.js"></script>
+<script>
+    require.config({paths: {'vs': '../../Assets/wwwroot/monaco-editor/min/vs'}});
+</script>
+<script src="../../Assets/wwwroot/monaco-editor/min/vs/editor/editor.main.js"></script>
 </body>
-</html> 
+</html>

@@ -48,10 +48,10 @@
             <SubType>Designer</SubType>
         </Page>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <None Remove="Assets\node_modules\**" />
-        <Content Include="Assets\node_modules\**">
+        <None Remove="Assets\wwwroot\**" />
+        <Content Include="Assets\wwwroot\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
