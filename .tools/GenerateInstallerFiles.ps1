@@ -3,6 +3,26 @@ param (
     [string]$OutputDir = "bin\Release"
 )
 
+function Get-ShortHash {
+    param(
+        [string]$OriginalValue
+    )
+    $hash = [System.Security.Cryptography.SHA256]::Create().ComputeHash([System.Text.Encoding]::UTF8.GetBytes($OriginalValue))
+    $hashArray = [BitConverter]::ToString($hash)[0..32]
+    return $hashArray -join ''
+}
+
+function Get-Name {
+    param(
+        [string]$OriginalName
+    )
+    $Name = $OriginalName -replace '[\\\/\.\:\-]', ""
+    $Name = Get-ShortHash -OriginalValue $Name
+    $Name = $Name -replace '-', ""
+    $Name = $Name -replace 'Debug', ""
+    $Name = $Name -replace 'Release', ""
+}
+
 function Get-RelativePath {
     param (
         [string]$FromPath,
@@ -62,11 +82,10 @@ function Generate-Components {
     <Fragment>"
 
     foreach ($kvp in $filesByDirectory | Where-Object { $_.RelativePath -ne "" }) {
-        $name = $kvp.RelativePath -replace '[\\\/\.\:\-]', ""
-        $name = $name -replace 'Debug', ""
-        $name = $name -replace 'Release', ""
+        $path = $kvp.RelativePath
+        $name = Get-Name -OriginalName $path
         $wixContent += "
-        <ComponentGroup Id=""${name}ComponentGroup"" Directory=""${name}Folder"">"
+        <ComponentGroup Id=""ComponentGroup_${name}"" Directory=""Folder_${name}"">"
 
         foreach ($file in $kvp.Files) {
             $path = $file# -replace $absoluteDirectory, $RelativePath
@@ -136,13 +155,11 @@ function Generate-Folders {
 
         $path = Get-RelativePath -FromPath $absoluteDirectory -ToPath $currentDirectory
         $directoryName = Split-Path -Path $currentDirectory -Leaf
-        $name = $path -replace '[\\\/\.\:\-]', ""
-        $name = $name -replace 'Debug', ""
-        $name = $name -replace 'Release', ""
+        $name = Get-Name -OriginalName $path
 
         if (-not [string]::IsNullOrEmpty($name)) {
             $wixContent += "
-                    <Directory Id=""${name}Folder"" Name=""$directoryName"">"
+                    <Directory Id=""Folder_${name}"" Name=""$directoryName"">"
         }
 
         $subdirectories = Get-ChildItem -Path $currentDirectory -Directory | ForEach-Object { $_.FullName }
@@ -211,13 +228,11 @@ function Generate-Removals {
         if (-not (Test-Path $currentDirectory -PathType Container)) { continue }
 
         $path = Get-RelativePath -FromPath $absoluteDirectory -ToPath $currentDirectory
-        $name = $path -replace '[\\\/\.\:\-]', ""
-        $name = $name -replace 'Debug', ""
-        $name = $name -replace 'Release', ""
+        $name = Get-Name -OriginalName $path
 
         if (-not [string]::IsNullOrEmpty($name)) {
             $wixContent += "
-                <RemoveFolder Id=""Remove${name}Folder"" Directory=""${name}Folder"" On=""uninstall"" />"
+                <RemoveFolder Id=""Remove${name}Folder"" Directory=""Folder_${name}"" On=""uninstall"" />"
         }
 
         $subdirectories = Get-ChildItem -Path $currentDirectory -Directory | ForEach-Object { $_.FullName }
@@ -278,13 +293,11 @@ function Generate-Package {
         if (-not (Test-Path $currentDirectory -PathType Container)) { continue }
 
         $path = Get-RelativePath -FromPath $absoluteDirectory -ToPath $currentDirectory
-        $name = $path -replace '[\\\/\.\:\-]', ""
-        $name = $name -replace 'Debug', ""
-        $name = $name -replace 'Release', ""
+        $name = Get-Name -OriginalName $path
 
         if (-not [string]::IsNullOrEmpty($name)) {
             $wixContent += "
-            <ComponentGroupRef Id=""${name}ComponentGroup"" />"
+            <ComponentGroupRef Id=""ComponentGroup_${name}"" />"
         }
 
         $subdirectories = Get-ChildItem -Path $currentDirectory -Directory | ForEach-Object { $_.FullName }
