@@ -20,8 +20,8 @@
                  mc:Ignorable="d">
     <DockPanel LastChildFill="True">
         <ui:TitleBar Title="Spectralyzer" DockPanel.Dock="Top" />
-        <ui:NavigationView MinHeight="300"
-                           x:Name="NavigationView"
+        <ui:NavigationView x:Name="NavigationView"
+                           MinHeight="300"
                            Margin="0"
                            IsBackButtonVisible="Collapsed"
                            IsPaneToggleVisible="False"

@@ -8,6 +8,7 @@
       Title="Request composer"
       d:DataContext="{d:DesignInstance viewModels:HttpRequestComposerItem}"
       host:ViewModelLocator.DataContext="{x:Type viewModels:HttpRequestComposerItem}"
+      ScrollViewer.CanContentScroll="False"
       mc:Ignorable="d">
     <Page.Resources>
         <ResourceDictionary>

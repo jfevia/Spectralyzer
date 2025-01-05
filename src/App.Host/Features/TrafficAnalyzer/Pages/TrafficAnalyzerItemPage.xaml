@@ -8,6 +8,7 @@
       Title="Traffic analyzer"
       d:DataContext="{d:DesignInstance viewModels:TrafficAnalyzerItem}"
       host:ViewModelLocator.DataContext="{x:Type viewModels:TrafficAnalyzerItem}"
+      ScrollViewer.CanContentScroll="False"
       mc:Ignorable="d">
     <Page.Resources>
         <ResourceDictionary>

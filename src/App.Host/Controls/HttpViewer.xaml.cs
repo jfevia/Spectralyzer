@@ -110,6 +110,18 @@ public partial class HttpViewer
             if (_monacoEditorController is not null && value is not null)
             {
                 await _monacoEditorController.SetLanguageAsync(value);
+
+                if (IsReadOnly)
+                {
+                    await _monacoEditorController.SetIsReadOnlyAsync(false);
+                }
+
+                await _monacoEditorController.FormatDocumentAsync();
+
+                if (IsReadOnly)
+                {
+                    await _monacoEditorController.SetIsReadOnlyAsync(true);
+                }
             }
         }
         catch (Exception)

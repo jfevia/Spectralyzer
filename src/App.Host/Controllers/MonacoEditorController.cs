@@ -24,6 +24,11 @@ public sealed class MonacoEditorController
         _webView2.WebMessageReceived += OnWebMessageReceived;
     }
 
+    public async Task FormatDocumentAsync()
+    {
+        await _webView2.ExecuteScriptAsync($"{EditorObject}.trigger(\"editor\", \"editor.action.formatDocument\");");
+    }
+
     public async Task InitializeAsync()
     {
         if (_isInitialized)
@@ -50,7 +55,7 @@ public sealed class MonacoEditorController
 
     public async Task SetIsReadOnlyAsync(bool value)
     {
-        await _webView2.ExecuteScriptAsync($"{EditorObject}.updateOptions({{ readOnly: {value.ToString().ToLowerInvariant()} }});");
+        await _webView2.ExecuteScriptAsync($"{EditorObject}.updateOptions({{ readOnly: {value.ToString().ToLowerInvariant()}, wordWrap: 'on' }});");
     }
 
     public async Task SetLanguageAsync(string languageId)
@@ -111,6 +116,8 @@ public sealed class MonacoEditorController
                    monaco.editor.setTheme('{{{uiThemeName}}}');
                    """
             );
+
+            _ = await _webView2.ExecuteScriptAsync("monaco.languages.html.registerHTMLLanguageService('xml', {}, { documentFormattingEdits: true });");
         }
         catch (Exception ex)
         {

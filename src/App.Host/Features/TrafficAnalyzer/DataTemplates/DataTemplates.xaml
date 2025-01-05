@@ -105,7 +105,6 @@
                 <ui:TextBlock Margin="5"
                               VerticalAlignment="Center"
                               Appearance="Secondary"
-                              FontSize="14"
                               Text="Port:" />
                 <ui:NumberBox MinWidth="150"
                               Margin="5"
