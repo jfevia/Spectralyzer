@@ -15,6 +15,7 @@ public static partial class SourceGenerator
         GenerateComponents(outputDirectory);
         GenerateFolders(outputDirectory);
         GenerateRemovals(outputDirectory);
+        GenerateShortcuts(outputDirectory);
         GeneratePackage(outputDirectory);
     }
 
@@ -30,13 +31,22 @@ public static partial class SourceGenerator
         {
             var fileName = Path.GetFileName(file);
             var fileGuid = Guid.NewGuid().ToString("D");
-            var fileId = fileGuid.Replace("-", string.Empty);
+            var fileId = fileGuid.Replace("-", string.Empty).ToUpperInvariant();
             var componentIndentation = new string(' ', (level + 1) * 4);
-            var fileAndRegistryIndentation = new string(' ', (level + 2) * 4);
+            var objectIndentation = new string(' ', (level + 2) * 4);
 
             stringBuilder.AppendLine($"{componentIndentation}<Component Bitness=\"always32\" Guid=\"{fileGuid}\">");
-            stringBuilder.AppendLine($"{fileAndRegistryIndentation}<File Id=\"File_{fileId}\" Name=\"{fileName}\" Source=\"{file}\" />");
-            stringBuilder.AppendLine($"{fileAndRegistryIndentation}<RegistryValue Root=\"HKCU\" Key=\"Software\\Spectralyzer\\Spectralyzer\\Components\" Name=\"File_{fileId}\" Type=\"string\" Value=\"Installed\" KeyPath=\"yes\" />");
+            stringBuilder.AppendLine($"{objectIndentation}<File Id=\"File_{fileId}\" Name=\"{fileName}\" Source=\"{file}\" />");
+            stringBuilder.AppendLine($"{objectIndentation}<RegistryValue Root=\"HKCU\" Key=\"Software\\Spectralyzer\\Spectralyzer\\Components\" Name=\"File_{fileId}\" Type=\"string\" Value=\"Installed\" KeyPath=\"yes\" />");
+
+            if (fileName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+            {
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+                stringBuilder.AppendLine($"{objectIndentation}<RegistryValue Root=\"HKCU\" Key=\"Software\\Spectralyzer\\Spectralyzer\\Components\" Name=\"Shortcut_{fileId}\" Type=\"string\" Value=\"Installed\" />");
+                stringBuilder.AppendLine($"{objectIndentation}<Shortcut Id=\"DesktopShortcut_{fileId}\" Directory=\"DesktopFolder\" Name=\"{fileNameWithoutExtension}\" Target=\"[Folder_{name}]{fileName}\" WorkingDirectory=\"Folder_{name}\" />");
+                stringBuilder.AppendLine($"{objectIndentation}<Shortcut Id=\"StartMenuShortcut_{fileId}\" Directory=\"ProgramMenuFolder\" Name=\"{fileNameWithoutExtension}\" Target=\"[Folder_{name}]{fileName}\" WorkingDirectory=\"Folder_{name}\" />");
+            }
+
             stringBuilder.AppendLine($"{componentIndentation}</Component>");
         }
 
@@ -57,6 +67,9 @@ public static partial class SourceGenerator
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendLine("<Wix xmlns=\"http://wixtoolset.org/schemas/v4/wxs\">");
         stringBuilder.AppendLine("    <Fragment>");
+        stringBuilder.AppendLine("        <Component Id=\"InstallationComponent\" Directory=\"ProductFolder\">");
+        stringBuilder.AppendLine("            <RegistryValue Root=\"HKCU\" Key=\"Software\\Spectralyzer\\Spectralyzer\" Name=\"ProductFolder\" Type=\"string\" Value=\"[ProductFolder]\" KeyPath=\"yes\" />");
+        stringBuilder.AppendLine("        </Component>");
 
         foreach (var directory in Directory.GetDirectories(outputDirectory, "*", SearchOption.AllDirectories))
         {
@@ -91,6 +104,8 @@ public static partial class SourceGenerator
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendLine("<Wix xmlns=\"http://wixtoolset.org/schemas/v4/wxs\">");
         stringBuilder.AppendLine("    <Fragment>");
+        stringBuilder.AppendLine("        <StandardDirectory Id=\"DesktopFolder\" />");
+        stringBuilder.AppendLine("        <StandardDirectory Id=\"ProgramMenuFolder\" />");
         stringBuilder.AppendLine("        <StandardDirectory Id=\"LocalAppDataFolder\">");
         stringBuilder.AppendLine("            <Directory Id=\"ManufacturerFolder\" Name=\"Spectralyzer\">");
         stringBuilder.AppendLine("                <Directory Id=\"ProductFolder\" Name=\"Spectralyzer\">\"");
@@ -122,7 +137,7 @@ public static partial class SourceGenerator
         stringBuilder.AppendLine("        <Media Id=\"1\" CompressionLevel=\"high\" EmbedCab=\"yes\" Cabinet=\"media.cab\" />");
         stringBuilder.AppendLine("        <Feature Id=\"Main\">");
         stringBuilder.AppendLine("            <ComponentRef Id=\"RemoveComponent\" />");
-        stringBuilder.AppendLine("            <ComponentRef Id=\"ShortcutsComponent\" />");
+        stringBuilder.AppendLine("            <ComponentRef Id=\"InstallationComponent\" />");
 
         foreach (var directory in Directory.GetDirectories(outputDirectory, "*", SearchOption.AllDirectories))
         {
@@ -180,6 +195,61 @@ public static partial class SourceGenerator
         {
             GenerateRemoveNodes(outputDirectory, subDirectory, stringBuilder);
         }
+    }
+
+    private static void GenerateShortcutNodes(string outputDirectory, string directory, StringBuilder stringBuilder, int level)
+    {
+        var files = Directory.GetFiles(directory).Where(file => file.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)).ToList();
+        if (files.Count <= 0)
+        {
+            return;
+        }
+
+        var relativePath = GetRelativePath(outputDirectory, directory);
+        var name = GetName(relativePath);
+        var directoryIndentation = new string(' ', level * 4);
+        var componentGroupIndentation = new string(' ', (level + 1) * 4);
+        var componentIndentation = new string(' ', (level + 2) * 4);
+        var shortcutAndRegistryIndentation = new string(' ', (level + 3) * 4);
+
+        stringBuilder.AppendLine($"{directoryIndentation}<DirectoryRef Id=\"Folder_{name}\">");
+        stringBuilder.AppendLine($"{componentGroupIndentation}<ComponentGroup Id=\"ComponentGroup_{name}\" Bitness=\"always32\">");
+
+        foreach (var file in files)
+        {
+            var fileName = Path.GetFileName(file);
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var fileGuid = Guid.NewGuid().ToString("D");
+            var fileId = fileGuid.Replace("-", string.Empty).ToUpperInvariant();
+
+            stringBuilder.AppendLine($"{componentIndentation}<Component Id=\"Shortcut_{fileId}\" Bitness=\"always32\">");
+            stringBuilder.AppendLine($"{shortcutAndRegistryIndentation}<RegistryValue Root=\"HKCU\" Key=\"Software\\Spectralyzer\\Spectralyzer\\Components\" Name=\"Shortcut_{fileId}\" Type=\"string\" Value=\"[File_{fileId}]\" KeyPath=\"yes\" />");
+            stringBuilder.AppendLine($"{shortcutAndRegistryIndentation}<Shortcut Id=\"DesktopShortcut_{fileId}\" Directory=\"DesktopFolder\" Name=\"{fileNameWithoutExtension}\" Target=\"[Folder_{name}]{fileName}\" WorkingDirectory=\"Folder_{name}\" />");
+            stringBuilder.AppendLine($"{shortcutAndRegistryIndentation}<Shortcut Id=\"StartMenuShortcut_{fileId}\" Directory=\"ProgramMenuFolder\" Name=\"{fileNameWithoutExtension}\" Target=\"[Folder_{name}]{fileName}\" WorkingDirectory=\"Folder_{name}\" />");
+            stringBuilder.AppendLine($"{componentIndentation}</Component>");
+        }
+
+        stringBuilder.AppendLine($"{componentGroupIndentation}</ComponentGroup>");
+        stringBuilder.AppendLine($"{directoryIndentation}</DirectoryRef>");
+    }
+
+    private static void GenerateShortcuts(string outputDirectory)
+    {
+        var stringBuilder = new StringBuilder();
+        stringBuilder.AppendLine("<Wix xmlns=\"http://wixtoolset.org/schemas/v4/wxs\">");
+        stringBuilder.AppendLine("    <Fragment>");
+        stringBuilder.AppendLine("        <StandardDirectory Id=\"DesktopFolder\" />");
+        stringBuilder.AppendLine("        <StandardDirectory Id=\"ProgramMenuFolder\" />");
+
+        foreach (var directory in Directory.GetDirectories(outputDirectory, "*", SearchOption.AllDirectories))
+        {
+            GenerateShortcutNodes(outputDirectory, directory, stringBuilder, 3);
+        }
+
+        stringBuilder.AppendLine("    </Fragment>");
+        stringBuilder.AppendLine("</Wix>");
+
+        File.WriteAllText("Shortcuts.wxs", stringBuilder.ToString());
     }
 
     private static string GetName(string originalName)

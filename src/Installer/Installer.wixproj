@@ -21,7 +21,6 @@
         <Compile Include="Folders.wxs" />
         <Compile Include="Package.wxs" />
         <Compile Include="Remove.wxs" />
-        <Compile Include="Shortcuts.wxs" />
         <EmbeddedResource Include="Package.en-us.wxl" />
     </ItemGroup>
 
