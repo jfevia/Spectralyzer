@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using CommandLine;
 
-namespace Spectralyzer.WixGen;
+namespace Spectralyzer.Installer.SourceGenerator;
 
 internal class Program
 {
@@ -24,11 +24,18 @@ internal class Program
                   {
                       Debugger.Launch();
                   }
-                  
-                  var outputDirectory = Path.GetFullPath(options.OutputDirectory);
-                  Console.WriteLine($"Output directory: {outputDirectory}");
 
-                  SourceGenerator.GenerateFolders(outputDirectory);
+                  var @namespace = typeof(Program).Namespace;
+                  Console.WriteLine();
+                  Console.WriteLine($"{@namespace} -> Configuration: {options.Configuration}");
+                  Console.WriteLine($"{@namespace} -> OutputDirectory: {options.OutputDirectory}");
+
+                  var outputDirectory = Path.GetFullPath(options.OutputDirectory);
+                  Console.WriteLine($"{@namespace} -> Resolved absolute path for OutputDirectory: {outputDirectory}");
+
+                  var stopwatch = Stopwatch.StartNew();
+                  SourceGenerator.Generate(outputDirectory);
+                  Console.WriteLine($"{@namespace} -> Generated sources in {stopwatch.ElapsedMilliseconds} milliseconds");
               });
     }
 }
