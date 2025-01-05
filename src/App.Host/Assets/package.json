@@ -1,0 +1,10 @@
+{
+  "name": "Spectralyzer",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "xcopy /E /I /Y node_modules wwwroot"
+  },
+  "dependencies": {
+    "monaco-editor": "^0.52.2"
+  }
+}

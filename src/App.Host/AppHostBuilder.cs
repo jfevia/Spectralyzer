@@ -5,8 +5,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
+using Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 using Spectralyzer.App.Host.ViewModels;
 using Spectralyzer.Core;
+using Spectralyzer.Core.Http;
 
 namespace Spectralyzer.App.Host;
 
@@ -19,11 +22,21 @@ public sealed class AppHostBuilder
         _builder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder();
         _builder.ConfigureServices(ctx =>
         {
-            ctx.AddTransient<IExceptionHandler, DefaultExceptionHandler>();
-            ctx.AddHostedService<ExceptionHandlerHostedService>();
+            ctx.AddTransient<PerformanceHandler>();
+            ctx.AddHttpClient<HttpRequestComposerItem>("Default")
+               .AddHttpMessageHandler<PerformanceHandler>();
+
             ctx.AddTransient<IWebProxyServerFactory, WebProxyServerFactory>();
-            ctx.AddTransient<MainViewModel, MainViewModel>();
-            ctx.AddHostedService<HighlightingDefinitionsHostedService>();
+
+            ctx.AddSingleton<MainViewModel>();
+            ctx.AddSingleton<TrafficAnalyzerItem>();
+            ctx.AddSingleton<HttpRequestComposerItem>();
+
+            ctx.AddTransient<IExceptionHandler, DefaultExceptionHandler>();
+
+            ctx.AddHostedService<ContainerLocatorHostedService>();
+            ctx.AddHostedService<ExceptionHandlerHostedService>();
+            ctx.AddHostedService<MainWindowHostService>();
         });
         _builder.ConfigureLogging(ctx =>
         {

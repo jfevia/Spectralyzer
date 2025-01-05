@@ -2,6 +2,9 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-namespace Spectralyzer.App.Host.ViewModels;
+namespace Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 
-public class MainViewModel : ObservableObject;
+public sealed class HttpRequestBodyViewModel : HttpMessageBodyViewModel
+{
+    public override string Title => "Body";
+}

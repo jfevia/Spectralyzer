@@ -4,4 +4,7 @@
 
 namespace Spectralyzer.App.Host.ViewModels;
 
-public class MainViewModel : ObservableObject;
+public abstract class Item : ObservableObject
+{
+    public abstract string Title { get; }
+}

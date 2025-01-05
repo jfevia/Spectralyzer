@@ -2,6 +2,12 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-namespace Spectralyzer.App.Host.ViewModels;
+namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.Pages;
 
-public class MainViewModel : ObservableObject;
+public partial class TrafficAnalyzerItemPage
+{
+    public TrafficAnalyzerItemPage()
+    {
+        InitializeComponent();
+    }
+}

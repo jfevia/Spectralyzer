@@ -2,6 +2,9 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-namespace Spectralyzer.App.Host.ViewModels;
+namespace Spectralyzer.Core.Http;
 
-public class MainViewModel : ObservableObject;
+public static class HttpRequestOptionKeys
+{
+    public static readonly HttpRequestOptionsKey<TimeSpan> Elapsed = new("Elapsed");
+}

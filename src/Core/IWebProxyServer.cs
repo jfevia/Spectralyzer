@@ -9,9 +9,8 @@ namespace Spectralyzer.Core;
 public interface IWebProxyServer
 {
     event EventHandler<ExceptionEventArgs> Error;
-    event EventHandler<WebResponseEventArgs> ResponseReceived;
-
-    event EventHandler<WebRequestEventArgs> SendingRequest;
+    event EventHandler<WebResponseEventArgs> Response;
+    event EventHandler<WebRequestEventArgs> Request;
 
     WebProxyEndpoint AddEndpoint(IPAddress ipAddress, int port, bool decryptSsl);
     void RemoveEndpoint(WebProxyEndpoint endpoint);

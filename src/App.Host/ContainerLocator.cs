@@ -14,6 +14,13 @@ public static class ContainerLocator
 
     public static IServiceProvider? Current => _current ??= _lazyContainer?.Value;
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static void Reset()
+    {
+        _current = null;
+        _lazyContainer = null;
+    }
+
     public static void Set(Func<IServiceProvider> factory)
     {
         _lazyContainer = new Lazy<IServiceProvider>(factory);

@@ -2,11 +2,12 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-namespace Spectralyzer.Core;
+namespace Spectralyzer.App.Host.Features.RequestComposer.Pages;
 
-public static class FileExtensions
+public partial class RequestComposerItemPage
 {
-    public const string Http = ".http";
-    public const string Json = ".json";
-    public const string Xml = ".xml";
+    public RequestComposerItemPage()
+    {
+        InitializeComponent();
+    }
 }

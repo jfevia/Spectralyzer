@@ -4,11 +4,13 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageVersion Include="CommandLineParser" Version="2.9.1" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageVersion Include="Extended.Wpf.Toolkit" Version="4.6.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
-    <PackageVersion Include="MimeKit" Version="4.9.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+    <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
     <PackageVersion Include="Unobtanium.Web.Proxy" Version="0.1.5" />
+    <PackageVersion Include="WPF-UI" Version="3.0.5" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,263 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Spectralyzer.App.Host.Controls"
+                    xmlns:converters="clr-namespace:Spectralyzer.App.Host.Converters"
+                    xmlns:helpers="clr-namespace:Spectralyzer.App.Host.Helpers"
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                    xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels">
+
+    <DataTemplate DataType="{x:Type viewModels:WebMessageViewModel}">
+        <TabControl>
+            <TabItem Header="Preview">
+                <controls:HttpViewer x:Name="WebView2"
+                                     Margin="0"
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     Body="{Binding Body}"
+                                     FormatItemsSource="{Binding Formats}"
+                                     IsReadOnly="True"
+                                     SelectedFormat="{Binding SelectedFormat}" />
+            </TabItem>
+            <TabItem Header="Headers">
+                <DataGrid HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          AutoGenerateColumns="False"
+                          CanUserSortColumns="True"
+                          EnableRowVirtualization="True"
+                          HeadersVisibility="Column"
+                          ItemsSource="{Binding Headers}">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="*"
+                                                MinWidth="100"
+                                                Header="Key"
+                                                IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox VerticalAlignment="Top"
+                                             VerticalContentAlignment="Center"
+                                             IsReadOnly="True"
+                                             Text="{Binding Key, Mode=OneWay}"
+                                             TextWrapping="Wrap" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="*"
+                                                MinWidth="100"
+                                                Header="Value"
+                                                IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ItemsControl ItemsSource="{Binding Values}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBox VerticalAlignment="Top"
+                                                         VerticalContentAlignment="Center"
+                                                         IsReadOnly="True"
+                                                         Text="{Binding ., Mode=OneWay}"
+                                                         TextWrapping="Wrap" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:WebSessionViewModel}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="200" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" MinWidth="200" />
+            </Grid.ColumnDefinitions>
+            <ContentControl Grid.Column="0"
+                            Content="{Binding RequestMessage}"
+                            Focusable="False" />
+            <GridSplitter Grid.Column="1"
+                          Width="5"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Stretch" />
+            <ContentControl Grid.Column="2"
+                            Content="{Binding ResponseMessage}"
+                            Focusable="False" />
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:TrafficAnalyzerItem}">
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <ui:Button MinWidth="100"
+                           Margin="5"
+                           helpers:VisibilityHelper.IsCollapsed="{Binding IsCapturingTraffic}"
+                           Appearance="Primary"
+                           Command="{Binding StartCaptureCommand}"
+                           Content="Start capture" />
+                <ui:Button MinWidth="100"
+                           Margin="5"
+                           helpers:VisibilityHelper.IsVisible="{Binding IsCapturingTraffic}"
+                           Appearance="Primary"
+                           Command="{Binding StopCaptureCommand}"
+                           Content="Stop capture" />
+                <ui:TextBlock Margin="5"
+                              VerticalAlignment="Center"
+                              Appearance="Secondary"
+                              Text="Port:" />
+                <ui:NumberBox MinWidth="150"
+                              Margin="5"
+                              IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}"
+                              Maximum="65535"
+                              Minimum="1"
+                              Value="{Binding Port}" />
+                <CheckBox Margin="5"
+                          VerticalAlignment="Center"
+                          Content="Decrypt HTTPS traffic"
+                          IsChecked="{Binding DecryptSsl}"
+                          IsEnabled="{Binding IsCapturingTraffic, Converter={x:Static converters:InvertedBoolConverter.Instance}}" />
+                <ui:Button MinWidth="100"
+                           Margin="5"
+                           Command="{Binding ClearSessionsCommand}"
+                           Content="Clear"
+                           IsEnabled="{Binding HasSessions}" />
+            </StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80*" MinHeight="200" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="20*" MinHeight="100" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="35*" MinWidth="200" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="65*" MinWidth="400" />
+                    </Grid.ColumnDefinitions>
+                    <DataGrid Grid.Column="0"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              AutoGenerateColumns="False"
+                              CanUserSortColumns="True"
+                              EnableRowVirtualization="True"
+                              HeadersVisibility="Column"
+                              ItemsSource="{Binding WebSessions}"
+                              SelectedItem="{Binding SelectedWebSession}">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="Auto"
+                                                    MinWidth="50"
+                                                    Header="#"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="5"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding Index, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="Auto"
+                                                    MinWidth="100"
+                                                    Header="Method"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="5"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding RequestMessage.HttpMethod, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="Auto"
+                                                    MinWidth="100"
+                                                    Header="Status"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="5"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding ResponseMessage.StatusDescription, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="Auto"
+                                                    MinWidth="100"
+                                                    Header="Process"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="5"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding Process, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="Auto"
+                                                    MinWidth="100"
+                                                    Header="Host"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="5"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding RequestMessage.RequestUri.Host, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="Auto"
+                                                    MinWidth="200"
+                                                    Header="URL"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="5"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding RequestMessage.RequestUri.PathAndQuery, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <GridSplitter Grid.Column="1"
+                                  Width="5"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Stretch" />
+                    <ContentControl Grid.Column="2"
+                                    Content="{Binding SelectedWebSession}"
+                                    Focusable="False" />
+                </Grid>
+                <GridSplitter Grid.Row="1"
+                              Height="5"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Center" />
+                <Grid Grid.Row="2">
+                    <DataGrid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              AutoGenerateColumns="False"
+                              EnableRowVirtualization="True"
+                              HeadersVisibility="Column"
+                              ItemsSource="{Binding Errors}">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="*"
+                                                    MinWidth="100"
+                                                    Header="Exception"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox VerticalAlignment="Top"
+                                                 VerticalContentAlignment="Center"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding ., Mode=OneWay}"
+                                                 TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </DataTemplate>
+
+</ResourceDictionary>

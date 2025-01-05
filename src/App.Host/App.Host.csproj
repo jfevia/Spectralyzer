@@ -12,6 +12,10 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+    <Target Name="BuildNpm" AfterTargets="Build">
+        <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File ..\..\.tools\BuildNpm.ps1" />
+    </Target>
+
     <!--Workaround: https://github.com/dotnet/wpf/issues/5711-->
     <PropertyGroup>
         <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
@@ -19,10 +23,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AvalonEdit" />
         <PackageReference Include="CommunityToolkit.Mvvm" />
-        <PackageReference Include="Extended.Wpf.Toolkit" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Microsoft.Web.WebView2" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+        <PackageReference Include="WPF-UI" />
     </ItemGroup>
 
     <ItemGroup>
@@ -35,11 +41,30 @@
             <XamlRuntime>Wpf</XamlRuntime>
             <SubType>Designer</SubType>
         </Page>
+        <Page Update="Features\TrafficAnalyzer\Pages\TrafficAnalyzerItemPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Features\RequestComposer\Pages\RequestComposerItemPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Resources\http.xshd" />
-        <EmbeddedResource Include="Resources\http.xshd" />
+        <None Remove="Assets\wwwroot\**" />
+        <Content Include="Assets\wwwroot\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Resources\MonacoEditor\Index.html" />
+        <Content Include="Resources\MonacoEditor\Index.html">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

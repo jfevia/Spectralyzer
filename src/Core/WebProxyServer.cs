@@ -12,10 +12,9 @@ namespace Spectralyzer.Core;
 public sealed class WebProxyServer : IWebProxyServer
 {
     public event EventHandler<ExceptionEventArgs>? Error;
+    public event EventHandler<WebRequestEventArgs>? Request;
+    public event EventHandler<WebResponseEventArgs>? Response;
 
-    public event EventHandler<WebResponseEventArgs>? ResponseReceived;
-
-    public event EventHandler<WebRequestEventArgs>? SendingRequest;
     private readonly ProxyServer _server = new();
 
     public WebProxyEndpoint AddEndpoint(IPAddress ipAddress, int port, bool decryptSsl)
@@ -43,16 +42,16 @@ public sealed class WebProxyServer : IWebProxyServer
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _server.BeforeRequest += OnBeforeRequestAsync;
-        _server.BeforeResponse += OnAfterResponseAsync;
+        _server.BeforeRequest += OnRequestAsync;
+        _server.BeforeResponse += OnResponseAsync;
         _server.ExceptionFunc = OnException;
         await _server.StartAsync(false, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _server.BeforeRequest -= OnBeforeRequestAsync;
-        _server.BeforeResponse -= OnAfterResponseAsync;
+        _server.BeforeRequest -= OnRequestAsync;
+        _server.BeforeResponse -= OnResponseAsync;
         _server.ExceptionFunc = null;
         _server.Stop();
         return Task.CompletedTask;
@@ -63,7 +62,36 @@ public sealed class WebProxyServer : IWebProxyServer
         Error?.Invoke(this, new ExceptionEventArgs(exception));
     }
 
-    private async Task OnAfterResponseAsync(object sender, SessionEventArgs e)
+    private async Task OnRequestAsync(object sender, SessionEventArgs e)
+    {
+        var userData = new UserData(Guid.NewGuid());
+        e.UserData = userData;
+
+        var httpClient = e.HttpClient;
+        var request = httpClient.Request;
+        string? bodyString = null;
+
+        if (request.HasBody)
+        {
+            bodyString = await e.GetRequestBodyAsString();
+        }
+
+        var webRequestMessage = new WebRequestMessage(
+            userData.Id,
+            request.Method!,
+            request.RequestUri,
+            request.HttpVersion,
+            request.Headers
+                   .GetAllHeaders()
+                   .GroupBy(header => header.Name)
+                   .Select(header => new WebHeader(header.Key, header.Select(x => x.Value).ToList()))
+                   .ToList(),
+            bodyString,
+            httpClient.ProcessId.Value);
+        Request?.Invoke(this, new WebRequestEventArgs(webRequestMessage));
+    }
+
+    private async Task OnResponseAsync(object sender, SessionEventArgs e)
     {
         if (e.UserData is not UserData userData)
         {
@@ -90,36 +118,7 @@ public sealed class WebProxyServer : IWebProxyServer
                     .Select(header => new WebHeader(header.Key, header.Select(x => x.Value).ToList()))
                     .ToList(),
             bodyString);
-        ResponseReceived?.Invoke(this, new WebResponseEventArgs(webResponseMessage));
-    }
-
-    private async Task OnBeforeRequestAsync(object sender, SessionEventArgs e)
-    {
-        var userData = new UserData(Guid.NewGuid());
-        e.UserData = userData;
-
-        var httpClient = e.HttpClient;
-        var request = httpClient.Request;
-        string? bodyString = null;
-
-        if (request.HasBody)
-        {
-            bodyString = await e.GetRequestBodyAsString();
-        }
-
-        var webRequestMessage = new WebRequestMessage(
-            userData.Id,
-            request.Method,
-            request.RequestUri,
-            request.HttpVersion,
-            request.Headers
-                   .GetAllHeaders()
-                   .GroupBy(header => header.Name)
-                   .Select(header => new WebHeader(header.Key, header.Select(x => x.Value).ToList()))
-                   .ToList(),
-            bodyString,
-            httpClient.ProcessId.Value);
-        SendingRequest?.Invoke(this, new WebRequestEventArgs(webRequestMessage));
+        Response?.Invoke(this, new WebResponseEventArgs(webResponseMessage));
     }
 
     private sealed class UserData
