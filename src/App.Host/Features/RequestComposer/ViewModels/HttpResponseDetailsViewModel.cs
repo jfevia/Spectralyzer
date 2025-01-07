@@ -3,7 +3,6 @@
 // --------------------------------------------------------------
 
 using System;
-using Spectralyzer.Shared.UI;
 using Spectralyzer.Shared.UI.ComponentModel;
 
 namespace Spectralyzer.App.Host.Features.RequestComposer.ViewModels;

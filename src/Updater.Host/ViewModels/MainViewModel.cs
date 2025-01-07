@@ -24,9 +24,16 @@ public sealed class MainViewModel : ObservableObject
     private readonly TimeProvider _timeProvider;
     private readonly IUpdater _updater;
     private bool _initialized;
+    private double _progress;
 
     public ICommand CancelCommand { get; }
     public ICommand InitializeCommand { get; }
+
+    public double Progress
+    {
+        get => _progress;
+        set => SetProperty(ref _progress, value);
+    }
 
     public MainViewModel(IApplication application, IUpdater updater, IFileSystem fileSystem, TimeProvider timeProvider, IProcess process)
     {
@@ -71,8 +78,22 @@ public sealed class MainViewModel : ObservableObject
         var filePath = _fileSystem.Path.Combine(directory, $"Release-{latestRelease.Version}-{utcNow:yyyy-MM-dd_HH-mm-ss}.{releaseExtension.TrimStart('.')}");
         await using (var fileStream = _fileSystem.FileStream.New(filePath, FileMode.Create, FileAccess.Write))
         {
-            await using var stream = await _updater.GetReleaseInstallerAsync(latestRelease, cancellationToken);
-            await stream.CopyToAsync(fileStream, cancellationToken);
+            var buffer = new byte[8192];
+            long bytesRead = 0;
+            await using var releaseStream = await _updater.GetReleaseInstallerAsync(latestRelease, cancellationToken);
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var chunkBytes = await releaseStream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+                if (chunkBytes == 0)
+                {
+                    break;
+                }
+
+                await fileStream.WriteAsync(buffer.AsMemory(0, chunkBytes), cancellationToken).ConfigureAwait(false);
+                bytesRead += chunkBytes;
+                Progress = bytesRead / (double)releaseStream.Length;
+            }
         }
 
         _process.Start("msiexec.exe", $"/i \"{filePath}\"");

@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics;
-using Spectralyzer.Shared.UI;
 using Spectralyzer.Shared.UI.ComponentModel;
 
 namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;

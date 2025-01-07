@@ -3,7 +3,6 @@
 // --------------------------------------------------------------
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -20,14 +19,12 @@ public class GitHubUpdater : IUpdater
         PropertyNameCaseInsensitive = true
     };
 
-    private readonly HttpClient _httpClient;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly IOptions<GitHubUpdaterOptions> _options;
 
     public GitHubUpdater(IHttpClientFactory httpClientFactory, IOptions<GitHubUpdaterOptions> options)
     {
-        ArgumentNullException.ThrowIfNull(httpClientFactory);
-
-        _httpClient = httpClientFactory.CreateClient("Default");
+        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _options = options ?? throw new ArgumentNullException(nameof(options));
     }
 
@@ -37,7 +34,7 @@ public class GitHubUpdater : IUpdater
         return new Release(gitHubRelease.Id, Version.Parse(gitHubRelease.TagName.TrimStart('v')), gitHubRelease.Assets.First().BrowserDownloadUrl);
     }
 
-    public async Task<Stream> GetReleaseInstallerAsync(Release release, CancellationToken cancellationToken)
+    public async Task<ReleaseStream> GetReleaseInstallerAsync(Release release, CancellationToken cancellationToken)
     {
         var gitHubRelease = await GetReleaseAsync(release.Id.ToString(), cancellationToken);
         if (gitHubRelease.Assets is null || gitHubRelease.Assets.Length == 0)
@@ -46,16 +43,19 @@ public class GitHubUpdater : IUpdater
         }
 
         var asset = gitHubRelease.Assets.First();
-        var assetResponse = await _httpClient.GetAsync(asset.BrowserDownloadUrl, cancellationToken);
+        var httpClient = _httpClientFactory.CreateClient("Assets");
+        var assetResponse = await httpClient.GetAsync(asset.BrowserDownloadUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         assetResponse.EnsureSuccessStatusCode();
 
-        return await assetResponse.Content.ReadAsStreamAsync(cancellationToken);
+        var stream = await assetResponse.Content.ReadAsStreamAsync(cancellationToken);
+        return new ReleaseStream(assetResponse.Content.Headers.ContentLength!.Value, stream);
     }
 
     private async Task<GitHubRelease> GetReleaseAsync(string releaseId, CancellationToken cancellationToken)
     {
         var url = $"{_options.Value.RepositoryUrl}/releases/{releaseId}";
-        var response = await _httpClient.GetAsync(url, cancellationToken);
+        var httpClient = _httpClientFactory.CreateClient("Default");
+        var response = await httpClient.GetAsync(url, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);

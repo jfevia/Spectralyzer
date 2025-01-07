@@ -2,7 +2,6 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-using Spectralyzer.Shared.UI;
 using Spectralyzer.Shared.UI.ComponentModel;
 
 namespace Spectralyzer.App.Host.ViewModels;

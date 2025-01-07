@@ -29,6 +29,7 @@ public sealed class AppHostBuilder
 
             ctx.AddTransient<IUpdater, GitHubUpdater>();
             ctx.AddHttpClient<GitHubUpdater>("Default", httpClient => httpClient.DefaultRequestHeaders.Add("User-Agent", $"{nameof(GitHubUpdater)}/1.0.0"));
+            ctx.AddHttpClient<GitHubUpdater>("Assets", httpClient => httpClient.DefaultRequestHeaders.Add("User-Agent", $"{nameof(GitHubUpdater)}/1.0.0"));
 
             ctx.AddOptions<GitHubUpdaterOptions>();
             ctx.Configure<GitHubUpdaterOptions>(options => options.RepositoryUrl = "https://api.github.com/repos/jfevia/Spectralyzer");
