@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net9.0-windows</TargetFramework>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <ImplicitUsings>disable</ImplicitUsings>
@@ -12,6 +13,13 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
         <PackageReference Include="WPF-UI" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Resources\Logo.png" />
+        <Resource Include="Resources\Logo.png" />
+        <None Remove="Resources\Logo.ico" />
+        <Resource Include="Resources\Logo.ico" />
     </ItemGroup>
 
     <ItemGroup>

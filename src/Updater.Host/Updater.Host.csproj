@@ -7,6 +7,7 @@
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net9.0-windows</TargetFramework>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>disable</ImplicitUsings>
         <UseWPF>true</UseWPF>
@@ -20,10 +21,12 @@
 
     <ItemGroup>
         <PackageReference Include="CommandLineParser" />
-        <PackageReference Include="CommunityToolkit.Mvvm" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" />
-        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
-        <PackageReference Include="WPF-UI" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Shared.Core\Shared.Core.csproj" />
+        <ProjectReference Include="..\Shared.UI\Shared.UI.csproj" />
+        <ProjectReference Include="..\Updater.Core\Updater.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -32,10 +35,6 @@
             <XamlRuntime>Wpf</XamlRuntime>
             <SubType>Designer</SubType>
         </Page>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Shared.UI\Shared.UI.csproj" />
     </ItemGroup>
 
 </Project>

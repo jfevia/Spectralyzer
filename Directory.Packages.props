@@ -8,8 +8,10 @@
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
     <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+    <PackageVersion Include="System.IO.Abstractions" Version="21.2.1" />
     <PackageVersion Include="Unobtanium.Web.Proxy" Version="0.1.5" />
     <PackageVersion Include="WPF-UI" Version="3.0.5" />
   </ItemGroup>

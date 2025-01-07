@@ -19,7 +19,11 @@
                   WindowStartupLocation="CenterOwner"
                   mc:Ignorable="d">
     <DockPanel LastChildFill="True">
-        <wpf:TitleBar Title="Spectralyzer" DockPanel.Dock="Top" />
+        <wpf:TitleBar Title="Spectralyzer" DockPanel.Dock="Top">
+            <wpf:TitleBar.Icon>
+                <wpf:ImageIcon Source="pack://application:,,,/Shared.UI;component/Resources/Logo.ico" />
+            </wpf:TitleBar.Icon>
+        </wpf:TitleBar>
         <wpf:NavigationView x:Name="NavigationView"
                             MinHeight="300"
                             Margin="0"
