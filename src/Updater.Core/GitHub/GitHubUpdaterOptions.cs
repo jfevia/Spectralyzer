@@ -2,7 +2,7 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-namespace Spectralyzer.Updater.Core;
+namespace Spectralyzer.Updater.Core.GitHub;
 
 public sealed class GitHubUpdaterOptions
 {

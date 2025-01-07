@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 
-namespace Spectralyzer.Updater.Core;
+namespace Spectralyzer.Updater.Core.GitHub;
 
 public class GitHubUpdater : IUpdater
 {
@@ -19,12 +19,14 @@ public class GitHubUpdater : IUpdater
         PropertyNameCaseInsensitive = true
     };
 
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClient _httpClient;
     private readonly IOptions<GitHubUpdaterOptions> _options;
 
     public GitHubUpdater(IHttpClientFactory httpClientFactory, IOptions<GitHubUpdaterOptions> options)
     {
-        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+        ArgumentNullException.ThrowIfNull(httpClientFactory);
+
+        _httpClient = httpClientFactory.CreateClient("Default");
         _options = options ?? throw new ArgumentNullException(nameof(options));
     }
 
@@ -43,8 +45,7 @@ public class GitHubUpdater : IUpdater
         }
 
         var asset = gitHubRelease.Assets.First();
-        var httpClient = _httpClientFactory.CreateClient("Assets");
-        var assetResponse = await httpClient.GetAsync(asset.BrowserDownloadUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        var assetResponse = await _httpClient.GetAsync(asset.BrowserDownloadUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         assetResponse.EnsureSuccessStatusCode();
 
         var stream = await assetResponse.Content.ReadAsStreamAsync(cancellationToken);
@@ -54,8 +55,7 @@ public class GitHubUpdater : IUpdater
     private async Task<GitHubRelease> GetReleaseAsync(string releaseId, CancellationToken cancellationToken)
     {
         var url = $"{_options.Value.RepositoryUrl}/releases/{releaseId}";
-        var httpClient = _httpClientFactory.CreateClient("Default");
-        var response = await httpClient.GetAsync(url, cancellationToken);
+        var response = await _httpClient.GetAsync(url, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);

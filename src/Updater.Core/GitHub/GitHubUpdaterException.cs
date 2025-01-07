@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Spectralyzer.Updater.Core;
+namespace Spectralyzer.Updater.Core.GitHub;
 
 public sealed class GitHubUpdaterException : Exception
 {

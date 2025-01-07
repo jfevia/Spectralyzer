@@ -5,7 +5,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace Spectralyzer.Updater.Core;
+namespace Spectralyzer.Updater.Core.GitHub;
 
 [SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Global")]
 internal class GitHubRelease
