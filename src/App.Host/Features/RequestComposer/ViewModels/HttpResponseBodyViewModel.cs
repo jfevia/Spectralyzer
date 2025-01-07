@@ -3,6 +3,8 @@
 // --------------------------------------------------------------
 
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 

@@ -10,6 +10,7 @@ using Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 using Spectralyzer.App.Host.ViewModels;
 using Spectralyzer.Core;
 using Spectralyzer.Core.Http;
+using Spectralyzer.Shared.UI;
 
 namespace Spectralyzer.App.Host;
 
@@ -29,30 +30,16 @@ public sealed class AppHostBuilder
             ctx.AddTransient<IWebProxyServerFactory, WebProxyServerFactory>();
 
             ctx.AddSingleton<MainViewModel>();
+
             ctx.AddSingleton<TrafficAnalyzerItem>();
             ctx.AddSingleton<HttpRequestComposerItem>();
 
-            ctx.AddTransient<IExceptionHandler, DefaultExceptionHandler>();
+            ctx.AddSharedUI();
 
-            ctx.AddHostedService<ContainerLocatorHostedService>();
-            ctx.AddHostedService<ExceptionHandlerHostedService>();
             ctx.AddHostedService<MainWindowHostService>();
         });
-        _builder.ConfigureLogging(ctx =>
-        {
-            ctx.ClearProviders();
-            ctx.AddConsole();
-            ctx.AddDebug();
-            ctx.AddEventLog();
-            ctx.SetMinimumLevel(LogLevel.Trace);
-        });
-#if ENVIRONMENT_DEVELOPMENT
-        _builder.UseEnvironment(Environments.Development);
-#elif ENVIRONMENT_STAGING
-        _builder.UseEnvironment(Environments.Staging);
-#elif ENVIRONMENT_PRODUCTION
-        _builder.UseEnvironment(Environments.Production);
-#endif
+        _builder.ConfigureLogging(LogLevel.Trace);
+        _builder.ConfigureEnvironment();
     }
 
     public AppHost Build()

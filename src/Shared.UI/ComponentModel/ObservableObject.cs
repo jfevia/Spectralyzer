@@ -2,7 +2,9 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-namespace Spectralyzer.App.Host;
+using System;
+
+namespace Spectralyzer.Shared.UI.ComponentModel;
 
 public abstract class ObservableObject : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
 {

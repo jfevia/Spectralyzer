@@ -8,7 +8,7 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net9.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <ImplicitUsings>disable</ImplicitUsings>
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
@@ -23,15 +23,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Mvvm" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="Microsoft.Web.WebView2" />
-        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
-        <PackageReference Include="WPF-UI" />
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Shared.Core\Shared.Core.csproj" />
+        <ProjectReference Include="..\Shared.UI\Shared.UI.csproj" />
         <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>
 

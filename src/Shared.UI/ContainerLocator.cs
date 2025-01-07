@@ -2,9 +2,10 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
 using System.ComponentModel;
 
-namespace Spectralyzer.App.Host;
+namespace Spectralyzer.Shared.UI;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class ContainerLocator

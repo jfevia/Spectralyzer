@@ -5,7 +5,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Spectralyzer.App.Host.Helpers;
+namespace Spectralyzer.Shared.UI.Helpers;
 
 public static class VisibilityHelper
 {

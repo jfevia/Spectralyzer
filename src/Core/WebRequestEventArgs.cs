@@ -2,6 +2,8 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
+
 namespace Spectralyzer.Core;
 
 public sealed class WebRequestEventArgs : EventArgs

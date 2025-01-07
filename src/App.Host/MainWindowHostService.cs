@@ -2,6 +2,9 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.Hosting;
 using Spectralyzer.App.Host.Views;

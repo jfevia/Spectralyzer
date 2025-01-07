@@ -2,10 +2,11 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Spectralyzer.App.Host;
+namespace Spectralyzer.Shared.UI;
 
 public static class ViewModelLocator
 {

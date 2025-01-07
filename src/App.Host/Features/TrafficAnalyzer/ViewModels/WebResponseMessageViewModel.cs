@@ -2,6 +2,7 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
 using System.Text;
 using Spectralyzer.Core;
 

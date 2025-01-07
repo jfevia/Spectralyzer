@@ -2,7 +2,9 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-namespace Spectralyzer.App.Host;
+using System.Collections.Generic;
+
+namespace Spectralyzer.Shared.Core.Collections.Generic;
 
 public static class CollectionExtensions
 {

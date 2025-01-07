@@ -2,9 +2,12 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Spectralyzer.App.Host;
+namespace Spectralyzer.Shared.UI;
 
 public sealed class DefaultExceptionHandler : IExceptionHandler
 {

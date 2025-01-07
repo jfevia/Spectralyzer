@@ -2,8 +2,10 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;

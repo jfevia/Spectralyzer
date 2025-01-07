@@ -2,10 +2,12 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-namespace Spectralyzer.App.Host;
+namespace Spectralyzer.Shared.UI;
 
-public interface IExceptionHandler
+public sealed class Application : IApplication
 {
-    Task StartAsync(CancellationToken cancellationToken);
-    Task StopAsync(CancellationToken cancellationToken);
+    public void Shutdown()
+    {
+        System.Windows.Application.Current.Shutdown();
+    }
 }

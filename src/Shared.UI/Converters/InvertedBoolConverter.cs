@@ -2,10 +2,11 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Spectralyzer.App.Host.Converters;
+namespace Spectralyzer.Shared.UI.Converters;
 
 [ValueConversion(typeof(bool), typeof(bool))]
 public sealed class InvertedBoolConverter : IValueConverter

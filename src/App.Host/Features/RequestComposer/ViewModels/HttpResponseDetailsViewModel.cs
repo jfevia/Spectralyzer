@@ -2,6 +2,10 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
+using Spectralyzer.Shared.UI;
+using Spectralyzer.Shared.UI.ComponentModel;
+
 namespace Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 
 public sealed class HttpResponseDetailsViewModel : ObservableObject

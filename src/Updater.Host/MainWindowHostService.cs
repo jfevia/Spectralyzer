@@ -2,28 +2,32 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.Extensions.Hosting;
+using Spectralyzer.Updater.Host.Views;
 
-namespace Spectralyzer.App.Host;
+namespace Spectralyzer.Updater.Host;
 
-public sealed class ContainerLocatorHostedService : IHostedService
+public class MainWindowHostService : IHostedService
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public ContainerLocatorHostedService(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-    }
-
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        ContainerLocator.Set(() => _serviceProvider);
+        if (Application.Current.Windows.OfType<MainWindow>().Any())
+        {
+            return Task.CompletedTask;
+        }
+
+        var mainWindow = new MainWindow();
+        mainWindow.Show();
+
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        ContainerLocator.Reset();
         return Task.CompletedTask;
     }
 }
