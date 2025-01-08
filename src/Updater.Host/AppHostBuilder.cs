@@ -11,6 +11,8 @@ using Spectralyzer.Shared.Core.Diagnostics;
 using Spectralyzer.Shared.UI;
 using Spectralyzer.Updater.Core;
 using Spectralyzer.Updater.Core.GitHub;
+using Spectralyzer.Updater.Core.GitHub.Releases;
+using Spectralyzer.Updater.Core.Windows.Installer;
 using Spectralyzer.Updater.Host.ViewModels;
 
 namespace Spectralyzer.Updater.Host;
@@ -28,11 +30,13 @@ public sealed class AppHostBuilder
             ctx.AddTransient<IProcess, Process>();
             ctx.AddSingleton(TimeProvider.System);
 
-            ctx.AddTransient<IUpdater, GitHubUpdater>();
-            ctx.AddHttpClient<GitHubUpdater>("Default", httpClient => httpClient.DefaultRequestHeaders.Add("User-Agent", $"{nameof(GitHubUpdater)}/1.0.0"));
+            ctx.AddTransient<IReleaseClient, GitHubReleaseClient>();
+            ctx.AddHttpClient<GitHubReleaseClient>("Default", httpClient => httpClient.DefaultRequestHeaders.Add("User-Agent", $"{nameof(GitHubReleaseClient)}/1.0.0"));
 
-            ctx.AddOptions<GitHubUpdaterOptions>();
-            ctx.Configure<GitHubUpdaterOptions>(options => options.RepositoryUrl = "https://api.github.com/repos/jfevia/Spectralyzer");
+            ctx.AddOptions<GitHubReleaseClientOptions>();
+            ctx.Configure<GitHubReleaseClientOptions>(options => options.RepositoryUrl = "https://api.github.com/repos/jfevia/Spectralyzer");
+
+            ctx.AddTransient<IInstaller, WindowsInstaller>();
 
             ctx.AddSingleton<MainViewModel>();
 

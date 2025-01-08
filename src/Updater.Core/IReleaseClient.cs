@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Spectralyzer.Updater.Core;
 
-public interface IUpdater
+public interface IReleaseClient
 {
     Task<Release> GetLatestReleaseAsync(CancellationToken cancellationToken);
     Task<ReleaseStream> GetReleaseInstallerAsync(Release release, CancellationToken cancellationToken);

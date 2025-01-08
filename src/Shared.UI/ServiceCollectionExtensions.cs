@@ -13,10 +13,24 @@ public static class ServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.AddTransient<IApplication, Application>();
+        services.AddApplication();
+        services.AddDefaultExceptionHandler();
+        services.AddContainerLocator();
+    }
 
-        services.AddTransient<IExceptionHandler, DefaultExceptionHandler>();
+    private static void AddApplication(this IServiceCollection services)
+    {
+        services.AddTransient<IApplication, Application>();
+    }
+
+    private static void AddContainerLocator(this IServiceCollection services)
+    {
         services.AddHostedService<ContainerLocatorHostedService>();
+    }
+
+    private static void AddDefaultExceptionHandler(this IServiceCollection services)
+    {
+        services.AddTransient<IExceptionHandler, DefaultExceptionHandler>();
         services.AddHostedService<ExceptionHandlerHostedService>();
     }
 }

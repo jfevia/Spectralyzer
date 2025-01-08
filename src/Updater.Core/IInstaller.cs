@@ -2,9 +2,9 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-namespace Spectralyzer.Updater.Core.GitHub;
+namespace Spectralyzer.Updater.Core;
 
-public sealed class GitHubUpdaterOptions
+public interface IInstaller
 {
-    public string RepositoryUrl { get; set; } = null!;
+    void Install(string filePath);
 }

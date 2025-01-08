@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using Spectralyzer.Shared.Core.Diagnostics;
 using Spectralyzer.Shared.UI;
 using Spectralyzer.Shared.UI.ComponentModel;
 using Spectralyzer.Updater.Core;
@@ -20,9 +19,10 @@ public sealed class MainViewModel : ObservableObject
 {
     private readonly IApplication _application;
     private readonly IFileSystem _fileSystem;
-    private readonly IProcess _process;
+    private readonly IInstaller _installer;
+    private readonly IReleaseClient _releaseClient;
+    private readonly CancellationTokenSource _taskCancellationSource;
     private readonly TimeProvider _timeProvider;
-    private readonly IUpdater _updater;
     private bool _initialized;
     private double _progress;
 
@@ -32,16 +32,18 @@ public sealed class MainViewModel : ObservableObject
     public double Progress
     {
         get => _progress;
-        set => SetProperty(ref _progress, value);
+        private set => SetProperty(ref _progress, value);
     }
 
-    public MainViewModel(IApplication application, IUpdater updater, IFileSystem fileSystem, TimeProvider timeProvider, IProcess process)
+    public MainViewModel(IApplication application, IReleaseClient releaseClient, IFileSystem fileSystem, TimeProvider timeProvider, IInstaller installer)
     {
         _application = application ?? throw new ArgumentNullException(nameof(application));
-        _updater = updater ?? throw new ArgumentNullException(nameof(updater));
+        _releaseClient = releaseClient ?? throw new ArgumentNullException(nameof(releaseClient));
         _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
-        _process = process ?? throw new ArgumentNullException(nameof(process));
+        _installer = installer ?? throw new ArgumentNullException(nameof(installer));
+
+        _taskCancellationSource = new CancellationTokenSource();
 
         InitializeCommand = new AsyncRelayCommand(InitializeAsync);
         CancelCommand = new RelayCommand(Cancel);
@@ -49,6 +51,7 @@ public sealed class MainViewModel : ObservableObject
 
     private void Cancel()
     {
+        _taskCancellationSource.Cancel();
         _application.Shutdown();
     }
 
@@ -61,8 +64,9 @@ public sealed class MainViewModel : ObservableObject
 
         _initialized = true;
 
+        var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_taskCancellationSource.Token, cancellationToken);
         var currentVersion = Version.Parse("1.0.0");
-        var latestRelease = await _updater.GetLatestReleaseAsync(cancellationToken);
+        var latestRelease = await _releaseClient.GetLatestReleaseAsync(linkedTokenSource.Token);
         var isUpdateAvailable = latestRelease.Version >= currentVersion;
 
         if (!isUpdateAvailable)
@@ -76,27 +80,28 @@ public sealed class MainViewModel : ObservableObject
         var utcNow = _timeProvider.GetUtcNow();
         var releaseExtension = _fileSystem.Path.GetExtension(latestRelease.Url);
         var filePath = _fileSystem.Path.Combine(directory, $"Release-{latestRelease.Version}-{utcNow:yyyy-MM-dd_HH-mm-ss}.{releaseExtension.TrimStart('.')}");
+
         await using (var fileStream = _fileSystem.FileStream.New(filePath, FileMode.Create, FileAccess.Write))
         {
             var buffer = new byte[8192];
             long bytesRead = 0;
-            await using var releaseStream = await _updater.GetReleaseInstallerAsync(latestRelease, cancellationToken);
+            await using var releaseStream = await _releaseClient.GetReleaseInstallerAsync(latestRelease, linkedTokenSource.Token);
             while (true)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                var chunkBytes = await releaseStream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+                linkedTokenSource.Token.ThrowIfCancellationRequested();
+                var chunkBytes = await releaseStream.ReadAsync(buffer, linkedTokenSource.Token).ConfigureAwait(false);
                 if (chunkBytes == 0)
                 {
                     break;
                 }
 
-                await fileStream.WriteAsync(buffer.AsMemory(0, chunkBytes), cancellationToken).ConfigureAwait(false);
+                await fileStream.WriteAsync(buffer.AsMemory(0, chunkBytes), linkedTokenSource.Token).ConfigureAwait(false);
                 bytesRead += chunkBytes;
                 Progress = bytesRead / (double)releaseStream.Length;
             }
         }
 
-        _process.Start("msiexec.exe", $"/i \"{filePath}\"");
+        _installer.Install(filePath);
         _application.Shutdown();
     }
 }
