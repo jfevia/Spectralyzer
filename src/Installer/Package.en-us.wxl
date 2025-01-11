@@ -1,9 +1,5 @@
 ﻿<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="en-US">
 
     <String Id="DowngradeError" Value="A newer version of [ProductName] is already installed."/>
-    <String Id="Product" Value="Spectralyzer"/>
-    <String Id="Manufacturer" Value="Jesus Fernandez"/>
-    <String Id="ShortcutDescription" Value="A tool for capturing, inspecting, and analyzing web traffic"/>
-    <String Id="ShortcutName" Value="Spectralyzer"/>
 
 </WixLocalization>

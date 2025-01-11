@@ -13,13 +13,13 @@ namespace Spectralyzer.Installer.SourceGenerator;
 
 public static partial class SourceGenerator
 {
-    public static void Generate(string outputDirectory)
+    public static void Generate(string outputDirectory, string manufacturerName, string productName, string version)
     {
         GenerateComponents(outputDirectory);
         GenerateFolders(outputDirectory);
         GenerateRemovals(outputDirectory);
         GenerateShortcuts(outputDirectory);
-        GeneratePackage(outputDirectory);
+        GeneratePackage(outputDirectory, manufacturerName, productName, version);
     }
 
     private static void GenerateComponentNodes(string outputDirectory, string directory, StringBuilder stringBuilder, int level)
@@ -127,13 +127,13 @@ public static partial class SourceGenerator
         File.WriteAllText("Folders.wxs", stringBuilder.ToString());
     }
 
-    private static void GeneratePackage(string outputDirectory)
+    private static void GeneratePackage(string outputDirectory, string manufacturerName, string productName, string version)
     {
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendLine("<Wix xmlns=\"http://wixtoolset.org/schemas/v4/wxs\">");
-        stringBuilder.AppendLine("    <Package Name=\"!(loc.Product)\"");
-        stringBuilder.AppendLine("             Manufacturer=\"!(loc.Manufacturer)\"");
-        stringBuilder.AppendLine("             Version=\"1.0.0.0\"");
+        stringBuilder.AppendLine($"    <Package Name=\"{productName}\"");
+        stringBuilder.AppendLine($"             Manufacturer=\"{manufacturerName}\"");
+        stringBuilder.AppendLine($"             Version=\"{version}\"");
         stringBuilder.AppendLine("             Scope=\"perUser\"");
         stringBuilder.AppendLine("             UpgradeCode=\"aebb7914-3502-40db-9d67-e06b9ba8570b\">");
         stringBuilder.AppendLine("        <MajorUpgrade DowngradeErrorMessage=\"!(loc.DowngradeError)\" />");
