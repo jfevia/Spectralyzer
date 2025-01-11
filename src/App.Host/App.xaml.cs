@@ -14,7 +14,7 @@ public partial class App
     protected override void OnStartup(StartupEventArgs e)
     {
         Parser.Default
-              .ParseArguments<AppOptions>(e.Args)
+              .ParseArguments<HostOptions>(e.Args)
               .WithParsed(options =>
               {
                   if (options.Debug)

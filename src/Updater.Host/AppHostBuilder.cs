@@ -3,17 +3,17 @@
 // --------------------------------------------------------------
 
 using System;
-using System.IO.Abstractions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Spectralyzer.Shared.Core.Diagnostics;
+using Spectralyzer.Shared.Core.Windows.FileSystem;
 using Spectralyzer.Shared.UI;
 using Spectralyzer.Updater.Core;
 using Spectralyzer.Updater.Core.Windows.Installer;
 using Spectralyzer.Updater.Host.ViewModels;
 using Spectralyzer.Updater.Shared;
-using Spectralyzer.Updater.Shared.GitHub.Releases;
 
 namespace Spectralyzer.Updater.Host;
 
@@ -24,17 +24,18 @@ public sealed class AppHostBuilder
     public AppHostBuilder()
     {
         _builder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder();
-        _builder.ConfigureServices(services =>
+        _builder.ConfigureServices((ctx, services) =>
         {
-            services.AddSingleton<IFileSystem, FileSystem>();
             services.AddTransient<IProcess, Process>();
             services.AddSingleton(TimeProvider.System);
             
-            services.AddReleaseClient();
+            services.AddReleaseClient(ctx.Configuration.GetRequiredSection("GitHubClient"));
 
             services.AddTransient<IInstaller, WindowsInstaller>();
 
             services.AddSingleton<MainViewModel>();
+
+            services.AddFileSystemClient();
 
             services.AddApplication();
             services.AddDefaultExceptionHandler();

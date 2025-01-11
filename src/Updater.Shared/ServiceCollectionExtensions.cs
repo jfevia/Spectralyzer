@@ -4,27 +4,35 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Spectralyzer.Updater.Shared.GitHub.Releases;
 
 namespace Spectralyzer.Updater.Shared;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddReleaseClient(this IServiceCollection services)
+    public static void AddReleaseClient(this IServiceCollection services, IConfiguration gitHubClientConfiguration)
     {
-        services.AddTransient<IReleaseClient, GitHubReleaseClient>();
-        services.AddHttpClient<GitHubReleaseClient>("Default", httpClient => httpClient.DefaultRequestHeaders.Add("User-Agent", $"{nameof(GitHubReleaseClient)}/1.0.0"));
+        services.AddGitHubClient(gitHubClientConfiguration);
 
-        services.AddOptions<GitHubReleaseClientOptions>();
-        services.Configure<GitHubReleaseClientOptions>(options => options.RepositoryUrl = "https://api.github.com/repos/jfevia/Spectralyzer");
+        services.TryAddTransient<IReleaseClient, ReleaseClient>();
     }
 
-    public static void AddUpdaterClient(this IServiceCollection services, IConfiguration configuration)
+    public static void AddUpdaterClient(this IServiceCollection services, IConfiguration updaterClientConfiguration, IConfiguration gitHubClientConfiguration)
     {
-        services.AddReleaseClient();
+        services.AddReleaseClient(gitHubClientConfiguration);
 
         services.AddOptions<UpdaterOptions>();
-        services.Configure<UpdaterOptions>(configuration);
-        services.AddTransient<IUpdaterClient, UpdaterClient>();
+        services.Configure<UpdaterOptions>(updaterClientConfiguration);
+        services.TryAddTransient<IUpdaterClient, UpdaterClient>();
+    }
+
+    private static void AddGitHubClient(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.TryAddTransient<IHttpClient, GitHubHttpClient>();
+        services.AddHttpClient<GitHubHttpClient>("Default", httpClient => httpClient.DefaultRequestHeaders.Add("User-Agent", $"{nameof(GitHubHttpClient)}/1.0.0"));
+
+        services.AddOptions<GitHubClientOptions>();
+        services.Configure<GitHubClientOptions>(configuration);
     }
 }

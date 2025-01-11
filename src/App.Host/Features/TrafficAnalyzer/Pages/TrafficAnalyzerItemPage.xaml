@@ -17,5 +17,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
-    <ContentControl Content="{Binding}" Focusable="False" />
+    <ContentControl Margin="24,0"
+                    Content="{Binding}"
+                    Focusable="False" />
 </Page>

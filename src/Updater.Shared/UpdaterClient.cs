@@ -4,12 +4,10 @@
 
 using System;
 using System.Diagnostics;
-using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.Options;
-using Microsoft.Win32;
 
 namespace Spectralyzer.Updater.Shared;
 
@@ -24,30 +22,9 @@ internal sealed class UpdaterClient : IUpdaterClient
         _releaseClient = releaseClient ?? throw new ArgumentNullException(nameof(releaseClient));
     }
 
-    [SupportedOSPlatform("windows")]
     public async Task<bool> IsUpdateAvailableAsync(CancellationToken cancellationToken)
     {
-        try
-        {
-            using var registryKey = Registry.CurrentUser.OpenSubKey(@"Software\Spectralyzer\Spectralyzer", true);
-            var registryValue = registryKey?.GetValue("ProductVersion");
-            if (registryValue is null)
-            {
-                return false;
-            }
-
-            if (!Version.TryParse(registryValue.ToString(), out var productVersion))
-            {
-                return false;
-            }
-
-            var release = await _releaseClient.GetLatestReleaseAsync(cancellationToken);
-            return productVersion.IsUpdateAvailable(release.Version);
-        }
-        catch (Exception)
-        {
-            return false;
-        }
+        return await _releaseClient.IsReleaseAvailableAsync(cancellationToken);
     }
 
     public Task StartAsync(CancellationToken cancellationToken)

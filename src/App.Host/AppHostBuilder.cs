@@ -2,17 +2,17 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-using System;
-using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Spectralyzer.App.Host.Features.About.ViewModels;
 using Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 using Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 using Spectralyzer.App.Host.ViewModels;
 using Spectralyzer.Core;
 using Spectralyzer.Core.Http;
+using Spectralyzer.Shared.Core.Windows.FileSystem;
 using Spectralyzer.Shared.UI;
 using Spectralyzer.Updater.Shared;
 
@@ -38,19 +38,22 @@ public sealed class AppHostBuilder
             services.AddSingleton<TrafficAnalyzerItem>();
             services.AddSingleton<HttpRequestComposerItem>();
 
-            services.AddUpdaterClient(ctx.Configuration.GetRequiredSection("Updater"));
+            services.AddSingleton<SettingsViewModel>();
+
+            services.AddUpdaterClient(ctx.Configuration.GetRequiredSection("Updater"), ctx.Configuration.GetRequiredSection("GitHubClient"));
+
+            services.AddFileSystemClient();
 
             services.AddApplication();
             services.AddDefaultExceptionHandler();
             services.AddContainerLocator();
 
             services.AddHostedService<MainWindowHostService>();
+
+            services.AddHostedService<EnvironmentHostedService>();
         });
         _builder.ConfigureLogging(LogLevel.Trace);
         _builder.ConfigureEnvironment();
-
-        var appContextDirectory = new DirectoryInfo(AppContext.BaseDirectory);
-        Environment.SetEnvironmentVariable("UpdaterDir", Path.Combine(appContextDirectory.Parent!.FullName, "Updater"), EnvironmentVariableTarget.Process);
     }
 
     public AppHost Build()

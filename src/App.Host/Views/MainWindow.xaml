@@ -1,14 +1,16 @@
 ﻿<wpf:FluentWindow x:Class="Spectralyzer.App.Host.Views.MainWindow"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:core="clr-namespace:Spectralyzer.Shared.Core;assembly=Shared.Core"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:pages="clr-namespace:Spectralyzer.App.Host.Features.About.Pages"
                   xmlns:requestComposer="clr-namespace:Spectralyzer.App.Host.Features.RequestComposer.Pages"
                   xmlns:trafficAnalyzer="clr-namespace:Spectralyzer.App.Host.Features.TrafficAnalyzer.Pages"
                   xmlns:ui="clr-namespace:Spectralyzer.Shared.UI;assembly=Shared.UI"
                   xmlns:viewModels="clr-namespace:Spectralyzer.App.Host.ViewModels"
                   xmlns:wpf="http://schemas.lepo.co/wpfui/2022/xaml"
-                  Title="Spectralyzer"
+                  Title="{x:Static core:ApplicationInstance.ProductName}"
                   Width="1200"
                   Height="800"
                   d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
@@ -18,8 +20,11 @@
                   WindowCornerPreference="Default"
                   WindowStartupLocation="CenterOwner"
                   mc:Ignorable="d">
+    <wpf:FluentWindow.Icon>
+        <BitmapImage UriSource="pack://application:,,,/Shared.UI;component/Resources/Logo.ico" />
+    </wpf:FluentWindow.Icon>
     <DockPanel LastChildFill="True">
-        <wpf:TitleBar Title="Spectralyzer" DockPanel.Dock="Top">
+        <wpf:TitleBar Title="{x:Static core:ApplicationInstance.ProductName}" DockPanel.Dock="Top">
             <wpf:TitleBar.Icon>
                 <wpf:ImageIcon Source="pack://application:,,,/Shared.UI;component/Resources/Logo.ico" />
             </wpf:TitleBar.Icon>
@@ -27,9 +32,15 @@
         <wpf:NavigationView x:Name="NavigationView"
                             MinHeight="300"
                             Margin="0"
+                            BreadcrumbBar="{Binding ElementName=BreadcrumbBar}"
                             IsBackButtonVisible="Collapsed"
                             IsPaneToggleVisible="False"
                             PaneDisplayMode="LeftFluent">
+            <wpf:NavigationView.Header>
+                <StackPanel Margin="24,16">
+                    <wpf:BreadcrumbBar x:Name="BreadcrumbBar" />
+                </StackPanel>
+            </wpf:NavigationView.Header>
             <wpf:NavigationView.MenuItems>
                 <wpf:NavigationViewItem Content="Traffic"
                                         Icon="{wpf:SymbolIcon GlobeSurface24}"
@@ -38,6 +49,15 @@
                                         Icon="{wpf:SymbolIcon NotepadEdit20}"
                                         TargetPageType="{x:Type requestComposer:RequestComposerItemPage}" />
             </wpf:NavigationView.MenuItems>
+            <wpf:NavigationView.FooterMenuItems>
+                <wpf:NavigationViewItem Content="Settings"
+                                        NavigationCacheMode="Disabled"
+                                        TargetPageType="{x:Type pages:SettingsPage}">
+                    <wpf:NavigationViewItem.Icon>
+                        <wpf:SymbolIcon Symbol="Settings24" />
+                    </wpf:NavigationViewItem.Icon>
+                </wpf:NavigationViewItem>
+            </wpf:NavigationView.FooterMenuItems>
         </wpf:NavigationView>
     </DockPanel>
 </wpf:FluentWindow>

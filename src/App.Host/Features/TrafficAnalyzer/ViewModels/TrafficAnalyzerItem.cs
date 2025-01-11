@@ -21,7 +21,6 @@ namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
 public sealed class TrafficAnalyzerItem : Item
 {
-    private readonly IUpdaterClient _updaterClient;
     private readonly IWebProxyServerFactory _webProxyServerFactory;
     private readonly ConcurrentDictionary<Guid, WebSessionViewModel> _webSessionById = new();
     private bool _decryptSsl = true;
@@ -70,19 +69,16 @@ public sealed class TrafficAnalyzerItem : Item
 
     public ICommand StartCaptureCommand { get; }
     public ICommand StopCaptureCommand { get; }
-    public ICommand UpdateCommand { get; }
     public ObservableCollection<WebSessionViewModel> WebSessions { get; } = [];
 
-    public TrafficAnalyzerItem(IWebProxyServerFactory webProxyServerFactory, IUpdaterClient updaterClient)
+    public TrafficAnalyzerItem(IWebProxyServerFactory webProxyServerFactory)
     {
         _webProxyServerFactory = webProxyServerFactory ?? throw new ArgumentNullException(nameof(webProxyServerFactory));
-        _updaterClient = updaterClient ?? throw new ArgumentNullException(nameof(updaterClient));
 
         WebSessions.CollectionChanged += OnWebSessionsCollectionChanged;
 
         StartCaptureCommand = new AsyncRelayCommand(StartCaptureAsync);
         StopCaptureCommand = new AsyncRelayCommand(StopCaptureAsync);
-        UpdateCommand = new AsyncRelayCommand(UpdateAsync);
         ClearSessionsCommand = new RelayCommand(ClearSessions);
     }
 
@@ -139,14 +135,6 @@ public sealed class TrafficAnalyzerItem : Item
         _webProxyServer.Error -= OnError;
         await _webProxyServer.StopAsync(cancellationToken);
         IsCapturingTraffic = false;
-    }
-
-    private async Task UpdateAsync(CancellationToken cancellationToken)
-    {
-        if (await _updaterClient.IsUpdateAvailableAsync(cancellationToken))
-        {
-            await _updaterClient.StartAsync(cancellationToken);
-        }
     }
 
     private void OnError(object? sender, ExceptionEventArgs e)

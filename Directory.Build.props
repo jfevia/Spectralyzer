@@ -16,4 +16,11 @@
         <DefineConstants>$(DefineConstants);ENVIRONMENT_$(Environment.ToUpper())</DefineConstants>
     </PropertyGroup>
 
+    <ItemGroup>
+        <AssemblyMetadata Include="ManufacturerName" Value="$(ManufacturerName)" />
+        <AssemblyMetadata Include="ProductName" Value="$(ProductName)" />
+        <AssemblyMetadata Include="ProductVersion" Value="$(ProductVersion)" />
+        <AssemblyMetadata Include="Environment" Value="$(Environment)" />
+    </ItemGroup>
+
 </Project>
