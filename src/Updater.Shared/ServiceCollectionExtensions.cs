@@ -5,7 +5,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Spectralyzer.Updater.Shared.GitHub.Releases;
+using Spectralyzer.Updater.Shared.GitHub;
 
 namespace Spectralyzer.Updater.Shared;
 

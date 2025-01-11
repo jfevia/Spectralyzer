@@ -144,8 +144,6 @@ public static partial class SourceGenerator
         stringBuilder.AppendLine("        <Feature Id=\"Main\">");
         stringBuilder.AppendLine("            <ComponentRef Id=\"RemoveComponent\" />");
         stringBuilder.AppendLine("            <ComponentRef Id=\"InstallationFolderComponent\" />");
-        stringBuilder.AppendLine("            <ComponentRef Id=\"ManufacturerNameComponent\" />");
-        stringBuilder.AppendLine("            <ComponentRef Id=\"ProductNameComponent\" />");
         stringBuilder.AppendLine("            <ComponentRef Id=\"ProductVersionComponent\" />");
 
         foreach (var directory in Directory.GetDirectories(outputDirectory, "*", SearchOption.AllDirectories))

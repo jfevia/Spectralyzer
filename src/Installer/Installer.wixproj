@@ -1,4 +1,4 @@
-﻿<Project Sdk="WixToolset.Sdk/4.0.2">
+﻿<Project Sdk="WixToolset.Sdk/4.0.6">
 
     <PropertyGroup>
         <OutputPath>..\..\bin\Installer</OutputPath>
