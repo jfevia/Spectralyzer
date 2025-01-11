@@ -102,6 +102,11 @@
                            Appearance="Primary"
                            Command="{Binding StopCaptureCommand}"
                            Content="Stop capture" />
+                <ui:Button MinWidth="100"
+                           Margin="5"
+                           Appearance="Primary"
+                           Command="{Binding UpdateCommand}"
+                           Content="Update" />
                 <ui:TextBlock Margin="5"
                               VerticalAlignment="Center"
                               Appearance="Secondary"

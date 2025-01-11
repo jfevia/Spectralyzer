@@ -2,6 +2,9 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,6 +14,7 @@ using Spectralyzer.App.Host.ViewModels;
 using Spectralyzer.Core;
 using Spectralyzer.Core.Http;
 using Spectralyzer.Shared.UI;
+using Spectralyzer.Updater.Shared;
 
 namespace Spectralyzer.App.Host;
 
@@ -21,25 +25,34 @@ public sealed class AppHostBuilder
     public AppHostBuilder()
     {
         _builder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder();
-        _builder.ConfigureServices(ctx =>
+        _builder.ConfigureServices((ctx, services) =>
         {
-            ctx.AddTransient<PerformanceHandler>();
-            ctx.AddHttpClient<HttpRequestComposerItem>("Default")
-               .AddHttpMessageHandler<PerformanceHandler>();
+            services.AddTransient<PerformanceHandler>();
+            services.AddHttpClient<HttpRequestComposerItem>("Default")
+                    .AddHttpMessageHandler<PerformanceHandler>();
 
-            ctx.AddTransient<IWebProxyServerFactory, WebProxyServerFactory>();
+            services.AddTransient<IWebProxyServerFactory, WebProxyServerFactory>();
 
-            ctx.AddSingleton<MainViewModel>();
+            services.AddSingleton<MainViewModel>();
 
-            ctx.AddSingleton<TrafficAnalyzerItem>();
-            ctx.AddSingleton<HttpRequestComposerItem>();
+            services.AddSingleton<TrafficAnalyzerItem>();
+            services.AddSingleton<HttpRequestComposerItem>();
 
-            ctx.AddSharedUI();
+            services.AddOptions<UpdaterOptions>();
+            services.Configure<UpdaterOptions>(ctx.Configuration.GetRequiredSection("Updater"));
+            services.AddTransient<IUpdaterClient, UpdaterClient>();
 
-            ctx.AddHostedService<MainWindowHostService>();
+            services.AddApplication();
+            services.AddDefaultExceptionHandler();
+            services.AddContainerLocator();
+
+            services.AddHostedService<MainWindowHostService>();
         });
         _builder.ConfigureLogging(LogLevel.Trace);
         _builder.ConfigureEnvironment();
+
+        var appContextDirectory = new DirectoryInfo(AppContext.BaseDirectory);
+        Environment.SetEnvironmentVariable("UpdaterDir", Path.Combine(appContextDirectory.Parent!.FullName, "Updater"), EnvironmentVariableTarget.Process);
     }
 
     public AppHost Build()

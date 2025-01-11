@@ -20,12 +20,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommandLineParser" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Shared.UI\Shared.UI.csproj" />
         <ProjectReference Include="..\Updater.Core\Updater.Core.csproj" />
+        <ProjectReference Include="..\Updater.Shared\Updater.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>

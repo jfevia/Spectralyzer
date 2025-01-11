@@ -2,12 +2,14 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-using CommandLine;
+using JetBrains.Annotations;
 
-namespace Spectralyzer.Updater.Host;
+namespace Spectralyzer.Updater.Shared;
 
-public sealed class AppOptions
+[PublicAPI]
+public sealed class UpdaterOptions
 {
-    [Option('d', "Debug", Required = false, HelpText = "Launch the JIT debugger.")]
     public bool Debug { get; set; }
+    public string HostFilePath { get; set; } = null!;
+    public string WorkingDirectory { get; set; } = null!;
 }

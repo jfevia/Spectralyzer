@@ -1,7 +1,12 @@
-﻿using System;
+﻿// --------------------------------------------------------------
+// Copyright (c) Jesus Fernandez. All Rights Reserved.
+// --------------------------------------------------------------
+
+using System;
 using System.Diagnostics;
 using System.Windows;
 using CommandLine;
+using Spectralyzer.Updater.Shared;
 
 namespace Spectralyzer.Updater.Host;
 
@@ -10,7 +15,7 @@ public partial class App
     protected override void OnStartup(StartupEventArgs e)
     {
         Parser.Default
-              .ParseArguments<AppOptions>(e.Args)
+              .ParseArguments<CommandLineOptions>(e.Args)
               .WithParsed(options =>
               {
                   if (options.Debug)

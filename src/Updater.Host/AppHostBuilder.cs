@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Spectralyzer.Shared.Core.Diagnostics;
 using Spectralyzer.Shared.UI;
 using Spectralyzer.Updater.Core;
-using Spectralyzer.Updater.Core.GitHub;
 using Spectralyzer.Updater.Core.GitHub.Releases;
 using Spectralyzer.Updater.Core.Windows.Installer;
 using Spectralyzer.Updater.Host.ViewModels;
@@ -24,25 +23,27 @@ public sealed class AppHostBuilder
     public AppHostBuilder()
     {
         _builder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder();
-        _builder.ConfigureServices(ctx =>
+        _builder.ConfigureServices(services =>
         {
-            ctx.AddSingleton<IFileSystem, FileSystem>();
-            ctx.AddTransient<IProcess, Process>();
-            ctx.AddSingleton(TimeProvider.System);
+            services.AddSingleton<IFileSystem, FileSystem>();
+            services.AddTransient<IProcess, Process>();
+            services.AddSingleton(TimeProvider.System);
 
-            ctx.AddTransient<IReleaseClient, GitHubReleaseClient>();
-            ctx.AddHttpClient<GitHubReleaseClient>("Default", httpClient => httpClient.DefaultRequestHeaders.Add("User-Agent", $"{nameof(GitHubReleaseClient)}/1.0.0"));
+            services.AddTransient<IReleaseClient, GitHubReleaseClient>();
+            services.AddHttpClient<GitHubReleaseClient>("Default", httpClient => httpClient.DefaultRequestHeaders.Add("User-Agent", $"{nameof(GitHubReleaseClient)}/1.0.0"));
 
-            ctx.AddOptions<GitHubReleaseClientOptions>();
-            ctx.Configure<GitHubReleaseClientOptions>(options => options.RepositoryUrl = "https://api.github.com/repos/jfevia/Spectralyzer");
+            services.AddOptions<GitHubReleaseClientOptions>();
+            services.Configure<GitHubReleaseClientOptions>(options => options.RepositoryUrl = "https://api.github.com/repos/jfevia/Spectralyzer");
 
-            ctx.AddTransient<IInstaller, WindowsInstaller>();
+            services.AddTransient<IInstaller, WindowsInstaller>();
 
-            ctx.AddSingleton<MainViewModel>();
+            services.AddSingleton<MainViewModel>();
 
-            ctx.AddSharedUI();
+            services.AddApplication();
+            services.AddDefaultExceptionHandler();
+            services.AddContainerLocator();
 
-            ctx.AddHostedService<MainWindowHostService>();
+            services.AddHostedService<MainWindowHostService>();
         });
         _builder.ConfigureLogging(LogLevel.Trace);
         _builder.ConfigureEnvironment();

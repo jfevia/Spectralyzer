@@ -33,6 +33,7 @@
         <ProjectReference Include="..\Shared.Core\Shared.Core.csproj" />
         <ProjectReference Include="..\Shared.UI\Shared.UI.csproj" />
         <ProjectReference Include="..\Core\Core.csproj" />
+        <ProjectReference Include="..\Updater.Shared\Updater.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -65,6 +66,16 @@
         <Content Include="Resources\MonacoEditor\Index.html">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="appsettings.Development.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <DependentUpon>appsettings.json</DependentUpon>
+        </None>
     </ItemGroup>
 
 </Project>
