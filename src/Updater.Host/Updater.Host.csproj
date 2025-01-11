@@ -1,10 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputPath>..\..\bin\$(Configuration)\Updater</OutputPath>
-    </PropertyGroup>
-
-    <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net9.0-windows</TargetFramework>
         <LangVersion>latest</LangVersion>
@@ -17,6 +13,10 @@
     <PropertyGroup>
         <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
         <AssemblyName>Spectralyzer.Updater.Host</AssemblyName>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>..\..\bin\$(Configuration)\Updater</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
