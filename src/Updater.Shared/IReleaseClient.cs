@@ -5,7 +5,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Spectralyzer.Updater.Core;
+namespace Spectralyzer.Updater.Shared;
 
 public interface IReleaseClient
 {

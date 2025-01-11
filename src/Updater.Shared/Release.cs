@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Spectralyzer.Updater.Core;
+namespace Spectralyzer.Updater.Shared;
 
 public sealed class Release
 {

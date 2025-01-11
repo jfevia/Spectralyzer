@@ -38,9 +38,7 @@ public sealed class AppHostBuilder
             services.AddSingleton<TrafficAnalyzerItem>();
             services.AddSingleton<HttpRequestComposerItem>();
 
-            services.AddOptions<UpdaterOptions>();
-            services.Configure<UpdaterOptions>(ctx.Configuration.GetRequiredSection("Updater"));
-            services.AddTransient<IUpdaterClient, UpdaterClient>();
+            services.AddUpdaterClient(ctx.Configuration.GetRequiredSection("Updater"));
 
             services.AddApplication();
             services.AddDefaultExceptionHandler();

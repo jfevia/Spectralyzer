@@ -15,7 +15,7 @@ public static partial class SourceGenerator
 {
     public static void Generate(string outputDirectory, string manufacturerName, string productName, string version)
     {
-        GenerateComponents(outputDirectory);
+        GenerateComponents(outputDirectory, manufacturerName, productName, version);
         GenerateFolders(outputDirectory);
         GenerateRemovals(outputDirectory);
         GenerateShortcuts(outputDirectory);
@@ -65,13 +65,22 @@ public static partial class SourceGenerator
         stringBuilder.AppendLine($"{indentation}<ComponentGroupRef Id=\"ComponentGroup_{name}\" />");
     }
 
-    private static void GenerateComponents(string outputDirectory)
+    private static void GenerateComponents(string outputDirectory, string manufacturerName, string productName, string version)
     {
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendLine("<Wix xmlns=\"http://wixtoolset.org/schemas/v4/wxs\">");
         stringBuilder.AppendLine("    <Fragment>");
-        stringBuilder.AppendLine("        <Component Id=\"InstallationComponent\" Directory=\"ProductFolder\">");
-        stringBuilder.AppendLine("            <RegistryValue Root=\"HKCU\" Key=\"Software\\Spectralyzer\\Spectralyzer\" Name=\"ProductFolder\" Type=\"string\" Value=\"[ProductFolder]\" KeyPath=\"yes\" />");
+        stringBuilder.AppendLine("        <Component Id=\"InstallationFolderComponent\" Directory=\"ProductFolder\">");
+        stringBuilder.AppendLine("            <RegistryValue Root=\"HKCU\" Key=\"Software\\Spectralyzer\\Spectralyzer\" Name=\"InstallationFolder\" Type=\"string\" Value=\"[ProductFolder]\" KeyPath=\"yes\" />");
+        stringBuilder.AppendLine("        </Component>");
+        stringBuilder.AppendLine("        <Component Id=\"ManufacturerNameComponent\" Directory=\"ProductFolder\">");
+        stringBuilder.AppendLine($"            <RegistryValue Root=\"HKCU\" Key=\"Software\\Spectralyzer\\Spectralyzer\" Name=\"ManufacturerName\" Type=\"string\" Value=\"{manufacturerName}\" KeyPath=\"yes\" />");
+        stringBuilder.AppendLine("        </Component>");
+        stringBuilder.AppendLine("        <Component Id=\"ProductNameComponent\" Directory=\"ProductFolder\">");
+        stringBuilder.AppendLine($"            <RegistryValue Root=\"HKCU\" Key=\"Software\\Spectralyzer\\Spectralyzer\" Name=\"ProductName\" Type=\"string\" Value=\"{productName}\" KeyPath=\"yes\" />");
+        stringBuilder.AppendLine("        </Component>");
+        stringBuilder.AppendLine("        <Component Id=\"ProductVersionComponent\" Directory=\"ProductFolder\">");
+        stringBuilder.AppendLine($"            <RegistryValue Root=\"HKCU\" Key=\"Software\\Spectralyzer\\Spectralyzer\" Name=\"ProductVersion\" Type=\"string\" Value=\"{version}\" KeyPath=\"yes\" />");
         stringBuilder.AppendLine("        </Component>");
 
         foreach (var directory in Directory.GetDirectories(outputDirectory, "*", SearchOption.AllDirectories))
@@ -140,11 +149,14 @@ public static partial class SourceGenerator
         stringBuilder.AppendLine("        <Media Id=\"1\" CompressionLevel=\"high\" EmbedCab=\"yes\" Cabinet=\"media.cab\" />");
         stringBuilder.AppendLine("        <Feature Id=\"Main\">");
         stringBuilder.AppendLine("            <ComponentRef Id=\"RemoveComponent\" />");
-        stringBuilder.AppendLine("            <ComponentRef Id=\"InstallationComponent\" />");
+        stringBuilder.AppendLine("            <ComponentRef Id=\"InstallationFolderComponent\" />");
+        stringBuilder.AppendLine("            <ComponentRef Id=\"ManufacturerNameComponent\" />");
+        stringBuilder.AppendLine("            <ComponentRef Id=\"ProductNameComponent\" />");
+        stringBuilder.AppendLine("            <ComponentRef Id=\"ProductVersionComponent\" />");
 
         foreach (var directory in Directory.GetDirectories(outputDirectory, "*", SearchOption.AllDirectories))
         {
-            GenerateComponentRefNodes(outputDirectory, directory, stringBuilder, 4);
+            GenerateComponentRefNodes(outputDirectory, directory, stringBuilder, 3);
         }
 
         stringBuilder.AppendLine("        </Feature>");

@@ -2,13 +2,14 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
-using System.Threading;
-using System.Threading.Tasks;
+using System;
 
 namespace Spectralyzer.Updater.Shared;
 
-public interface IUpdaterClient
+public static class VersionExtensions
 {
-    Task<bool> IsUpdateAvailableAsync(CancellationToken cancellationToken);
-    Task StartAsync(CancellationToken cancellationToken);
+    public static bool IsUpdateAvailable(this Version currentVersion, Version newVersion)
+    {
+        return newVersion > currentVersion;
+    }
 }

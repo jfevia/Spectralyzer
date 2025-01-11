@@ -143,7 +143,10 @@ public sealed class TrafficAnalyzerItem : Item
 
     private async Task UpdateAsync(CancellationToken cancellationToken)
     {
-        await _updaterClient.StartAsync(cancellationToken);
+        if (await _updaterClient.IsUpdateAvailableAsync(cancellationToken))
+        {
+            await _updaterClient.StartAsync(cancellationToken);
+        }
     }
 
     private void OnError(object? sender, ExceptionEventArgs e)

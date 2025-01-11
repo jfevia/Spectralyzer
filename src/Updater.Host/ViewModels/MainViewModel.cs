@@ -12,6 +12,7 @@ using CommunityToolkit.Mvvm.Input;
 using Spectralyzer.Shared.UI;
 using Spectralyzer.Shared.UI.ComponentModel;
 using Spectralyzer.Updater.Core;
+using Spectralyzer.Updater.Shared;
 
 namespace Spectralyzer.Updater.Host.ViewModels;
 
@@ -67,7 +68,7 @@ public sealed class MainViewModel : ObservableObject
         var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_taskCancellationSource.Token, cancellationToken);
         var currentVersion = Version.Parse("1.0.0");
         var latestRelease = await _releaseClient.GetLatestReleaseAsync(linkedTokenSource.Token);
-        var isUpdateAvailable = latestRelease.Version >= currentVersion;
+        var isUpdateAvailable = currentVersion.IsUpdateAvailable(latestRelease.Version);
 
         if (!isUpdateAvailable)
         {

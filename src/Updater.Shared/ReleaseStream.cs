@@ -5,7 +5,7 @@
 using System;
 using System.IO;
 
-namespace Spectralyzer.Updater.Core;
+namespace Spectralyzer.Updater.Shared;
 
 public sealed class ReleaseStream : Stream
 {
@@ -22,7 +22,7 @@ public sealed class ReleaseStream : Stream
         set => _underlyingStream.Position = value;
     }
 
-    internal ReleaseStream(Stream stream, long length)
+    public ReleaseStream(Stream stream, long length)
     {
         _underlyingStream = stream ?? throw new ArgumentNullException(nameof(stream));
         Length = length;
