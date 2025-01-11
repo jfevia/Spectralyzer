@@ -2,6 +2,9 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Spectralyzer.App.Host.Features.RequestComposer.ViewModels;
 
 public abstract class HttpMessageBodyViewModel : HttpMessageItemViewModel

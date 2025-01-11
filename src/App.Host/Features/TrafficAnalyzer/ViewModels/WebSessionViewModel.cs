@@ -2,7 +2,9 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
 using System.Diagnostics;
+using Spectralyzer.Shared.UI.ComponentModel;
 
 namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 

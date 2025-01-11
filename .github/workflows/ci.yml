@@ -29,13 +29,13 @@ jobs:
       if: ${{ success() }}
       run: msbuild Spectralyzer.sln -target:restore -property:Configuration=${{ env.CONFIGURATION }} -property:Environment=${{ env.ENVIRONMENT }}
 
-    - name: Build solution
-      if: ${{ success() }}
-      run: msbuild Spectralyzer.sln -target:rebuild -property:Configuration=${{ env.CONFIGURATION }} -property:Environment=${{ env.ENVIRONMENT }}
-
     - name: Generate installer version
       if: ${{ success() }}
-      run: echo "INSTALLER_VERSION=$($(Get-Date).ToUniversalTime().ToString('yyyy.MM.dd.mmss'))" >> $env:GITHUB_ENV
+      run: echo "INSTALLER_VERSION=$($(Get-Date).ToUniversalTime().ToString('yy.MM.dd.HHmm'))" >> $env:GITHUB_ENV
+
+    - name: Build solution
+      if: ${{ success() }}
+      run: msbuild Spectralyzer.sln -target:rebuild -property:Configuration=${{ env.CONFIGURATION }} -property:Environment=${{ env.ENVIRONMENT }} -property:ProductVersion=${{ env.INSTALLER_VERSION }}
 
     - name: Run unit tests
       if: ${{ success() }}

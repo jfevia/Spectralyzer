@@ -1,11 +1,11 @@
-﻿<Project Sdk="WixToolset.Sdk/4.0.2">
+﻿<Project Sdk="WixToolset.Sdk/4.0.6">
 
     <PropertyGroup>
         <OutputPath>..\..\bin\Installer</OutputPath>
     </PropertyGroup>
 
     <Target Name="SourceGenerator" BeforeTargets="ResolveReferences">
-        <Exec Command="dotnet run --project ..\..\.tools\Installer.SourceGenerator\Installer.SourceGenerator.csproj --Configuration $(Configuration) --OutputDir ..\..\bin\$(Configuration)" />
+        <Exec Command="dotnet run --project ..\..\.tools\Installer.SourceGenerator\Installer.SourceGenerator.csproj --Configuration $(Configuration) --OutputDir ..\..\bin\$(Configuration) --Manufacturer &quot;$(ManufacturerName)&quot; --Product &quot;$(ProductName)&quot; --Version &quot;$(ProductVersion)&quot;" />
     </Target>
 
     <ItemGroup>

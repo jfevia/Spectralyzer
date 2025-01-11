@@ -2,16 +2,20 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Spectralyzer.App.Host.ViewModels;
 using Spectralyzer.Core;
+using Spectralyzer.Updater.Shared;
 
 namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 
@@ -26,6 +30,7 @@ public sealed class TrafficAnalyzerItem : Item
     private WebSessionViewModel? _selectedWebSession;
     private WebProxyEndpoint? _webProxyEndpoint;
     private IWebProxyServer? _webProxyServer;
+
     public override string Title => "Traffic analyzer";
 
     public ICommand ClearSessionsCommand { get; }

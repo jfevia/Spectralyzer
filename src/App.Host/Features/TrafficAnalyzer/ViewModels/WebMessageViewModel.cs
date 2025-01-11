@@ -2,9 +2,13 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using Spectralyzer.Core;
+using Spectralyzer.Shared.UI.ComponentModel;
 
 namespace Spectralyzer.App.Host.Features.TrafficAnalyzer.ViewModels;
 

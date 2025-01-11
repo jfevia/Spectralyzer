@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Mvvm" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+        <PackageReference Include="WPF-UI" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Shared.Core\Shared.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Resources\Logo.png" />
+        <Resource Include="Resources\Logo.png" />
+        <None Remove="Resources\Logo.ico" />
+        <Resource Include="Resources\Logo.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Page Update="Styles\TextBlock.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+
+</Project>

@@ -1,7 +1,12 @@
 <Project>
 
     <PropertyGroup>
-        <ProductName>Spectralyzer</ProductName>
+        <ManufacturerName Condition="'$(ManufacturerName)' == ''">Jesus Fernandez</ManufacturerName>
+        <ProductName Condition="'$(ProductName)' == ''">Spectralyzer</ProductName>
+        <ProductVersion Condition="'$(ProductVersion)' == ''">$([System.DateTime]::UtcNow.ToString("yy.MM.dd.HHmm"))</ProductVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <RootNamespace>$(ProductName).$(MSBuildProjectName)</RootNamespace>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <Environment Condition=" '$(Environment)' == '' ">Development</Environment>
@@ -10,5 +15,12 @@
     <PropertyGroup Condition=" '$(Environment)' != '' ">
         <DefineConstants>$(DefineConstants);ENVIRONMENT_$(Environment.ToUpper())</DefineConstants>
     </PropertyGroup>
+
+    <ItemGroup>
+        <AssemblyMetadata Include="ManufacturerName" Value="$(ManufacturerName)" />
+        <AssemblyMetadata Include="ProductName" Value="$(ProductName)" />
+        <AssemblyMetadata Include="ProductVersion" Value="$(ProductVersion)" />
+        <AssemblyMetadata Include="Environment" Value="$(Environment)" />
+    </ItemGroup>
 
 </Project>

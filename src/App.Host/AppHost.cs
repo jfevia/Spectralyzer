@@ -2,6 +2,7 @@
 // Copyright (c) Jesus Fernandez. All Rights Reserved.
 // --------------------------------------------------------------
 
+using System;
 using Microsoft.Extensions.Hosting;
 
 namespace Spectralyzer.App.Host;
